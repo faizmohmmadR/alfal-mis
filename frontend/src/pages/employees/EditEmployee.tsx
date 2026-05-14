@@ -1,0 +1,227 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card, CardContent } from '@/components/ui/card';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { ReloadIcon } from '@radix-ui/react-icons';
+import { ArrowLeft, Users } from 'lucide-react';
+import useUpdate from '@/api/useUpdate';
+import useFetchObjects from '@/api/useFetchObjects';
+
+interface EmployeeFormData {
+  full_name: string;
+  phone: string;
+  address: string;
+  position: string;
+  salary: number;
+  currency: string;
+  is_active: boolean;
+}
+
+const EditEmployee = () => {
+  const { t } = useLanguage();
+  const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const [formData, setFormData] = useState<EmployeeFormData>({
+    full_name: '',
+    phone: '',
+    address: '',
+    position: '',
+    salary: 0,
+    currency: 'AFN',
+    is_active: true,
+  });
+  const [errors, setErrors] = useState<Record<string, string>>();
+
+  const { data: employee, isLoading: employeeLoading } = useFetchObjects<any>({
+    queryKey: ['employee', id],
+    endpoint: `employees/${id}`,
+  });
+
+  const { handleUpdate, loading, isSuccess } = useUpdate<any>({
+    queryKey: ['employees'],
+  });
+
+  useEffect(() => {
+    if (isSuccess) {
+      navigate('/employees');
+    }
+  }, [isSuccess, navigate]);
+
+  useEffect(() => {
+    if (employee) {
+      setFormData({
+        full_name: employee.full_name || '',
+        phone: employee.phone || '',
+        address: employee.address || '',
+        position: employee.position || '',
+        salary: employee.salary || 0,
+        currency: employee.currency || 'AFN',
+        is_active: employee.is_active,
+      });
+    }
+  }, [employee]);
+
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {};
+    if (!formData.full_name.trim()) newErrors.full_name = t('validation.required');
+    if (formData.salary < 0) newErrors.salary = t('validation.positive');
+    if (!formData.currency) newErrors.currency = t('validation.required');
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async () => {
+    if (!validateForm() || !employee) return;
+    handleUpdate(employee.id, formData);
+  };
+
+  if (employeeLoading) {
+    return (
+      <div className="container mx-auto py-6 flex justify-center">
+        <ReloadIcon className="animate-spin h-8 w-8" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="container mx-auto py-6 space-y-6 max-w-4xl">
+      <div className="flex items-center gap-4">
+        <Button variant="ghost" size="icon" onClick={() => navigate('/employees')}>
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
+        <div className="flex items-center gap-2">
+          <Users className="h-6 w-6" />
+          <h1 className="text-base font-boldtext-sm">{t('employees.editEmployee')}</h1>
+        </div>
+      </div>
+      
+      <Card>
+        <CardContent className="pt-6 space-y-6">
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="full_name">{t("employees.fullName")} *</Label>
+                <Input
+                  id="full_name"
+                  value={formData.full_name}
+                  onChange={(e) => {
+                    setFormData((prev) => ({ ...prev, full_name: e.target.value }));
+                    if (errors?.full_name) setErrors((prev) => ({ ...prev, full_name: "" }));
+                  }}
+                  placeholder={t("employees.fullNamePlaceholder")}
+                />
+                {errors?.full_name && <p className="text-base text-destructivetext-xs">{errors.full_name}</p>}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="phone">{t("employees.phone")}</Label>
+                <Input
+                  id="phone"
+                  value={formData.phone}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
+                  placeholder={t("employees.phonePlaceholder")}
+                />
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="position">{t("employees.position")}</Label>
+                <Input
+                  id="position"
+                  value={formData.position}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, position: e.target.value }))}
+                  placeholder={t("employees.positionPlaceholder")}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="address">{t("employees.address")}</Label>
+                <Input
+                  id="address"
+                  value={formData.address}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, address: e.target.value }))}
+                  placeholder={t("employees.addressPlaceholder")}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="salary">{t("employees.salary")} *</Label>
+                <Input
+                  id="salary"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={formData.salary}
+                  onChange={(e) => {
+                    const value = parseFloat(e.target.value) || 0;
+                    setFormData((prev) => ({ ...prev, salary: value }));
+                    if (errors?.salary) setErrors((prev) => ({ ...prev, salary: "" }));
+                  }}
+                  placeholder={t("employees.salaryPlaceholder")}
+                />
+                {errors?.salary && <p className="text-base text-destructivetext-xs">{errors.salary}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="currency">{t("employees.currency")} *</Label>
+                <select
+                  id="currency"
+                  value={formData.currency}
+                  onChange={(e) => {
+                    setFormData((prev) => ({ ...prev, currency: e.target.value }));
+                    if (errors?.currency) setErrors((prev) => ({ ...prev, currency: "" }));
+                  }}
+                  className="w-full p-2 border rounded-md"
+                >
+                  <option value="">{t("employees.currencyPlaceholder")}</option>
+                  <option value="AFN">AFN - Afghan Afghani</option>
+                  <option value="USD">USD - US Dollar</option>
+                </select>
+                {errors?.currency && <p className="text-base text-destructivetext-xs">{errors.currency}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="status">{t("employees.status")}</Label>
+                <Select
+                  value={formData.is_active.toString()}
+                  onValueChange={(value) => setFormData((prev) => ({ ...prev, is_active: value === "true" }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="true">{t("employees.active")}</SelectItem>
+                    <SelectItem value="false">{t("employees.inactive")}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={() => navigate('/employees')} disabled={loading}>
+              {t('common.cancel')}
+            </Button>
+            <Button onClick={handleSubmit} disabled={loading}>
+              {loading ? (
+                <>
+                  <ReloadIcon className="animate-spin mr-2" />
+                  {t('common.updating')}
+                </>
+              ) : (
+                t('common.update')
+              )}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+export default EditEmployee;

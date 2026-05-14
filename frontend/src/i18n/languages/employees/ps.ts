@@ -1,0 +1,52 @@
+export const employeePs = {
+  employees: "کارمندان",
+  name: "نوم",
+  fullName: "بشپړ نوم",
+  phone: "تلیفون",
+  position: "موقف",
+  salary: "معاش",
+  currency: "اسعار",
+  address: "پته",
+  dateJoined: "د شاملیدو نیټه",
+  status: "حالت",
+  active: "فعال",
+  inactive: "غیرفعال",
+  addEmployee: "کارمند اضافه کړئ",
+  editEmployee: "کارمند تصحیح کړئ",
+  employeeDetails: "د کارمند تفصیلات",
+  
+  // Placeholders
+  fullNamePlaceholder: "بشپړ نوم دننه کړئ",
+  phonePlaceholder: "د تلیفون شمیره دننه کړئ",
+  positionPlaceholder: "موقف دننه کړئ",
+  addressPlaceholder: "پته دننه کړئ",
+  salaryPlaceholder: "د معاش اندازه دننه کړئ",
+  currencyPlaceholder: "اسعار انتخاب کړئ",
+  
+  // Financial
+  financialSummary: "مالي لنډیز",
+  monthlySalary: "میاشتنی معاش",
+  totalAdvances: "ټول پیشکي",
+  paidSalary: "تادیه شوی معاش",
+  remaining: "پاتې",
+  
+  // Messages
+  addSuccess: "کارمند په بریالیتوب سره اضافه شو",
+  editSuccess: "کارمند په بریالیتوب سره تازه شو",
+  deleteSuccess: "کارمند په بریالیتوب سره حذف شو",
+  
+  // UI Components
+  title: "کارمندان",
+  viewDetails: "تفصیلات وګورئ",
+  edit: "تصحیح",
+  delete: "ډیلیټ کړئ",
+  deleteEmployee: "کارمند ډیلیټ کړئ",
+  manageEmployeeRecords: "د کارمندانو ریکارډونه اداره کړئ",
+  searchEmployees: "کارمندان لټول...",
+  filterByStatus: "د حالت له مخې فلټر",
+  clearFilters: "فلټرونه پاک کړئ",
+  noEmployeesFound: "هیڅ کارمند ونه موندل شو",
+  tryAdjustingSearch: "د لټون شرایط تنظیم کړئ",
+  addFirstEmployee: "خپل لومړی کارمند اضافه کړئ",
+  loadingEmployees: "کارمندان لوډ کیږی..."
+};

@@ -1,0 +1,82 @@
+export const payrollEn = {
+  title: 'Payroll Management',
+  payrolls: 'Payrolls',
+  addPayroll: 'Add Payroll',
+  editPayroll: 'Edit Payroll',
+  payrollDetails: 'Payroll Details',
+  employeeInformation: 'Employee Information',
+  salaryBreakdown: 'Salary Breakdown',
+  paymentInformation: 'Payment Information',
+  
+  // Fields
+  employee: 'Employee',
+  company: 'Company',
+  month: 'Month',
+  year: 'Year',
+  basicSalary: 'Basic Salary',
+  bonus: 'Bonus',
+  overtime: 'Overtime',
+  deductions: 'Deductions',
+  workingDays: 'Working Days',
+  netSalary: 'Net Salary',
+  salary: 'Salary',
+  currency: 'Currency',
+  paymentDate: 'Payment Date',
+  period: 'Period',
+  
+  // Form labels
+  selectEmployee: 'Select employee',
+  selectCompany: 'Select company',
+  selectMonth: 'Select month',
+  selectCurrency: 'Select currency',
+  enterYear: 'Enter year',
+  enterBasicSalary: 'Enter basic salary',
+  enterBonus: 'Enter bonus',
+  enterOvertime: 'Enter overtime',
+  enterDeductions: 'Enter deductions',
+  deductionDays: 'Deduction Days',
+  dayBasedDeduction: 'Day-Based Deduction',
+  enterDeductionDays: 'Enter deduction days',
+  
+  // Validation
+  validation: {
+    employee: 'Employee is required',
+    month: 'Month is required',
+    year: 'Year is required',
+    basicSalary: 'Basic salary is required',
+    currency: 'Currency is required',
+  },
+  
+  // Messages
+  addPayrollDesc: 'Fill in the payroll information below. Fields marked with * are required.',
+  editPayrollDesc: 'Update the payroll information below. Fields marked with * are required.',
+  noPayrolls: 'No payroll records found',
+  errorLoading: 'Error loading payroll records',
+  
+  // Actions
+  addSuccess: 'Payroll record added successfully',
+  updateSuccess: 'Payroll record updated successfully',
+  deleteSuccess: 'Payroll record deleted successfully',
+  deleteConfirm: 'Are you sure you want to delete this payroll record? This action cannot be undone.',
+  
+  // UI Components
+  viewDetails: 'View Details',
+  edit: 'Edit',
+  delete: 'Delete',
+  deletePayroll: 'Delete Payroll',
+  manageEmployeePayrolls: 'Manage employee payroll records',
+  searchPayrolls: 'Search payrolls...',
+  filterByEmployee: 'Filter by employee',
+  filterByMonth: 'Filter by month',
+  filterByYear: 'Filter by year',
+  filterByCompany: 'Filter by company',
+  clearFilters: 'Clear Filters',
+  noPayrollsFound: 'No payrolls found',
+  tryAdjustingSearch: 'Try adjusting your search terms',
+  addFirstPayroll: 'Add your first payroll to get started',
+  loadingPayrolls: 'Loading payrolls...',
+  
+  // Additional terms for generic List component
+  status: 'Status',
+  searchByEmployee: 'Search by employee name...',
+};

@@ -1,0 +1,74 @@
+export const coreFa = {
+  title: 'مشتریان',
+  name: 'نام',
+  phone: 'تلفن',
+  email: 'ایمیل',
+  address: 'آدرس',
+  totalOrders: 'کل سفارشات',
+  totalAmount: 'مبلغ کل',
+  balance: 'باقیمانده',
+  addCustomer: 'افزودن مشتری',
+  editCustomer: 'ویرایش مشتری',
+  deleteConfirmation: 'آیا مطمئن هستید که میخواهید {name} را حذف کنید؟',
+  deleteSuccess: 'مشتری {name} حذف شد',
+  nameRequired: 'نام مشتری الزامی است',
+  searchByName: 'جستجو بر اساس نام...',
+  searchByPhone: 'جستجو بر اساس تلفن...',
+  searchByEmail: 'جستجو بر اساس ایمیل...',
+  
+  sections: {
+    main: 'اصلی',
+    contacts: 'مخاطبین',
+    business: 'کسب و کار',
+    hr: 'منابع انسانی',
+    finance: 'مالی',
+    system: 'سیستم'
+  },
+  
+  navigation: {
+    dashboard: 'داشبورد',
+    profile: 'پروفایل',
+    customers: 'مشتریان',
+    users: 'کاربران',
+    projects: 'پروژه ها',
+    projectsList: 'لیست پروژه ها',
+    projectPayments: 'پرداختهای پروژه',
+    hr: 'منابع انسانی',
+    employees: 'کارمندان',
+    payroll: 'حقوق',
+    advance: 'پیش پرداخت',
+    expenses: 'هزینه ها',
+    expensesList: 'لیست هزینه ها',
+    expenseCategories: 'دستهبندی هزینه ها',
+    settings: 'تنظیمات',
+    activityLogs: 'گزارش فعالیتها',
+    backups: 'پشتیبانگیری',
+    search: 'جستجو...',
+    collapseAll: 'بستن همه'
+  },
+  
+  app: {
+    title: 'سیستم اطلاعات مدیریت خادم پوپل',
+    subtitle: 'سیستم اطلاعات مدیریت',
+    version: 'نسخه',
+    companyName: 'سیستم اطلاعات مدیریت خادم پوپل'
+  },
+  
+  dashboard: {
+    title: 'داشبورد',
+    welcome: 'به داشبورد ERP خود خوش آمدید',
+    totalSales: 'کل فروش',
+    totalPurchases: 'کل خرید',
+    totalCustomers: 'کل مشتریان',
+    totalProducts: 'کل محصولات',
+    recentSales: 'فروش اخیر',
+    lowStock: 'هشدار موجودی کم',
+    fromLastMonth: 'از ماه گذشته',
+    activeCustomers: 'مشتریان فعال',
+    inInventory: 'در انبار',
+    critical: 'بحرانی',
+    low: 'کم',
+    units: 'واحد',
+    min: 'حداقل'
+  }
+};

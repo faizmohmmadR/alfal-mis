@@ -1,0 +1,86 @@
+export const advanceEn = {
+  title: 'Advance Management',
+  advances: 'Advances',
+  addAdvance: 'Add Advance',
+  editAdvance: 'Edit Advance',
+  advanceDetails: 'Advance Details',
+  
+  // Fields
+  employee: 'Employee',
+  amount: 'Amount',
+  currency: 'Currency',
+  reason: 'Reason',
+  year: 'Year',
+  month: 'Month',
+  paymentDate: 'Payment Date',
+  company: 'Company',
+  
+  // Form labels
+  selectEmployee: 'Select employee',
+  selectCurrency: 'Select currency',
+  selectMonth: 'Select month',
+  enterAmount: 'Enter amount',
+  enterReason: 'Enter reason',
+  
+  // Months
+  months: {
+    january: 'January',
+    february: 'February',
+    march: 'March',
+    april: 'April',
+    may: 'May',
+    june: 'June',
+    july: 'July',
+    august: 'August',
+    september: 'September',
+    october: 'October',
+    november: 'November',
+    december: 'December',
+  },
+  
+  // Validation
+  validation: {
+    employee: 'Employee is required',
+    amount: 'Amount is required',
+    currency: 'Currency is required',
+    year: 'Year is required',
+    month: 'Month is required',
+  },
+  
+  // Messages
+  addAdvanceDesc: 'Fill in the advance information below. Fields marked with * are required.',
+  editAdvanceDesc: 'Update the advance information below. Fields marked with * are required.',
+  noAdvances: 'No advances found',
+  errorLoading: 'Error loading advances',
+  
+  // Actions
+  addSuccess: 'Advance added successfully',
+  updateSuccess: 'Advance updated successfully',
+  deleteSuccess: 'Advance deleted successfully',
+  deleteConfirm: 'Are you sure you want to delete this advance? This action cannot be undone.',
+  date: 'Date',
+  status: 'Status',
+  repaymentDate: 'Repayment Date',
+  deleteError: 'Error deleting advance',
+  
+  // UI Components
+  viewDetails: 'View Details',
+  edit: 'Edit',
+  delete: 'Delete',
+  view: 'View',
+  manageEmployeeAdvances: 'Manage employee advances',
+  searchAdvances: 'Search advances...',
+  filterByEmployee: 'Filter by employee',
+  filterByMonth: 'Filter by month',
+  filterByYear: 'Filter by year',
+  clearFilters: 'Clear Filters',
+  noAdvancesFound: 'No advances found',
+  tryAdjustingSearch: 'Try adjusting your search terms',
+  addFirstAdvance: 'Add your first advance to get started',
+  loadingAdvances: 'Loading advances...',
+  
+  // Additional status terms
+  approved: 'Approved',
+  rejected: 'Rejected',
+  pending: 'Pending',
+};
