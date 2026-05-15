@@ -53,6 +53,31 @@ class StudentPaymentViewSet(DataRootViewSet):
         
         return queryset
     
+    def perform_create(self, serializer):
+        """Create student payment and record journal entry"""
+        from api.services.accounting_service import AccountingService
+        payment = serializer.save()
+        
+        # Record journal entry for student payment
+        try:
+            AccountingService.record_student_payment(
+                student_id=payment.student.id,
+                amount=payment.amount,
+                date=payment.payment_date,
+                description=f"Student Payment - {payment.student.full_name} - {payment.category.name if payment.category else 'General'}",
+                reference=payment.reference_number
+            )
+        except Exception as e:
+            # Log error but don't fail the payment
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Failed to create journal entry for student payment {payment.id}: {e}")
+    
+    def perform_update(self, serializer):
+        """Update student payment"""
+        # Note: Journal entries are not updated automatically to maintain audit trail
+        serializer.save()
+    
     @action(detail=False, methods=['get'])
     def daily_summary(self, request):
         """Get daily payment summary"""

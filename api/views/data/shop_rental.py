@@ -122,3 +122,21 @@ class ShopRentalViewSet(DataRootViewSet):
             'total_monthly_income': float(total_income),
             'active_rentals_count': queryset.count()
         })
+    
+    def perform_create(self, serializer):
+        """Create shop rental and record journal entry"""
+        from api.services.accounting_service import AccountingService
+        rental = serializer.save()
+        
+        # Record journal entry for rental income
+        try:
+            AccountingService.record_rental_income(
+                tenant_name=rental.tenant.full_name,
+                amount=rental.monthly_rent,
+                date=rental.start_date,
+                reference=f"RENTAL-{rental.id}"
+            )
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Failed to create journal entry for shop rental {rental.id}: {e}")

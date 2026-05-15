@@ -38,7 +38,8 @@ import {
   Crown,
   Database,
   BookOpen,
-  Store
+  Store,
+  PieChart
 } from 'lucide-react';
 
 const navigationItems = [
@@ -128,6 +129,12 @@ const navigationItems = [
       { key: 'incomeCategoryList', icon: Tag, path: '/income-categories' }
     ]
   },
+  { 
+    key: 'reports', 
+    icon: PieChart, 
+    path: '/reports',
+    section: 'finance',
+  },
 
   { 
     key: 'settings', 
@@ -149,6 +156,7 @@ const sections = {
   education: 'Education',
   hr: 'Human Resources',
   finance: 'Finance',
+  reports: 'Reports',
   system: 'System'
 };
 
@@ -180,6 +188,7 @@ export const Sidebar: React.FC = () => {
     if (isStudentsRoute(currentPath)) sectionsToExpand.push('students');
     if (isShopRentalRoute(currentPath)) sectionsToExpand.push('shopRental');
     if (isOtherIncomeRoute(currentPath)) sectionsToExpand.push('otherIncome');
+    if (isReportsRoute(currentPath)) sectionsToExpand.push('reports');
     if (isSettingsRoute(currentPath)) sectionsToExpand.push('settings');
 
     
@@ -244,6 +253,10 @@ export const Sidebar: React.FC = () => {
   const isOtherIncomeRoute = (path: string) => {
     const otherIncomeRoutes = ['/other-incomes', '/income-categories'];
     return otherIncomeRoutes.some(route => path.startsWith(route));
+  };
+
+  const isReportsRoute = (path: string) => {
+    return path.startsWith('/reports');
   };
 
   const isSettingsRoute = (path: string) => {

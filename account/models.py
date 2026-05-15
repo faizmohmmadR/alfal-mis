@@ -45,8 +45,14 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser):
     ROLE_CHOICES = [
+        ('super_admin', 'Super Admin'),
         ('admin', 'Admin'),
-        ('staff', 'Staff'),
+        ('accountant', 'Accountant'),
+        ('hr_manager', 'HR Manager'),
+        ('registration_officer', 'Registration Officer'),
+        ('cashier', 'Cashier'),
+        ('teacher', 'Teacher'),
+        ('viewer', 'Viewer'),
         ('employee', 'Employee'),
         ('customer', 'Customer'),
         ('vendor', 'Vendor'),
@@ -82,15 +88,15 @@ class User(AbstractBaseUser):
         
     def has_perm(self, perm, obj=None):
         """Admin users have all permissions."""
-        return self.is_admin or self.is_superuser
+        return self.is_admin or self.is_superuser or self.role == 'super_admin'
         
     def has_module_perms(self, app_label):
         """Admin users have permissions to view any app."""
-        return self.is_admin or self.is_superuser
+        return self.is_admin or self.is_superuser or self.role == 'super_admin'
     
     def has_permission(self, permission_codename):
         """Check if user has a specific permission"""
-        if self.is_admin or self.is_superuser:
+        if self.is_admin or self.is_superuser or self.role == 'super_admin':
             return True
         
         try:

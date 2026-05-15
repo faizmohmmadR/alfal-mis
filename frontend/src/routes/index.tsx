@@ -20,6 +20,7 @@ import { studentRoutes } from './studentRoutes';
 import { studentPaymentRoutes } from './studentPaymentRoutes';
 import { shopRentalRoutes } from './shopRentalRoutes';
 import { otherIncomeRoutes } from './otherIncomeRoutes';
+import { reportsRoutes } from './reportsRoutes';
 
 export const appRoutes = (
   <>
@@ -58,6 +59,9 @@ export const appRoutes = (
     
     {/* Other Income */}
     {otherIncomeRoutes}
+    
+    {/* Reports */}
+    {reportsRoutes}
     
     {/* Settings */}
     <Route path="settings" element={<Settings />} />

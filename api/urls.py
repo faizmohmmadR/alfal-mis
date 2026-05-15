@@ -40,6 +40,7 @@ from api.views.data.accounting import (
 
 # ====================== REPORTS ======================
 from api.views.reports import FinancialReportView
+from api.views.comprehensive_reports import ComprehensiveReportView, DailyReportView
 
 
 # Create a router and register your viewsets with it
@@ -101,4 +102,6 @@ router.register(r'fiscal-years', FiscalYearViewSet, basename='fiscal-year')
 urlpatterns = [
     path("", include(router.urls)),
     path("reports/financial/", FinancialReportView.as_view(), name='financial-report'),
+    path("reports/comprehensive/", ComprehensiveReportView.as_view(), name='comprehensive-report'),
+    path("reports/daily/", DailyReportView.as_view(), name='daily-report'),
 ]

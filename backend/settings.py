@@ -188,11 +188,17 @@ CORS_ALLOW_CREDENTIALS = True
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": ("knox.auth.TokenAuthentication",),
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.AllowAny",
+        "rest_framework.permissions.IsAuthenticated",
     ],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": config('API_PAGE_SIZE', default=12, cast=int),
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+    ],
+    "EXCEPTION_HANDLER": "api.utils.custom_exception_handler",
 }
+
+
 
 # Email Configuration
 EMAIL_BACKEND = config('EMAIL_BACKEND')
@@ -239,3 +245,15 @@ CACHES = {
 
 # site address
 SITE_ADDRESS = config("SITE_ADDRESS")
+
+# Security Settings (Production)
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_BROWSER_XSS_FILTER = True
+    X_FRAME_OPTIONS = 'DENY'

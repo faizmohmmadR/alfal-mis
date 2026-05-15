@@ -20,7 +20,24 @@ python-decouple>=3.8
 python-dotenv==1.0.0
 PyMySQL==1.1.2
 cryptography
-openpyxl
-reportlab
-arabic-reshaper
-python-bidi
+
+# Database
+psycopg2-binary==2.9.9
+
+# Excel and PDF exports
+openpyxl==3.1.2
+reportlab==4.1.0
+arabic-reshaper==3.0.0
+python-bidi==0.4.2
+
+# File validation
+python-magic==0.4.27
+python-magic-bin==0.4.14; sys_platform == 'win32'
+
+# Security
+django-ratelimit==4.1.0
+
+# Additional utilities
+python-dateutil==2.8.2
+pytz==2024.1
+decimal==1.10

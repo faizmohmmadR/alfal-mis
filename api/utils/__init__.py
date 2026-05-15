@@ -1,3 +1,4 @@
-from .currency import convert_currency
+# API Utilities
+# This module contains utility functions for the API
 
-__all__ = ['convert_currency']
+__all__ = []

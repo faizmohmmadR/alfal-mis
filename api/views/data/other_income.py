@@ -104,3 +104,25 @@ class OtherIncomeViewSet(DataRootViewSet):
             'month': month,
             'income_by_category': list(income_by_category)
         })
+    
+    def perform_create(self, serializer):
+        """Create other income and record journal entry"""
+        from api.services.accounting_service import AccountingService
+        income = serializer.save()
+        
+        # Record journal entry for other income
+        try:
+            AccountingService.create_journal_entry(
+                date=income.income_date,
+                description=f"Other Income - {income.income_category.name if income.income_category else 'General'} - {income.source or 'N/A'}",
+                lines=[
+                    {'account_id': 1, 'debit': income.amount, 'credit': 0},  # Cash account
+                    {'account_id': 5, 'debit': 0, 'credit': income.amount}  # Income account
+                ],
+                transaction_type='other_income',
+                reference=f"INCOME-{income.id}"
+            )
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Failed to create journal entry for other income {income.id}: {e}")
