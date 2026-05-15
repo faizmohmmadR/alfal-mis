@@ -15,6 +15,11 @@ import { advanceRoutes } from './advanceRoutes';
 import { userRoutes } from './userRoutes';
 import { settingsRoutes } from './settingsRoutes';
 import { activityLogRoutes } from './activityLogRoutes';
+import { accountingRoutes } from './accountingRoutes';
+import { studentRoutes } from './studentRoutes';
+import { studentPaymentRoutes } from './studentPaymentRoutes';
+import { shopRentalRoutes } from './shopRentalRoutes';
+import { otherIncomeRoutes } from './otherIncomeRoutes';
 
 export const appRoutes = (
   <>
@@ -40,6 +45,19 @@ export const appRoutes = (
     
     {/* Activity Logs */}
     {activityLogRoutes}
+    
+    {/* Accounting */}
+    {accountingRoutes}
+    
+    {/* Student Management */}
+    {studentRoutes}
+    {studentPaymentRoutes}
+    
+    {/* Shop Rental */}
+    {shopRentalRoutes}
+    
+    {/* Other Income */}
+    {otherIncomeRoutes}
     
     {/* Settings */}
     <Route path="settings" element={<Settings />} />

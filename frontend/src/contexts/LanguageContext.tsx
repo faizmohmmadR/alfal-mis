@@ -28,8 +28,12 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   };
 
   // Translation function with nested key support and default value
+  // Converts kebab-case to camelCase for object property access
   const t = (key: string, defaultValue?: string): string => {
-    const keys = key.split('.');
+    // Convert kebab-case to camelCase
+    const toCamelCase = (str: string) => str.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
+    
+    const keys = key.split('.').map(k => toCamelCase(k));
     let value: any = translations;
     
     for (const k of keys) {

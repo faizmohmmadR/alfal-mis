@@ -1,0 +1,118 @@
+export const shopRentalEn = {
+  shopRental: "Shop Rental",
+  status: "Status",
+  allStatuses: "All Statuses",
+  usd: "USD - US Dollar",
+  addShop: "Add Shop",
+  editShop: "Edit Shop",
+  shopDetails: "Shop Details",
+  shopInformation: "Shop Information",
+  
+  // Shop Information
+  shopNumber: "Shop Number",
+  name: "Name",
+  location: "Location",
+  area: "Area",
+  monthlyRent: "Monthly Rent",
+  currency: "Currency",
+  description: "Description",
+  shop: "Shop",
+  selectShop: "Select shop",
+  tenant: "Tenant",
+  selectTenant: "Select tenant",
+  tenants: "Tenants",
+  fullName: "Full Name",
+  phone: "Phone",
+  email: "Email",
+  tazkiraNumber: "Tazkira Number",
+  address: "Address",
+  afn: "AFN - Afghan Afghani",
+  selectStatus: "Select Status",
+  selectRentalStatus: "Select Rental Status",
+  
+  // Statuses
+  statusOptions: {
+    available: "Available",
+    rented: "Rented",
+    maintenance: "Maintenance",
+    reserved: "Reserved"
+  },
+  
+  // Tenant Information
+  tenantDetails: "Tenant Details",
+  tenantInformation: "Tenant Information",
+  addTenant: "Add Tenant",
+  editTenant: "Edit Tenant",
+  
+  // Rental Information
+  rental: "Rental",
+  rentalDetails: "Rental Details",
+  rentalInformation: "Rental Information",
+  addRental: "Add Rental",
+  editRental: "Edit Rental",
+  startDate: "Start Date",
+  endDate: "End Date",
+  rentalStatus: "Rental Status",
+  securityDeposit: "Security Deposit",
+  
+  // Rental Statuses
+  rentalStatusOptions: {
+    active: "Active",
+    expired: "Expired",
+    cancelled: "Cancelled",
+    renewed: "Renewed"
+  },
+  
+  // Actions
+  viewDetails: "View Details",
+  edit: "Edit",
+  delete: "Delete",
+  deleteShop: "Delete Shop",
+  deleteTenant: "Delete Tenant",
+  deleteRental: "Delete Rental",
+  
+  // UI Components
+  manageShops: "Manage shop records",
+  manageTenants: "Manage tenant records",
+  manageRentals: "Manage rental records",
+  searchShops: "Search shops...",
+  searchTenants: "Search tenants...",
+  searchRentals: "Search rentals...",
+  filterByStatus: "Filter by status",
+  filterByRentalStatus: "Filter by rental status",
+  clearFilters: "Clear Filters",
+  noShopsFound: "No shops found",
+  noTenantsFound: "No tenants found",
+  noRentalsFound: "No rentals found",
+  tryAdjustingSearch: "Try adjusting your search terms",
+  addFirstShop: "Add your first shop to get started",
+  addFirstTenant: "Add your first tenant to get started",
+  addFirstRental: "Add your first rental to get started",
+  loadingShops: "Loading shops...",
+  loadingTenants: "Loading tenants...",
+  loadingRentals: "Loading rentals...",
+  
+  // Summary
+  shopStatistics: "Shop Statistics",
+  totalShops: "Total Shops",
+  availableShops: "Available Shops",
+  rentedShops: "Rented Shops",
+  totalMonthlyRent: "Total Monthly Rent",
+  activeRentals: "Active Rentals",
+  expiringRentals: "Expiring Rentals",
+  monthlyIncome: "Monthly Income",
+  
+  // Validation
+  validation: {
+    shopNumber: "Shop number is required",
+    name: "Name is required",
+    location: "Location is required",
+    monthlyRent: "Monthly rent is required",
+    tenant: "Tenant is required",
+    startDate: "Start date is required",
+    endDate: "End date is required",
+    fullName: "Full name is required",
+    phone: "Phone is required",
+    tazkiraNumber: "Tazkira number is required"
+  }
+};

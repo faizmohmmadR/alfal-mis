@@ -36,7 +36,9 @@ import {
   Activity,
   Minimize2,
   Crown,
-  Database
+  Database,
+  BookOpen,
+  Store
 } from 'lucide-react';
 
 const navigationItems = [
@@ -78,6 +80,54 @@ const navigationItems = [
       { key: 'expenseCategories', icon: Tag, path: '/expense-categories' }
     ]
   },
+  { 
+    key: 'accounting', 
+    icon: BookOpen, 
+    path: '/accounts',
+    isExpandable: true,
+    section: 'finance',
+    subItems: [
+      { key: 'accounts', icon: BookOpen, path: '/accounts' },
+      { key: 'accountCategories', icon: Tag, path: '/categories' },
+      { key: 'transactions', icon: FileText, path: '/transactions' },
+      { key: 'fiscalYears', icon: Calendar, path: '/fiscal-years' },
+      { key: 'journalEntries', icon: FileText, path: '/journal-entries' }
+    ]
+  },
+  { 
+    key: 'students', 
+    icon: BookOpen, 
+    path: '/students',
+    isExpandable: true,
+    section: 'education',
+    subItems: [
+      { key: 'studentsList', icon: BookOpen, path: '/students' },
+      { key: 'studentPayments', icon: DollarSign, path: '/student-payments' }
+    ]
+  },
+  { 
+    key: 'shopRental', 
+    icon: Store, 
+    path: '/shops',
+    isExpandable: true,
+    section: 'business',
+    subItems: [
+      { key: 'shopsList', icon: Store, path: '/shops' },
+      { key: 'tenantsList', icon: Users, path: '/tenants' },
+      { key: 'shopRentalList', icon: Receipt, path: '/shop-rentals' }
+    ]
+  },
+  { 
+    key: 'otherIncome', 
+    icon: TrendingUp, 
+    path: '/other-incomes',
+    isExpandable: true,
+    section: 'finance',
+    subItems: [
+      { key: 'otherIncomeList', icon: TrendingUp, path: '/other-incomes' },
+      { key: 'incomeCategoryList', icon: Tag, path: '/income-categories' }
+    ]
+  },
 
   { 
     key: 'settings', 
@@ -96,6 +146,7 @@ const sections = {
   main: 'Main',
   contacts: 'Contacts',
   business: 'Business',
+  education: 'Education',
   hr: 'Human Resources',
   finance: 'Finance',
   system: 'System'
@@ -125,6 +176,10 @@ export const Sidebar: React.FC = () => {
     if (isProjectsRoute(currentPath)) sectionsToExpand.push('projects');
     if (isHRRoute(currentPath)) sectionsToExpand.push('hr');
     if (isExpensesRoute(currentPath)) sectionsToExpand.push('expenses');
+    if (isAccountingRoute(currentPath)) sectionsToExpand.push('accounting');
+    if (isStudentsRoute(currentPath)) sectionsToExpand.push('students');
+    if (isShopRentalRoute(currentPath)) sectionsToExpand.push('shopRental');
+    if (isOtherIncomeRoute(currentPath)) sectionsToExpand.push('otherIncome');
     if (isSettingsRoute(currentPath)) sectionsToExpand.push('settings');
 
     
@@ -169,6 +224,26 @@ export const Sidebar: React.FC = () => {
   const isExpensesRoute = (path: string) => {
     const expenseRoutes = ['/expenses', '/expense-categories'];
     return expenseRoutes.some(route => path.startsWith(route));
+  };
+
+  const isAccountingRoute = (path: string) => {
+    const accountingRoutes = ['/accounts', '/categories', '/transactions', '/fiscal-years', '/journal-entries'];
+    return accountingRoutes.some(route => path.startsWith(route));
+  };
+
+  const isStudentsRoute = (path: string) => {
+    const studentRoutes = ['/students', '/student-payments'];
+    return studentRoutes.some(route => path.startsWith(route));
+  };
+
+  const isShopRentalRoute = (path: string) => {
+    const shopRentalRoutes = ['/shops', '/tenants', '/shop-rentals'];
+    return shopRentalRoutes.some(route => path.startsWith(route));
+  };
+
+  const isOtherIncomeRoute = (path: string) => {
+    const otherIncomeRoutes = ['/other-incomes', '/income-categories'];
+    return otherIncomeRoutes.some(route => path.startsWith(route));
   };
 
   const isSettingsRoute = (path: string) => {

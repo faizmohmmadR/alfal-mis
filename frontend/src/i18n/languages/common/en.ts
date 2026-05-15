@@ -321,5 +321,120 @@ export const commonEn = {
   financeInfo: "Finance Information",
   currencyBreakdown: "Currency Breakdown",
   max: "Max",
-  processing: "Processing..."
+  processing: "Processing...",
+  
+  // Accounting translations
+  balanceSheetBalanced: "Balance Sheet is Balanced",
+  balanceSheetNotBalanced: "Balance Sheet is Not Balanced",
+  transactionNotBalanced: "Transaction must be balanced (Debit = Credit)",
+  accountNotFound: "Account not found",
+  transactionNotFound: "Transaction not found",
+  fiscalYearNotFound: "Fiscal Year not found",
+  categoryNotFound: "Category not found",
+  noJournalEntries: "No journal entries found",
+  noEntries: "No entries found",
+  addEntry: "Add Entry",
+  accountPlaceholder: "Select account...",
+  descriptionPlaceholder: "Enter description...",
+  transactionTypePlaceholder: "Select transaction type...",
+  transactionReferencePlaceholder: "Enter reference...",
+  accountCategoryNamePlaceholder: "Enter category name",
+  accountCategoryCodePlaceholder: "Enter category code",
+  accountCategoryTypePlaceholder: "Select account type",
+  accountCategoryDescriptionPlaceholder: "Enter description...",
+  fiscalYearNamePlaceholder: "Enter fiscal year name",
+  startDateMustBeBeforeEndDate: "Start date must be before end date",
+  open: "Open",
+  closed: "Closed",
+  created: "Created",
+  updated: "Updated",
+  journalEntries: "Journal Entries",
+  journal: "Journal",
+  yes: "Yes",
+  no: "No",
+  none: "None",
+  currentAssets: "Current Assets",
+  fixedAssets: "Fixed Assets",
+  totalLiabilitiesAndEquity: "Total Liabilities & Equity",
+  
+  // Currency
+  currency: "Currency",
+  afn: "AFN - Afghan Afghani",
+  usd: "USD - US Dollar",
+  
+  // Status
+  filterByStatus: "Filter by status",
+  
+  // Additional UI
+  date: "Date",
+  account: "Account",
+  transaction: "Transaction",
+  entries: "Entries",
+  totalDebit: "Total Debit",
+  totalCredit: "Total Credit",
+  isBalanced: "Is Balanced",
+  isPosted: "Is Posted",
+  isDetail: "Is Detail Account",
+  
+  // Messages
+  addSuccess: "Account added successfully",
+  editSuccess: "Account updated successfully",
+  deleteSuccess: "Account deleted successfully",
+  transactionCreated: "Transaction created successfully",
+  transactionUpdated: "Transaction updated successfully",
+  
+  // UI Components
+  deleteAccount: "Delete Account",
+  deleteAccountCategory: "Delete Account Category",
+  deleteTransaction: "Delete Transaction",
+  deleteFiscalYear: "Delete Fiscal Year",
+  deleteJournalEntry: "Delete Journal Entry",
+  searchAccounts: "Search accounts...",
+  searchJournalEntries: "Search journal entries...",
+  filterByType: "Filter by type",
+  filterByDate: "Filter by date",
+  noAccountsFound: "No accounts found",
+  noCategoriesFound: "No categories found",
+  noTransactionsFound: "No transactions found",
+  noFiscalYearsFound: "No fiscal years found",
+  noJournalEntriesFound: "No journal entries found",
+  addFirstAccount: "Add your first account to get started",
+  addFirstCategory: "Add your first account category to get started",
+  addFirstTransaction: "Add your first transaction to get started",
+  addFirstFiscalYear: "Add your first fiscal year to get started",
+  addFirstJournalEntry: "Add your first journal entry to get started",
+  loadingAccounts: "Loading accounts...",
+  loadingCategories: "Loading categories...",
+  loadingTransactions: "Loading transactions...",
+  loadingFiscalYears: "Loading fiscal years...",
+  loadingJournalEntries: "Loading journal entries...",
+  
+  // Double Entry Bookkeeping
+  doubleEntryBookkeeping: "Double-entry bookkeeping system",
+  
+  // Financial Reports
+  financialReports: "Financial Reports",
+  reportDate: "Report Date",
+  netIncome: "Net Income",
+  totalAssets: "Total Assets",
+  totalLiabilities: "Total Liabilities",
+  totalEquity: "Total Equity",
+  
+  // Transaction Types
+  studentPayment: "Student Payment",
+  payroll: "Payroll",
+  advance: "Advance Salary",
+  rentalIncome: "Rental Income",
+  otherIncome: "Other Income",
+  opening: "Opening Balance",
+  
+  // Additional missing common keys
+  paid: "Paid",
+  confirmDelete: "Are you sure you want to delete this item?",
+  
+  // Validation module (referenced in some pages)
+  validation: {
+    required: "This field is required",
+    positive: "Value must be positive"
+  }
 };

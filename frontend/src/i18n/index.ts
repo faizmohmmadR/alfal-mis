@@ -45,6 +45,26 @@ import { reportsEn } from "./languages/reports/en";
 import { reportsFa } from "./languages/reports/fa";
 import { reportsPs } from "./languages/reports/ps";
 
+import { studentsEn } from "./languages/students/en";
+import { studentsFa } from "./languages/students/fa";
+import { studentsPs } from "./languages/students/ps";
+
+import { studentPaymentsEn } from "./languages/student-payments/en";
+import { studentPaymentsFa } from "./languages/student-payments/fa";
+import { studentPaymentsPs } from "./languages/student-payments/ps";
+
+import { shopRentalEn } from "./languages/shop-rental/en";
+import { shopRentalFa } from "./languages/shop-rental/fa";
+import { shopRentalPs } from "./languages/shop-rental/ps";
+
+import { otherIncomeEn } from "./languages/other-income/en";
+import { otherIncomeFa } from "./languages/other-income/fa";
+import { otherIncomePs } from "./languages/other-income/ps";
+
+import { accountingEn } from "./languages/accounting/en";
+import { accountingFa } from "./languages/accounting/fa";
+import { accountingPs } from "./languages/accounting/ps";
+
 
 export type Language = "en" | "ps" | "fa";
 
@@ -88,6 +108,11 @@ const en = {
   api: apiEn,
   activityLogs: activityLogsEn,
   reports: reportsEn,
+  students: studentsEn,
+  studentPayments: studentPaymentsEn,
+  shopRental: shopRentalEn,
+  otherIncome: otherIncomeEn,
+  accounting: accountingEn,
 };
 
 const fa = {
@@ -104,6 +129,11 @@ const fa = {
   api: apiFa,
   activityLogs: activityLogsFa,
   reports: reportsFa,
+  students: studentsFa,
+  studentPayments: studentPaymentsFa,
+  shopRental: shopRentalFa,
+  otherIncome: otherIncomeFa,
+  accounting: accountingFa,
 };
 
 const ps = {
@@ -120,6 +150,11 @@ const ps = {
   api: apiPs,
   activityLogs: activityLogsPs,
   reports: reportsPs,
+  students: studentsPs,
+  studentPayments: studentPaymentsPs,
+  shopRental: shopRentalPs,
+  otherIncome: otherIncomePs,
+  accounting: accountingPs,
 };
 
 export const languages = {

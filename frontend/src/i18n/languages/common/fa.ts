@@ -262,9 +262,9 @@ export const commonFa = {
   addFirstItem: "اولین مورد خود را اضافه کنید",
   viewDetails: "مشاهده جزئیات",
   noItemsFound: "موردی یافت نشد",
-  managingTransactions: "مدیریت تراکنش‌ها",
+  managingTransactions: "مدیریت تراکنشها",
   searchPlaceholder: "جستجو...",
-  allStatuses: "همه وضعیت‌ها",
+  allStatuses: "همه وضعیتها",
   allCurrencies: "همه ارزها",
   
   // Additional translations for bill template form
@@ -277,8 +277,7 @@ export const commonFa = {
   selectCompany: "انتخاب شرکت",
   usingYourCompany: "استفاده از شرکت شما",
   hide: "مخفی کردن",
-  preview: "پیش‌نمایش",
-  none: "هیچ",
+  preview: "پیشنمایش",
   tryAdjustingSearch: "شرایط جستجو را تنظیم کنید",
   searchEntries: "جستجوی ثبتها...",
   accounts: {
@@ -289,8 +288,8 @@ export const commonFa = {
     notes: "یادداشتها"
   },
   backups: {
-    title: "پشتیبان‌گیری پایگاه داده",
-    subtitle: "ایجاد، مدیریت و بازیابی پشتیبان‌های پایگاه داده",
+    title: "پشتیبانگیری پایگاه داده",
+    subtitle: "ایجاد، مدیریت و بازیابی پشتیبانهای پایگاه داده",
     filename: "نام فایل",
     size: "حجم",
     createdAt: "تاریخ ایجاد",
@@ -303,7 +302,7 @@ export const commonFa = {
     deleteTooltip: "حذف پشتیبان",
     noBackups: "پشتیبانی یافت نشد",
     createFirstBackup: "اولین پشتیبان خود را ایجاد کنید",
-    loading: "در حال بارگذاری پشتیبان‌ها...",
+    loading: "در حال بارگذاری پشتیبانها...",
     createSuccess: "پشتیبان با موفقیت ایجاد شد",
     createError: "ایجاد پشتیبان ناموفق بود",
     downloadSuccess: "پشتیبان با موفقیت دانلود شد",
@@ -313,13 +312,120 @@ export const commonFa = {
     restoreSuccess: "پایگاه داده با موفقیت بازیابی شد. لطفاً صفحه را بازخوانی کنید.",
     restoreError: "بازیابی پشتیبان ناموفق بود",
     deleteTitle: "حذف پشتیبان",
-    deleteConfirm: "آیا مطمئن هستید که می‌خواهید این پشتیبان را حذف کنید؟ این عمل قابل بازگشت نیست.",
+    deleteConfirm: "آیا مطمئن هستید که میخواهید این پشتیبان را حذف کنید؟ این عمل قابل بازگشت نیست.",
     restoreTitle: "بازیابی پشتیبان",
-    restoreConfirm: "آیا مطمئن هستید که می‌خواهید این پشتیبان را بازیابی کنید؟ این عمل پایگاه داده فعلی شما را با داده‌های پشتیبان جایگزین می‌کند."
+    restoreConfirm: "آیا مطمئن هستید که میخواهید این پشتیبان را بازیابی کنید؟ این عمل پایگاه داده فعلی شما را با دادههای پشتیبان جایگزین میکند."
   },
   remove: "حذف",
   financeInfo: "اطلاعات مالی",
   currencyBreakdown: "تفکیک ارزی",
   max: "حداکثر",
-  processing: "در حال پردازش..."
+  processing: "در حال پردازش...",
+  
+  // Accounting translations
+  balanceSheetBalanced: "ترازنامه متوازن است",
+  balanceSheetNotBalanced: "ترازنامه نامتوازن است",
+  transactionNotBalanced: "تراکنش باید متوازن باشد (بدهکار = بستانکار)",
+  accountNotFound: "حساب یافت نشد",
+  transactionNotFound: "تراکنش یافت نشد",
+  fiscalYearNotFound: "سال مالی یافت نشد",
+  categoryNotFound: "دستهبندی یافت نشد",
+  noJournalEntries: "سند دفترروزنامه یافت نشد",
+  noEntries: "ورودی یافت نشد",
+  addEntry: "ورودی اضافه کنید",
+  accountPlaceholder: "حساب را انتخاب کنید...",
+  descriptionPlaceholder: "توضیحات وارد کنید...",
+  transactionTypePlaceholder: "نوع تراکنش را انتخاب کنید...",
+  transactionReferencePlaceholder: "مرجع را وارد کنید...",
+  accountCategoryNamePlaceholder: "نام دستهبندی را وارد کنید",
+  accountCategoryCodePlaceholder: "کد دستهبندی را وارد کنید",
+  accountCategoryTypePlaceholder: "نوع حساب را انتخاب کنید",
+  accountCategoryDescriptionPlaceholder: "توضیحات وارد کنید...",
+  fiscalYearNamePlaceholder: "نام سال مالی را وارد کنید",
+  startDateMustBeBeforeEndDate: "تاریخ شروع باید قبل از تاریخ پایان باشد",
+  open: "باز",
+  closed: "بسته",
+  created: "ایجاد شده",
+  updated: "بهروزرسانی شده",
+  journalEntries: "سندهای دفترروزنامه",
+  journal: "دفترروزنامه",
+  currentAssets: "داراییهای جاری",
+  fixedAssets: "داراییهای ثابت",
+  totalLiabilitiesAndEquity: "مجموع بدهیها و سرمایه",
+  
+  // Currency
+  currency: "ارز",
+  afn: "AFN - افغانی",
+  usd: "USD - دلار آمریکا",
+  
+  // Additional UI
+  transaction: "تراکنش",
+  entries: "ورودیها",
+  totalDebit: "مجموع بدهکار",
+  totalCredit: "مجموع بستانکار",
+  isBalanced: "متوازن است",
+  isPosted: "ثبت شده",
+  isDetail: "حساب جزئی است",
+  
+  // Messages
+  addSuccess: "حساب با موفقیت اضافه شد",
+  editSuccess: "حساب با موفقیت ویرایش شد",
+  deleteSuccess: "حساب با موفقیت حذف شد",
+  transactionCreated: "تراکنش با موفقیت ایجاد شد",
+  transactionUpdated: "تراکنش با موفقیت بهروزرسانی شد",
+  
+  // UI Components
+  deleteAccount: "حذف حساب",
+  deleteAccountCategory: "حذف دستهبندی حساب",
+  deleteTransaction: "حذف تراکنش",
+  deleteFiscalYear: "حذف سال مالی",
+  deleteJournalEntry: "حذف سند دفترروزنامه",
+  searchAccounts: "جستجوی حسابها...",
+  searchJournalEntries: "جستجوی سندهای دفترروزنامه...",
+  filterByType: "فیلتر بر اساس نوع",
+  filterByDate: "فیلتر بر اساس تاریخ",
+  noAccountsFound: "حسابی یافت نشد",
+  noCategoriesFound: "دستهبندی یافت نشد",
+  noTransactionsFound: "تراکنشی یافت نشد",
+  noFiscalYearsFound: "سال مالی یافت نشد",
+  noJournalEntriesFound: "سند دفترروزنامهای یافت نشد",
+  addFirstAccount: "برای شروع اولین حساب خود را اضافه کنید",
+  addFirstCategory: "برای شروع اولین دستهبندی حساب خود را اضافه کنید",
+  addFirstTransaction: "برای شروع اولین تراکنش خود را اضافه کنید",
+  addFirstFiscalYear: "برای شروع اولین سال مالی خود را اضافه کنید",
+  addFirstJournalEntry: "برای شروع اولین سند دفترروزنامه خود را اضافه کنید",
+  loadingAccounts: "در حال بارگذاری حسابها...",
+  loadingCategories: "در حال بارگذاری دستهبندیها...",
+  loadingTransactions: "در حال بارگذاری تراکنشها...",
+  loadingFiscalYears: "در حال بارگذاری سالهای مالی...",
+  loadingJournalEntries: "در حال بارگذاری سندهای دفترروزنامه...",
+  
+  // Double Entry Bookkeeping
+  doubleEntryBookkeeping: "سیستم حسابداری دو طرفه",
+  
+  // Financial Reports
+  financialReports: "گزارشهای مالی",
+  reportDate: "تاریخ گزارش",
+  netIncome: "سود خالص",
+  totalAssets: "مجموع داراییها",
+  totalLiabilities: "مجموع بدهیها",
+  totalEquity: "مجموع سرمایه",
+  
+  // Transaction Types
+  studentPayment: "پرداخت دانشآموز",
+  payroll: "حقوق",
+  advance: "پیشپرداخت حقوق",
+  rentalIncome: "درآمد اجاره",
+  otherIncome: "درآمد دیگر",
+  opening: "موجودی اول دوره",
+  
+  // Additional missing common keys
+  paid: "پرداخت شده",
+  confirmDelete: "آیا مطمئن هستید که میخواهید این مورد را حذف کنید؟",
+  
+  // Validation module (referenced in some pages)
+  validation: {
+    required: "این فیلد الزامی است",
+    positive: "مقدار باید مثبت باشد"
+  }
 };
