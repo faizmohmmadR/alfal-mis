@@ -1,28 +1,9 @@
 from django.contrib import admin
-from api.models.data.customers import Customer
-from api.models.data.projects import Project, ProjectPayment
 from api.models.data.expenses import Expense, ExpenseCategory
 from api.models.data.employee import Employee
 from api.models.data.payroll import Payroll
 from api.models.data.advance import Advance
 from api.models.data.activity_log import ActivityLog
-
-# Register all models with default admin configuration
-admin.site.register(Customer)
-
-@admin.register(Project)
-class ProjectAdmin(admin.ModelAdmin):
-    list_display = ['title', 'customer', 'status', 'budget', 'paid_amount', 'remaining_amount', 'created_at']
-    list_filter = ['status', 'currency', 'created_at']
-    search_fields = ['title', 'customer__name', 'description']
-    readonly_fields = ['paid_amount', 'created_at', 'updated_at']
-
-@admin.register(ProjectPayment)
-class ProjectPaymentAdmin(admin.ModelAdmin):
-    list_display = ['project', 'amount', 'payment_date', 'payment_method']
-    list_filter = ['payment_method', 'payment_date']
-    search_fields = ['project__title', 'reference_number']
-    readonly_fields = ['created_at', 'updated_at']
 
 @admin.register(Expense)
 class ExpenseAdmin(admin.ModelAdmin):

@@ -13,12 +13,6 @@ class Command(BaseCommand):
         {'name': 'Edit Users', 'codename': 'edit_users', 'module': 'users'},
         {'name': 'Delete Users', 'codename': 'delete_users', 'module': 'users'},
         
-        # Customer Management
-        {'name': 'View Customers', 'codename': 'view_customers', 'module': 'customers'},
-        {'name': 'Create Customers', 'codename': 'create_customers', 'module': 'customers'},
-        {'name': 'Edit Customers', 'codename': 'edit_customers', 'module': 'customers'},
-        {'name': 'Delete Customers', 'codename': 'delete_customers', 'module': 'customers'},
-        
         # Student Management
         {'name': 'View Students', 'codename': 'view_students', 'module': 'students'},
         {'name': 'Create Students', 'codename': 'create_students', 'module': 'students'},
@@ -53,12 +47,6 @@ class Command(BaseCommand):
         {'name': 'Edit Journal Entries', 'codename': 'edit_journal_entries', 'module': 'accounting'},
         {'name': 'View Financial Reports', 'codename': 'view_financial_reports', 'module': 'accounting'},
         {'name': 'Export Reports', 'codename': 'export_reports', 'module': 'accounting'},
-        
-        # Projects
-        {'name': 'View Projects', 'codename': 'view_projects', 'module': 'projects'},
-        {'name': 'Create Projects', 'codename': 'create_projects', 'module': 'projects'},
-        {'name': 'Edit Projects', 'codename': 'edit_projects', 'module': 'projects'},
-        {'name': 'Delete Projects', 'codename': 'delete_projects', 'module': 'projects'},
         
         # Shop Rental
         {'name': 'View Shop Rentals', 'codename': 'view_shop_rentals', 'module': 'rental'},

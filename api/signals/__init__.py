@@ -1,1 +1,1 @@
-from .project_signals import *
+# Signals are imported here

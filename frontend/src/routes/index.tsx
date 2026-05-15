@@ -6,8 +6,6 @@ import { BackupList } from '@/pages/settings/backup/BackupList';
 import NotFound from '@/pages/NotFound';
 
 // Import only required route modules
-import { customerRoutes } from './customerRoutes';
-import { projectRoutes } from './projectRoutes';
 import { employeeRoutes } from './employeeRoutes';
 import { payrollRoutes } from './payrollRoutes';
 import { expenseRoutes } from './expenseRoutes';
@@ -26,12 +24,6 @@ export const appRoutes = (
   <>
     {/* Dashboard */}
     <Route index element={<Dashboard />} />
-    
-    {/* Customer Management */}
-    {customerRoutes}
-    
-    {/* Project Management */}
-    {projectRoutes}
     
     {/* Financial Management */}
     {expenseRoutes}

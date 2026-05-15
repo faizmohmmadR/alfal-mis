@@ -73,7 +73,6 @@ class Command(BaseCommand):
             # Income (4xxx)
             {'name': 'Student Fees Revenue', 'code': '4000', 'category': categories['4'], 'is_detail': True},
             {'name': 'Rental Income', 'code': '4100', 'category': categories['4'], 'is_detail': True},
-            {'name': 'Project Revenue', 'code': '4200', 'category': categories['4'], 'is_detail': True},
             {'name': 'Other Income', 'code': '4300', 'category': categories['4'], 'is_detail': True},
             {'name': 'Service Income', 'code': '4400', 'category': categories['4'], 'is_detail': True},
             {'name': 'Donations', 'code': '4500', 'category': categories['4'], 'is_detail': True},

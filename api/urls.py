@@ -17,12 +17,6 @@ from api.views.data.shop_rental import ShopViewSet, TenantViewSet, ShopRentalVie
 # ====================== OTHER INCOME ======================
 from api.views.data.other_income import OtherIncomeViewSet, IncomeCategoryViewSet
 
-# ====================== PEOPLE & ORGANIZATIONS ======================
-from api.views.data.customers import CustomerViewSet
-
-# ====================== PROJECTS ======================
-from api.views.data.projects import ProjectViewSet, ProjectPaymentViewSet
-
 # ====================== EXPENSES ======================
 from api.views.data.expenses import ExpenseViewSet, ExpenseCategoryViewSet
 
@@ -72,13 +66,6 @@ router.register(r'shop-rentals', ShopRentalViewSet, basename='shop-rental')
 # Other Income
 router.register(r'income-categories', IncomeCategoryViewSet, basename='income-category')
 router.register(r'other-incomes', OtherIncomeViewSet, basename='other-income')
-
-# People & Organizations
-router.register(r'customers', CustomerViewSet, basename='customer')
-
-# Projects
-router.register(r'projects', ProjectViewSet, basename='project')
-router.register(r'project-payments', ProjectPaymentViewSet, basename='project-payment')
 
 # Expenses
 router.register(r'expense-categories', ExpenseCategoryViewSet, basename='expense-category')

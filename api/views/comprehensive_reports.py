@@ -1,20 +1,18 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.db.models import Sum, Count, Q
+from django.db.models import Sum, Count
 from datetime import datetime, timedelta
 from django.utils import timezone
-from api.models.data.projects import ProjectPayment, Project
 from api.models.data.expenses import Expense
 from api.models.data.payroll import Payroll
 from api.models.data.advance import Advance
 from api.models.data.student_payment import StudentPayment
 from api.models.data.shop_rental import ShopRental
 from api.models.data.other_income import OtherIncome
-from api.models.data.accounting import Account, JournalEntry, Transaction
+from api.services.accounting_service import AccountingService
 from api.utils.excel_export import export_to_excel
 from api.utils.pdf_export import export_to_pdf
-from decimal import Decimal
 
 
 class ComprehensiveReportView(APIView):
@@ -81,11 +79,6 @@ class ComprehensiveReportView(APIView):
         expense_filter = self._get_date_filter(period, start_date, end_date, 'expense_date')
         income_filter = self._get_date_filter(period, start_date, end_date, 'income_date')
         
-        # Project Income
-        project_payments = ProjectPayment.objects.filter(**payment_filter)
-        project_income_afn = project_payments.filter(currency='AFN').aggregate(total=Sum('amount'))['total'] or 0
-        project_income_usd = project_payments.filter(currency='USD').aggregate(total=Sum('amount'))['total'] or 0
-        
         # Student Payments
         student_payments = StudentPayment.objects.filter(**payment_filter)
         student_income_afn = student_payments.filter(currency='AFN').aggregate(total=Sum('amount'))['total'] or 0
@@ -102,8 +95,8 @@ class ComprehensiveReportView(APIView):
         other_income_usd = other_incomes.filter(currency='USD').aggregate(total=Sum('amount'))['total'] or 0
         
         # Total Income
-        total_income_afn = float(project_income_afn) + float(student_income_afn) + float(rental_income_afn) + float(other_income_afn)
-        total_income_usd = float(project_income_usd) + float(student_income_usd) + float(rental_income_usd) + float(other_income_usd)
+        total_income_afn = float(student_income_afn) + float(rental_income_afn) + float(other_income_afn)
+        total_income_usd = float(student_income_usd) + float(rental_income_usd) + float(other_income_usd)
         
         # Expenses
         expenses = Expense.objects.filter(**expense_filter)
@@ -132,7 +125,6 @@ class ComprehensiveReportView(APIView):
             'period': period,
             'generated_at': timezone.now().isoformat(),
             'income': {
-                'project': {'AFN': float(project_income_afn), 'USD': float(project_income_usd)},
                 'student': {'AFN': float(student_income_afn), 'USD': float(student_income_usd)},
                 'rental': {'AFN': float(rental_income_afn), 'USD': float(rental_income_usd)},
                 'other': {'AFN': float(other_income_afn), 'USD': float(other_income_usd)},
@@ -268,12 +260,10 @@ class ComprehensiveReportView(APIView):
     
     def _trial_balance_report(self):
         """Trial balance from accounting system"""
-        from api.services.accounting_service import AccountingService
         return AccountingService.get_trial_balance()
     
     def _income_statement_report(self, start_date, end_date):
         """Income statement (Profit & Loss)"""
-        from api.services.accounting_service import AccountingService
         today = timezone.now().date()
         start = start_date or today.replace(day=1).isoformat()
         end = end_date or today.isoformat()
@@ -281,7 +271,6 @@ class ComprehensiveReportView(APIView):
     
     def _balance_sheet_report(self):
         """Balance sheet"""
-        from api.services.accounting_service import AccountingService
         return AccountingService.get_balance_sheet()
     
     def _export_excel(self, data, report_type):
@@ -327,7 +316,6 @@ class ComprehensiveReportView(APIView):
         if report_type == 'summary':
             headers = ['Category', 'AFN', 'USD']
             rows = [
-                ['Project Income', data['income']['project']['AFN'], data['income']['project']['USD']],
                 ['Student Payments', data['income']['student']['AFN'], data['income']['student']['USD']],
                 ['Rental Income', data['income']['rental']['AFN'], data['income']['rental']['USD']],
                 ['Other Income', data['income']['other']['AFN'], data['income']['other']['USD']],

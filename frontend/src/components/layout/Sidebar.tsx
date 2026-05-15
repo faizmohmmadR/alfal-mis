@@ -6,27 +6,16 @@ import { useAuth } from '@/contexts/AuthContext';
 import { PermissionGuard } from '@/components/ui/permission-guard';
 import { 
   LayoutDashboard, 
-  Building2, 
-  Package, 
-  ShoppingCart, 
   TrendingUp, 
-  TrendingDown, 
-  Warehouse, 
   Users, 
-  Truck, 
   CreditCard, 
-  RotateCcw, 
-  ClipboardList, 
   UserCheck, 
   Wallet, 
   Calendar, 
   Receipt, 
   BarChart3, 
   Settings,
-  ArrowUpRight,
-  ArrowDownLeft,
   ChevronDown,
-  ChevronRight,
   DollarSign,
   UsersIcon,
   Tag,
@@ -35,7 +24,6 @@ import {
   X,
   Activity,
   Minimize2,
-  Crown,
   Database,
   BookOpen,
   Store,
@@ -45,19 +33,8 @@ import {
 const navigationItems = [
   { key: 'dashboard', icon: LayoutDashboard, path: '/', section: 'main' },
 
-  { key: 'customers', icon: Users, path: '/customers', permission: 'view_customers', section: 'contacts' },
-  { key: 'users', icon: UserCheck, path: '/users', permission: 'view_users', section: 'contacts' },
-  { 
-    key: 'projects', 
-    icon: FileText, 
-    path: '/projects',
-    isExpandable: true,
-    section: 'business',
-    subItems: [
-      { key: 'projectsList', icon: FileText, path: '/projects' },
-      { key: 'projectPayments', icon: DollarSign, path: '/project-payments' }
-    ]
-  },
+  { key: 'users', icon: UserCheck, path: '/users', permission: 'view_users', section: 'main' },
+  
   { 
     key: 'hr', 
     icon: UsersIcon, 
@@ -151,11 +128,10 @@ const navigationItems = [
 
 const sections = {
   main: 'Main',
-  contacts: 'Contacts',
-  business: 'Business',
-  education: 'Education',
   hr: 'Human Resources',
   finance: 'Finance',
+  business: 'Business',
+  education: 'Education',
   reports: 'Reports',
   system: 'System'
 };
@@ -171,7 +147,6 @@ export const Sidebar: React.FC = () => {
   });
   const [searchQuery, setSearchQuery] = useState('');
   const isCustomer = user?.role === 'customer';
-  const canViewProfile = true;
 
   useEffect(() => {
     localStorage.setItem('sidebar-expanded', JSON.stringify(expandedSections));
@@ -181,7 +156,6 @@ export const Sidebar: React.FC = () => {
     const currentPath = location.pathname;
     const sectionsToExpand: string[] = [];
     
-    if (isProjectsRoute(currentPath)) sectionsToExpand.push('projects');
     if (isHRRoute(currentPath)) sectionsToExpand.push('hr');
     if (isExpensesRoute(currentPath)) sectionsToExpand.push('expenses');
     if (isAccountingRoute(currentPath)) sectionsToExpand.push('accounting');
@@ -191,7 +165,6 @@ export const Sidebar: React.FC = () => {
     if (isReportsRoute(currentPath)) sectionsToExpand.push('reports');
     if (isSettingsRoute(currentPath)) sectionsToExpand.push('settings');
 
-    
     setExpandedSections(prev => {
       const newExpanded = [...new Set([...prev, ...sectionsToExpand])];
       return newExpanded;
@@ -218,11 +191,6 @@ export const Sidebar: React.FC = () => {
 
   const collapseAll = () => {
     setExpandedSections([]);
-  };
-
-  const isProjectsRoute = (path: string) => {
-    const projectRoutes = ['/projects', '/project-payments'];
-    return projectRoutes.some(route => path.startsWith(route));
   };
 
   const isHRRoute = (path: string) => {
@@ -373,7 +341,6 @@ export const Sidebar: React.FC = () => {
               <div className="space-y-1">
                 {visibleItems.map((item) => {
                   const Icon = item.icon;
-                  const hasActiveSubItem = item.subItems?.some(sub => location.pathname === sub.path);
                   const isActive = !item.isExpandable && location.pathname === item.path;
                   const isExpanded = expandedSections.includes(item.key);
                   const itemLabel = t(`core.navigation.${item.key}`, item.key);

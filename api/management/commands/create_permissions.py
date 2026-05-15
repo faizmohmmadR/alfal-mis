@@ -19,22 +19,6 @@ class Command(BaseCommand):
             {'name': 'Edit Units', 'codename': 'edit_units', 'module': 'units', 'description': 'Can edit existing units'},
             {'name': 'Delete Units', 'codename': 'delete_units', 'module': 'units', 'description': 'Can delete units'},
             
-            # Customer permissions
-            {'name': 'View Customers', 'codename': 'view_customers', 'module': 'customers', 'description': 'Can view customers'},
-            {'name': 'Add Customers', 'codename': 'add_customers', 'module': 'customers', 'description': 'Can create new customers'},
-            {'name': 'Edit Customers', 'codename': 'edit_customers', 'module': 'customers', 'description': 'Can edit customer information'},
-            {'name': 'Delete Customers', 'codename': 'delete_customers', 'module': 'customers', 'description': 'Can delete customers'},
-            
-            # Project permissions
-            {'name': 'View Projects', 'codename': 'view_projects', 'module': 'projects', 'description': 'Can view projects'},
-            {'name': 'Add Projects', 'codename': 'add_projects', 'module': 'projects', 'description': 'Can create new projects'},
-            {'name': 'Edit Projects', 'codename': 'edit_projects', 'module': 'projects', 'description': 'Can edit project information'},
-            {'name': 'Delete Projects', 'codename': 'delete_projects', 'module': 'projects', 'description': 'Can delete projects'},
-            {'name': 'View Project Payments', 'codename': 'view_project_payments', 'module': 'projects', 'description': 'Can view project payments'},
-            {'name': 'Add Project Payments', 'codename': 'add_project_payments', 'module': 'projects', 'description': 'Can add project payments'},
-            {'name': 'Edit Project Payments', 'codename': 'edit_project_payments', 'module': 'projects', 'description': 'Can edit project payments'},
-            {'name': 'Delete Project Payments', 'codename': 'delete_project_payments', 'module': 'projects', 'description': 'Can delete project payments'},
-            
             # Employee permissions
             {'name': 'View Employees', 'codename': 'view_employees', 'module': 'employees', 'description': 'Can view employee records'},
             {'name': 'Add Employees', 'codename': 'add_employees', 'module': 'employees', 'description': 'Can create new employees'},
