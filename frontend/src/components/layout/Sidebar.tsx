@@ -249,13 +249,13 @@ export const Sidebar: React.FC = () => {
           <div className="w-10 h-10 rounded-lg overflow-hidden shadow-lg">
             <img 
               src="/logo.jpeg" 
-              alt="Khadim Popal MIS" 
+              alt="Noor Ul-Falah" 
               className="w-full h-full object-cover"
             />
           </div>
           <div className={direction === 'rtl' ? 'text-right flex-1' : 'text-left flex-1'}>
             <h1 className="text-base font-bold text-sidebar-foreground leading-tight">
-              {t('core.app.companyName', 'Khadim Popal MIS')}
+              {t('core.app.companyName', 'Noor Ul-Falah')}
             </h1>
             <p className="text-xs text-sidebar-foreground/70">
               {t('core.app.subtitle', 'Management Information System')}

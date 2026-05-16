@@ -65,10 +65,10 @@ export const coreFa = {
   },
   
   app: {
-    title: 'سیستم اطلاعات مدیریت خادم پوپل',
+    title: 'نورالفلاح',
     subtitle: 'سیستم اطلاعات مدیریت',
     version: 'نسخه',
-    companyName: 'سیستم اطلاعات مدیریت خادم پوپل'
+    companyName: 'نورالفلاح'
   },
   
   dashboard: {

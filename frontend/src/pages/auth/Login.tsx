@@ -6,11 +6,11 @@ const Login = () => {
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
-      <div className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-gradient-to-br from-primary via-accent to-primary-dark relative overflow-hidden">
+      <div className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-gradient-to-br from-primary-dark via-primary to-primary relative overflow-hidden">
         {/* Background decorative elements */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-white rounded-full"></div>
-          <div className="absolute top-1/2 -left-20 w-60 h-60 bg-white rounded-full"></div>
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-accent rounded-full"></div>
+          <div className="absolute top-1/2 -left-20 w-60 h-60 bg-accent rounded-full"></div>
           <div className="absolute -bottom-32 right-1/4 w-72 h-72 bg-white rounded-full"></div>
         </div>
         

@@ -65,10 +65,10 @@ export const corePs = {
   },
   
   app: {
-    title: 'د خادم پوپل د معلوماتو د مدیریت سیسټم',
+    title: 'نورالفلاح',
     subtitle: 'د معلوماتو د مدیریت سیسټم',
     version: 'نسخه',
-    companyName: 'د خادم پوپل د معلوماتو د مدیریت سیسټم'
+    companyName: 'نورالفلاح'
   },
   
   dashboard: {

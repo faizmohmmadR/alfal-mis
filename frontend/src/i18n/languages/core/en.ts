@@ -68,10 +68,10 @@ export const coreEn = {
   },
   
   app: {
-    title: 'Khadim Popal MIS',
+    title: 'Noor Ul-Falah',
     subtitle: 'Management Information System',
     version: 'Version',
-    companyName: 'Khadim Popal MIS'
+    companyName: 'Noor Ul-Falah'
   },
   
   dashboard: {

@@ -120,12 +120,12 @@ export const LoginForm = () => {
         <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-lg mb-3">
           <img 
             src="/logo.jpeg" 
-            alt="Khadim Popal MIS" 
+            alt="Noor Ul-Falah" 
             className="w-full h-full object-cover"
           />
         </div>
         <h1 className="text-base font-bold text-gray-900 mb-1 text-center">
-          Khadim Popal MIS
+          Noor Ul-Falah
         </h1>
         <p className="text-gray-600 text-base text-center">Management Information System</p>
       </div>

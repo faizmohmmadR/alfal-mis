@@ -21,22 +21,22 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 221 39% 11%;
 
-    /* Professional Primary - MIS Blue */
-    --primary: 210 100% 45%;
+    /* Brand Primary - Al Fal Green (from logo) */
+    --primary: 120 100% 25%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 210 100% 95%;
-    --primary-dark: 210 100% 35%;
-    --primary-hover: 210 100% 40%;
+    --primary-light: 120 60% 95%;
+    --primary-dark: 120 100% 15%;
+    --primary-hover: 120 100% 20%
 
     /* Professional Secondary - MIS Gray */
     --secondary: 210 20% 96%;
     --secondary-foreground: 210 20% 15%;
     --secondary-light: 210 20% 98%;
 
-    /* Professional Accent - MIS Green */
-    --accent: 142 70% 45%;
-    --accent-foreground: 0 0% 98%;
-    --accent-light: 142 70% 95%;
+    /* Brand Accent - Gold/Yellow (from logo) */
+    --accent: 45 100% 45%;
+    --accent-foreground: 0 0% 10%;
+    --accent-light: 45 100% 95%;
 
     /* Success - Green */
     --success: 142 76% 36%;
@@ -83,14 +83,14 @@ All colors MUST be HSL.
 
     --radius: 0.5rem;
 
-    --sidebar-background: 210 100% 15%;
+    --sidebar-background: 120 100% 12%;
     --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 142 70% 45%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 100% 20%;
+    --sidebar-primary: 45 100% 45%;
+    --sidebar-primary-foreground: 0 0% 10%;
+    --sidebar-accent: 120 100% 18%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 210 50% 30%;
-    --sidebar-ring: 142 70% 45%;
+    --sidebar-border: 120 60% 25%;
+    --sidebar-ring: 45 100% 45%;
   }
 
   .dark {
