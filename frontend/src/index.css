@@ -26,7 +26,7 @@ All colors MUST be HSL.
     --primary-foreground: 0 0% 100%;
     --primary-light: 120 60% 95%;
     --primary-dark: 120 100% 15%;
-    --primary-hover: 120 100% 20%
+    --primary-hover: 120 100% 20%;
 
     /* Professional Secondary - MIS Gray */
     --secondary: 210 20% 96%;
@@ -246,20 +246,160 @@ All colors MUST be HSL.
     @apply bg-gradient-to-r from-primary-dark via-primary to-accent bg-clip-text text-transparent;
   }
 
-  /* Enhanced Professional Components */
+  /* ══════════════════════════════════════════════════
+     FORM / SECTION STATE CLASSES
+  ══════════════════════════════════════════════════ */
+  .section-header {
+    @apply text-sm font-semibold text-primary border-b border-primary/20 pb-2;
+  }
+  .section-header--top {
+    @apply section-header;
+  }
+  .section-header--bottom {
+    @apply section-header pt-4;
+  }
+  .section-card {
+    @apply p-4 rounded-xl border border-border bg-card shadow-subtle space-y-4;
+  }
+  .sectionFieldGrid {
+    @apply grid grid-cols-1 sm:grid-cols-2 gap-4;
+  }
+  .sectionFieldGrid--three {
+    @apply grid grid-cols-1 sm:grid-cols-3 gap-4;
+  }
+
+  /* ══════════════════════════════════════════════════
+     BUTTON HOVER ENHANCEMENTS — all variants have
+     solid (non-translucent) hover states so text is
+     never invisible on hover.
+  ══════════════════════════════════════════════════ */
+
+  /* Default / primary button — solid dark-green on hover (explicit fallback
+     in case the component CSS variable колеблется) */
+  .btn-primary {
+    @apply bg-primary text-primary-foreground shadow-sm;
+    transition: background-color 150ms ease, box-shadow 150ms ease;
+  }
+  .btn-primary:hover {
+    background-color: hsl(120 100% 15%) !important;   /* --primary-dark */
+    color: hsl(0 0% 100%) !important;                  /* --primary-foreground */
+    box-shadow: 0 4px 16px hsl(var(--primary) / 0.15); /* --shadow-medium */
+  }
+
+  /* Destructive — same solid color, no transparency on hover */
+  .btn-destructive {
+    @apply bg-destructive text-destructive-foreground shadow-sm;
+  }
+  .btn-destructive:hover {
+    background-color: hsl(0 72% 52%) !important;
+    color: hsl(var(--destructive-foreground));
+    box-shadow: 0 4px 16px hsl(var(--destructive) / 0.15);
+  }
+
+  /* Secondary — solid lighter, not transparent */
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground shadow-sm;
+    transition: background-color 150ms ease;
+  }
+  .btn-secondary:hover {
+    background-color: hsl(210 20% 92%) !important;
+  }
+
+  /* Outlined primary */
+  .btn-primary-outline {
+    @apply border border-primary text-primary bg-background shadow-sm;
+  }
+  .btn-primary-outline:hover {
+    @apply bg-primary text-primary-foreground;
+  }
+
+  /* Ghost with tinted hover */
+  .btn-ghost-tinted {
+    @apply transition-colors;
+  }
+  .btn-ghost-tinted:hover {
+    @apply bg-accent text-accent-foreground;
+  }
+
+  /* ══════════════════════════════════════════════════
+     GRADIENT BUTTON OVERRIDES
+  ══════════════════════════════════════════════════ */
+  .btn-gradient-primary {
+    @apply bg-gradient-to-r from-accent to-accent-light text-accent-foreground font-semibold px-6 py-2.5 rounded-lg shadow-md transition-all duration-200;
+  }
+  .btn-gradient-primary:hover {
+    @apply from-accent to-accent-light;
+    filter: brightness(0.88);
+    box-shadow: 0 6px 20px hsl(var(--accent) / 0.35);
+  }
+  .btn-gradient-secondary {
+    @apply bg-gradient-to-r from-secondary to-secondary-light text-secondary-foreground font-medium py-2.5 rounded-lg shadow-sm transition-all duration-200;
+  }
+
+  /* ══════════════════════════════════════════════════
+     DOCUMENT / PREVIEW BUTTONS
+  ══════════════════════════════════════════════════ */
+  .btn-doc-preview {
+    @apply h-8 gap-1 bg-primary text-primary-foreground hover:bg-primary-dark transition-colors;
+  }
+  .btn-doc-open {
+    @apply h-8 gap-1 bg-secondary text-secondary-foreground hover:bg-secondary/90 transition-colors;
+  }
+  .btn-doc-download {
+    @apply h-8 gap-1 transition-colors;
+  }
+
+  /* ══════════════════════════════════════════════════
+     FIELD CARD  — single form field in a bordered
+     card with icon
+  ══════════════════════════════════════════════════ */
+  .field-card {
+    @apply p-3 rounded-lg border border-border/60 bg-muted/20;
+  }
+
+  /* ══════════════════════════════════════════════════
+     INFO LIST  — two-column label/value rows used in
+     the Student Details sidebar
+  ══════════════════════════════════════════════════ */
+  .info-row {
+    @apply flex flex-col space-y-1;
+  }
+  .info-row__label {
+    @apply flex items-center gap-1.5 text-xs text-muted-foreground;
+  }
+  .info-row__value {
+    @apply text-sm font-medium pl-5;
+  }
+
+  /* ══════════════════════════════════════════════════
+     DOC ROW  — document list item in StudentDetails
+  ══════════════════════════════════════════════════ */
+  .doc-row--unavailable {
+    @apply flex items-center justify-between p-3 bg-muted/50 rounded-lg;
+  }
+  .doc-row--image {
+    @apply flex items-start gap-3 p-3 bg-muted/50 rounded-lg;
+  }
+  .doc-row--file {
+    @apply flex items-center justify-between gap-3 p-3 bg-muted/50 rounded-lg;
+   }
+
+  /* ══════════════════════════════════════════════════
+     LAYOUT / PAGE-LEVEL WRAPPERS
+  ══════════════════════════════════════════════════ */
   .page-container {
     @apply p-6 space-y-8 max-w-full;
   }
 
-  .section-header {
+  .section-layout-header {
     @apply flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8;
   }
 
-  .section-title {
+  .section-layout-title {
     @apply text-lg font-bold text-foreground tracking-tight;
   }
 
-  .section-subtitle {
+  .section-layout-subtitle {
     @apply text-sm text-muted-foreground mt-1;
   }
 
@@ -389,8 +529,8 @@ All colors MUST be HSL.
     .page-container {
       @apply p-4 space-y-6;
     }
-    
-    .section-title {
+
+    [dir="rtl"] .section-layout-title {
       @apply text-base;
     }
   }

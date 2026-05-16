@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
-import { Autocomplete } from '@/components/ui/autocomplete';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { RotateCw, ArrowLeft } from 'lucide-react';
+import { RotateCw, ArrowLeft, Upload, X, Eye, FileText, Image as ImageIcon } from 'lucide-react';
 import useAdd from '@/api/useAdd';
 
 interface StudentFormData {
@@ -28,9 +27,13 @@ interface StudentFormData {
   email?: string;
   registration_number: string;
   registration_date: string;
-  category?: string;
   status: string;
   transportation: string;
+  photo?: File | null;
+  tazkira_copy?: File | null;
+  parent_tazkira_copy?: File | null;
+  previous_result_card?: File | null;
+  payment_receipt?: File | null;
 }
 
 const defaultForm: StudentFormData = {
@@ -51,9 +54,13 @@ const defaultForm: StudentFormData = {
   email: '',
   registration_number: '',
   registration_date: new Date().toISOString().split('T')[0],
-  category: '',
   status: 'active',
   transportation: 'school_bus',
+  photo: null,
+  tazkira_copy: null,
+  parent_tazkira_copy: null,
+  previous_result_card: null,
+  payment_receipt: null,
 };
 
 const AddStudent = () => {
@@ -61,16 +68,88 @@ const AddStudent = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<StudentFormData>(defaultForm);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [previews, setPreviews] = useState<{
+    photo?: string;
+    tazkira_copy?: string;
+    parent_tazkira_copy?: string;
+    previous_result_card?: string;
+    payment_receipt?: string;
+  }>({});
 
-  const { handleAdd, loading, isSuccess } = useAdd<StudentFormData>({
-    queryKey: ['students'],
+  const photoRef = useRef<HTMLInputElement>(null);
+  const tazkiraCopyRef = useRef<HTMLInputElement>(null);
+  const parentTazkiraCopyRef = useRef<HTMLInputElement>(null);
+  const previousResultCardRef = useRef<HTMLInputElement>(null);
+  const paymentReceiptRef = useRef<HTMLInputElement>(null);
+
+  const { handleAdd, loading, isSuccess } = useAdd<FormData>({
+    queryKey: 'students',
     endpoint: 'students/',
   });
 
-  const handleSuccess = () => {
+  React.useEffect(() => {
     if (isSuccess) {
       navigate('/students');
     }
+  }, [isSuccess, navigate]);
+
+  const handleFileChange = (field: keyof typeof previews, file: File | null) => {
+    setFormData((prev) => ({ ...prev, [field]: file }));
+    
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviews((prev) => ({ ...prev, [field]: reader.result as string }));
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setPreviews((prev) => ({ ...prev, [field]: undefined }));
+    }
+  };
+
+  const clearFile = (field: keyof typeof previews, ref: React.RefObject<HTMLInputElement>) => {
+    setFormData((prev) => ({ ...prev, [field]: null }));
+    setPreviews((prev) => ({ ...prev, [field]: undefined }));
+    if (ref.current) ref.current.value = '';
+  };
+
+  const FilePreview = ({ 
+    preview, 
+    fieldName, 
+    onClear, 
+    ref 
+  }: { 
+    preview?: string; 
+    fieldName: string; 
+    onClear: () => void;
+    ref: React.RefObject<HTMLInputElement>;
+  }) => {
+    if (!preview) return null;
+    
+    const isImage = preview.startsWith('data:image');
+    
+    return (
+      <div className="mt-2 relative inline-block">
+        {isImage ? (
+          <img 
+            src={preview} 
+            alt={fieldName} 
+            className="h-20 w-20 object-cover rounded-lg border"
+          />
+        ) : (
+          <div className="h-20 w-20 flex items-center justify-center bg-muted rounded-lg border">
+            <FileText className="h-8 w-8 text-muted-foreground" />
+          </div>
+        )}
+        <button
+          type="button"
+          onClick={onClear}
+          className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-destructive text-white flex items-center justify-center hover:bg-destructive/80"
+        >
+          <X className="h-3 w-3" />
+        </button>
+      </div>
+    );
   };
 
   const validateForm = (): boolean => {
@@ -87,9 +166,53 @@ const AddStudent = () => {
 
   const handleSubmit = async () => {
     if (!validateForm()) return;
-    handleAdd(formData);
-    handleSuccess();
+    
+    const submitData = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      if (value !== null && value !== undefined && value !== '') {
+        submitData.append(key, value as string | Blob);
+      }
+    });
+    
+    handleAdd(submitData);
   };
+
+  const FileUploadField = React.forwardRef<HTMLInputElement, { 
+    label: string; 
+    field: keyof typeof previews; 
+    accept?: string;
+  }>(({ label, field, accept = "image/*,.pdf" }, forwardedRef) => (
+    <div className="space-y-2">
+      <Label>{label}</Label>
+      <div className="flex items-start gap-3">
+        <input
+          ref={forwardedRef}
+          type="file"
+          accept={accept}
+          className="hidden"
+          onChange={(e) => handleFileChange(field, e.target.files?.[0] || null)}
+        />
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => forwardedRef.current?.click()}
+          className="h-9"
+        >
+          <Upload className="h-4 w-4 mr-2" />
+          {t('common.upload', 'Upload')}
+        </Button>
+        {previews[field] && (
+          <FilePreview 
+            preview={previews[field]} 
+            fieldName={label} 
+            onClear={() => clearFile(field, forwardedRef as React.RefObject<HTMLInputElement>)}
+            ref={forwardedRef as React.RefObject<HTMLInputElement>}
+          />
+        )}
+      </div>
+    </div>
+  ));
 
   return (
     <div className="container mx-auto py-6 space-y-6 max-w-4xl">
@@ -104,8 +227,49 @@ const AddStudent = () => {
 
       <Card>
         <CardContent className="pt-6 space-y-6">
+          {/* Photo Upload at top */}
+          <div className="flex justify-center">
+            <div className="text-center">
+              <div 
+                className="h-24 w-24 rounded-full border-2 border-dashed border-muted-foreground/25 flex items-center justify-center cursor-pointer hover:border-primary transition-colors overflow-hidden"
+                onClick={() => photoRef.current?.click()}
+              >
+                {previews.photo ? (
+                  <img src={previews.photo} alt={t('students.photo')} className="h-full w-full object-cover" />
+                ) : (
+                  <div className="text-center">
+                    <ImageIcon className="h-8 w-8 mx-auto text-muted-foreground/50" />
+                    <span className="text-xs text-muted-foreground">{t('students.photo')}</span>
+                  </div>
+                )}
+              </div>
+              <input
+                ref={photoRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => handleFileChange('photo', e.target.files?.[0] || null)}
+              />
+              {previews.photo && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => clearFile('photo', photoRef)}
+                  className="mt-2 h-7 text-xs"
+                >
+                  <X className="h-3 w-3 mr-1" />
+                  {t('common.remove')}
+                </Button>
+              )}
+            </div>
+          </div>
+
           <div className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Personal Information */}
+            <h3 className="section-header">{t('students.studentInformation')}</h3>
+            
+            <div className="sectionFieldGrid">
               <div className="space-y-2">
                 <Label htmlFor="full_name">{t("students.fullName")} *</Label>
                 <Input
@@ -117,7 +281,7 @@ const AddStudent = () => {
                   }}
                   placeholder={t("students.fullName")}
                 />
-                {errors.full_name && <p className="text-base text-destructive text-xs">{errors.full_name}</p>}
+                {errors.full_name && <p className="text-xs text-destructive">{errors.full_name}</p>}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="father_name">{t("students.fatherName")} *</Label>
@@ -130,11 +294,11 @@ const AddStudent = () => {
                   }}
                   placeholder={t("students.fatherName")}
                 />
-                {errors.father_name && <p className="text-base text-destructive text-xs">{errors.father_name}</p>}
+                {errors.father_name && <p className="text-xs text-destructive">{errors.father_name}</p>}
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="sectionFieldGrid">
               <div className="space-y-2">
                 <Label htmlFor="grandfather_name">{t("students.grandfatherName")}</Label>
                 <Input
@@ -155,7 +319,7 @@ const AddStudent = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="sectionFieldGrid">
               <div className="space-y-2">
                 <Label htmlFor="gender">{t("students.gender")} *</Label>
                 <Select
@@ -183,9 +347,12 @@ const AddStudent = () => {
                   }}
                   placeholder={t("students.tazkiraNumber")}
                 />
-                {errors.tazkira_number && <p className="text-base text-destructive text-xs">{errors.tazkira_number}</p>}
+                {errors.tazkira_number && <p className="text-xs text-destructive">{errors.tazkira_number}</p>}
               </div>
             </div>
+
+            {/* Address Information */}
+            <h3 className="section-header--bottom">{t('students.addressInformation', 'Address Information')}</h3>
 
             <div className="space-y-2">
               <Label htmlFor="permanent_address">{t("students.permanentAddress")} *</Label>
@@ -207,7 +374,7 @@ const AddStudent = () => {
               />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="sectionFieldGrid--three">
               <div className="space-y-2">
                 <Label htmlFor="province">{t("students.province")} *</Label>
                 <Input
@@ -237,7 +404,10 @@ const AddStudent = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Contact Information */}
+            <h3 className="section-header--bottom">{t('students.contactInformation', 'Contact Information')}</h3>
+
+            <div className="sectionFieldGrid">
               <div className="space-y-2">
                 <Label htmlFor="parent_phone">{t("students.parentPhone")} *</Label>
                 <Input
@@ -249,7 +419,7 @@ const AddStudent = () => {
                   }}
                   placeholder={t("students.parentPhone")}
                 />
-                {errors.parent_phone && <p className="text-base text-destructive text-xs">{errors.parent_phone}</p>}
+                {errors.parent_phone && <p className="text-xs text-destructive">{errors.parent_phone}</p>}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="student_phone">{t("students.studentPhone")}</Label>
@@ -262,7 +432,7 @@ const AddStudent = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="sectionFieldGrid">
               <div className="space-y-2">
                 <Label htmlFor="alternative_phone">{t("students.alternativePhone")}</Label>
                 <Input
@@ -284,7 +454,10 @@ const AddStudent = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Registration Information */}
+            <h3 className="section-header--bottom">{t('students.registrationInformation', 'Registration Information')}</h3>
+
+            <div className="sectionFieldGrid">
               <div className="space-y-2">
                 <Label htmlFor="registration_number">{t("students.registrationNumber")} *</Label>
                 <Input
@@ -296,7 +469,7 @@ const AddStudent = () => {
                   }}
                   placeholder={t("students.registrationNumber")}
                 />
-                {errors.registration_number && <p className="text-base text-destructive text-xs">{errors.registration_number}</p>}
+                {errors.registration_number && <p className="text-xs text-destructive">{errors.registration_number}</p>}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="registration_date">{t("students.registrationDate")} *</Label>
@@ -309,22 +482,11 @@ const AddStudent = () => {
                     if (errors.registration_date) setErrors((prev) => ({ ...prev, registration_date: "" }));
                   }}
                 />
-                {errors.registration_date && <p className="text-base text-destructive text-xs">{errors.registration_date}</p>}
+                {errors.registration_date && <p className="text-xs text-destructive">{errors.registration_date}</p>}
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="category">{t("students.category")}</Label>
-                <Autocomplete
-                  endpoint="student-categories"
-                  value={formData.category}
-                  onChange={(value) => setFormData((prev) => ({ ...prev, category: value }))}
-                  placeholder={t("students.selectCategory")}
-                  getOptionLabel={(c) => c.name}
-                  getOptionValue={(c) => c.id.toString()}
-                />
-              </div>
+            <div className="sectionFieldGrid">
               <div className="space-y-2">
                 <Label htmlFor="status">{t("students.status")} *</Label>
                 <Select
@@ -335,32 +497,60 @@ const AddStudent = () => {
                     <SelectValue placeholder={t("students.selectStatus")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="active">{t("students.status.active")}</SelectItem>
-                    <SelectItem value="inactive">{t("students.status.inactive")}</SelectItem>
-                    <SelectItem value="graduated">{t("students.status.graduated")}</SelectItem>
-                    <SelectItem value="suspended">{t("students.status.suspended")}</SelectItem>
-                    <SelectItem value="transferred">{t("students.status.transferred")}</SelectItem>
+                    <SelectItem value="active">{t("students.statusOptions.active")}</SelectItem>
+                    <SelectItem value="inactive">{t("students.statusOptions.inactive")}</SelectItem>
+                    <SelectItem value="graduated">{t("students.statusOptions.graduated")}</SelectItem>
+                    <SelectItem value="suspended">{t("students.statusOptions.suspended")}</SelectItem>
+                    <SelectItem value="transferred">{t("students.statusOptions.transferred")}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="transportation">{t("students.transportation")} *</Label>
+                <Select
+                  value={formData.transportation}
+                  onValueChange={(value) => setFormData((prev) => ({ ...prev, transportation: value }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={t("students.selectTransportation")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="school_bus">{t("students.transportationOptions.school_bus")}</SelectItem>
+                    <SelectItem value="private_vehicle">{t("students.transportationOptions.private_vehicle")}</SelectItem>
+                    <SelectItem value="walking">{t("students.transportationOptions.walking")}</SelectItem>
+                    <SelectItem value="public_transport">{t("students.transportationOptions.public_transport")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="transportation">{t("students.transportation")} *</Label>
-              <Select
-                value={formData.transportation}
-                onValueChange={(value) => setFormData((prev) => ({ ...prev, transportation: value }))}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder={t("students.selectTransportation")} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="school_bus">{t("students.transportationOptions.school_bus")}</SelectItem>
-                  <SelectItem value="private_vehicle">{t("students.transportationOptions.private_vehicle")}</SelectItem>
-                  <SelectItem value="walking">{t("students.transportationOptions.walking")}</SelectItem>
-                  <SelectItem value="public_transport">{t("students.transportationOptions.public_transport")}</SelectItem>
-                </SelectContent>
-              </Select>
+            {/* Documents */}
+            <h3 className="section-header--bottom">{t('students.documents', 'Documents')}</h3>
+
+            <div className="sectionFieldGrid">
+              <FileUploadField 
+                label={t("students.tazkiraCopy")} 
+                field="tazkira_copy" 
+                ref={tazkiraCopyRef}
+              />
+              <FileUploadField 
+                label={t("students.parentTazkiraCopy")} 
+                field="parent_tazkira_copy" 
+                ref={parentTazkiraCopyRef}
+              />
+            </div>
+
+            <div className="sectionFieldGrid">
+              <FileUploadField 
+                label={t("students.previousResultCard")} 
+                field="previous_result_card" 
+                ref={previousResultCardRef}
+              />
+              <FileUploadField 
+                label={t("students.paymentReceipt")} 
+                field="payment_receipt" 
+                ref={paymentReceiptRef}
+              />
             </div>
           </div>
 

@@ -4,6 +4,9 @@ export const studentsFa = {
   editStudent: "ویرایش دانشآموز",
   studentDetails: "جزئیات دانشآموز",
   studentInformation: "اطلاعات دانشآموز",
+  addressInformation: "اطلاعات آدرس",
+  contactInformation: "اطلاعات تماس",
+  registrationInformation: "اطلاعات ثبت",
   
   // Personal Information
   fullName: "نام کامل",
@@ -11,16 +14,8 @@ export const studentsFa = {
   grandfatherName: "نام پدربزرگ",
   dateOfBirth: "تاریخ تولد",
   gender: "جنسیت",
+  selectGender: "انتخاب جنسیت",
   tazkiraNumber: "شماره تذکره",
-  selectCategory: "انتخاب دستهبندی",
-  
-  // Category Options
-  category: "دستهبندی",
-  categoryOptions: {
-    regular: "عادی",
-    special: "ویژه",
-    scholarship: "بورسیه"
-  },
   
   // Gender
   gender: {
@@ -67,21 +62,23 @@ export const studentsFa = {
     suspended: "معلق",
     transferred: "منتقل شده"
   },
-  transportation: "حمل و نقل",
   
   // Documents
+  documents: "مدرکها",
   photo: "عکس",
   tazkiraCopy: "کپی تذکره",
   parentTazkiraCopy: "کپی تذکره والدین",
   previousResultCard: "کارت نتیجه قبلی",
   paymentReceipt: "رسید پرداخت",
-  
-  // Actions
+  category: "دستهبندی",
+  phone: "تلفن",
+  selectCategory: "انتخاب دستهبندی",
+  selectStudent: "انتخاب دانشآموز",
+  documentPreview: "پیشنمایش مدرک",
   viewDetails: "مشاهده جزئیات",
   edit: "ویرایش",
   delete: "حذف",
   deleteStudent: "حذف دانشآموز",
-  
 
   
   // UI Components

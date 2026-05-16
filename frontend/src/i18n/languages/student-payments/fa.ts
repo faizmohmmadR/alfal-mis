@@ -17,6 +17,7 @@ export const studentPaymentsFa = {
   student: "دانشآموز",
   selectStudent: "انتخاب دانشآموز",
   selectCategory: "انتخاب دستهبندی",
+  selectStatus: "انتخاب وضعیت",
   enterAmount: "مبلغ را وارد کنید",
   enterDescription: "توضیحات را وارد کنید",
   afn: "AFN - افغانی",

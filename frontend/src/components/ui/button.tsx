@@ -9,30 +9,30 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary-hover shadow-sm",
+        default:   "bg-primary text-primary-foreground hover:bg-primary-dark shadow-sm",
         destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-sm",
+          "bg-destructive text-destructive-foreground shadow-sm",
         outline:
           "border border-input bg-background hover:bg-accent hover:text-accent-foreground shadow-sm",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-sm",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
-        success: "bg-success text-success-foreground hover:bg-success/90 shadow-sm",
-        warning: "bg-warning text-warning-foreground hover:bg-warning/90 shadow-sm",
-        info: "bg-info text-info-foreground hover:bg-info/90 shadow-sm",
-        gradient: "gradient-primary text-primary-foreground hover:opacity-90 shadow-lg",
+          "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/90",
+        ghost:     "hover:bg-accent hover:text-accent-foreground",
+        link:      "text-primary underline-offset-4 hover:underline hover:text-primary-dark",
+        success:   "bg-success text-success-foreground shadow-sm hover:bg-success/85",
+        warning:   "bg-warning text-warning-foreground shadow-sm hover:bg-warning/85",
+        info:      "bg-info text-info-foreground shadow-sm hover:bg-info/85",
+        gradient:  "gradient-primary text-primary-foreground hover:opacity-90 shadow-lg",
       },
       size: {
         default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-11 rounded-md px-8",
-        icon: "h-10 w-10",
+        sm:      "h-9 rounded-md px-3",
+        lg:      "h-11 rounded-md px-8",
+        icon:    "h-10 w-10",
       },
     },
     defaultVariants: {
       variant: "default",
-      size: "default",
+      size:    "default",
     },
   }
 )

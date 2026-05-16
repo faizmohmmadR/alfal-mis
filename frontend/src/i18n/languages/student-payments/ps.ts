@@ -17,6 +17,7 @@ export const studentPaymentsPs = {
   student: "زده کونکی",
   selectStudent: "زده کونکی وټاکئ",
   selectCategory: "وېشنيزه وټاکئ",
+  selectStatus: "حالت وټاکئ",
   enterAmount: "مقدار دننه کړئ",
   enterDescription: "توضیحات دننه کړئ",
   afn: "AFN - افغانۍ",

@@ -17,6 +17,7 @@ export const studentPaymentsEn = {
   student: "Student",
   selectStudent: "Select student",
   selectCategory: "Select category",
+  selectStatus: "Select status",
   enterAmount: "Enter amount",
   enterDescription: "Enter description",
   afn: "AFN - Afghan Afghani",

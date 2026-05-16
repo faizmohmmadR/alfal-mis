@@ -4,6 +4,9 @@ export const studentsPs = {
   editStudent: "زده کونکی سمول",
   studentDetails: "د زده کونکي معلومات",
   studentInformation: "د زده کونکي معلومات",
+  addressInformation: "د پتې معلومات",
+  contactInformation: "د اړیکې معلومات",
+  registrationInformation: "د ثبت معلومات",
   
   // Personal Information
   fullName: "ټول نوم",
@@ -11,16 +14,8 @@ export const studentsPs = {
   grandfatherName: "د پلار پلار نوم",
   dateOfBirth: "د زېږېدلو نېټه",
   gender: "جنسیت",
+  selectGender: "جنسیت وټاکئ",
   tazkiraNumber: "د تذکره شمېره",
-  selectCategory: "وېشنيزه وټاکئ",
-  
-  // Category Options
-  category: "وېشنيزه",
-  categoryOptions: {
-    regular: "عادي",
-    special: "ځانګړی",
-    scholarship: "بورس"
-  },
   
   // Gender
   gender: {
@@ -67,21 +62,23 @@ export const studentsPs = {
     suspended: "معلق",
     transferred: "منتقل شوی"
   },
-  transportation: "د ګرځېدنې وسیله",
   
   // Documents
+  documents: "مدرکونه",
   photo: "عکس",
   tazkiraCopy: "د تذکره کاپي",
   parentTazkiraCopy: "د والدینو تذکره کاپي",
   previousResultCard: "پخوانۍ نتیجه کارت",
   paymentReceipt: "د تادیې رسید",
-  
-  // Actions
+  category: "وېشنيزه",
+  phone: "تلیفون",
+  selectCategory: "وېشنيزه وټاکئ",
+  selectStudent: "زده کونکی وټاکئ",
+  documentPreview: "د مدرک مخکتنه",
   viewDetails: "تفصیلات وګورئ",
   edit: "سمول",
   delete: "حذف کول",
   deleteStudent: "زده کونکی حذف کول",
-  
 
   
   // UI Components

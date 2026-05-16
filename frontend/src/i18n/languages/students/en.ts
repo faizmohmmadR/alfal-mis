@@ -4,6 +4,9 @@ export const studentsEn = {
   editStudent: "Edit Student",
   studentDetails: "Student Details",
   studentInformation: "Student Information",
+  addressInformation: "Address Information",
+  contactInformation: "Contact Information",
+  registrationInformation: "Registration Information",
   
   // Personal Information
   fullName: "Full Name",
@@ -11,6 +14,7 @@ export const studentsEn = {
   grandfatherName: "Grandfather Name",
   dateOfBirth: "Date of Birth",
   gender: "Gender",
+  selectGender: "Select Gender",
   tazkiraNumber: "Tazkira Number",
   
   // Gender
@@ -47,17 +51,8 @@ export const studentsEn = {
   // Registration Information
   registrationNumber: "Registration Number",
   registrationDate: "Registration Date",
-  selectCategory: "Select Category",
-  category: "Category",
   selectStatus: "Select Status",
   status: "Status",
-  
-  // Category Options
-  categoryOptions: {
-    regular: "Regular",
-    special: "Special",
-    scholarship: "Scholarship"
-  },
   
   // Status Options
   statusOptions: {
@@ -69,18 +64,21 @@ export const studentsEn = {
   },
   
   // Documents
+  documents: "Documents",
   photo: "Photo",
   tazkiraCopy: "Tazkira Copy",
   parentTazkiraCopy: "Parent Tazkira Copy",
   previousResultCard: "Previous Result Card",
   paymentReceipt: "Payment Receipt",
-  
-  // Actions
+  category: "Category",
+  phone: "Phone",
+  selectCategory: "Select category",
+  selectStudent: "Select student",
+  documentPreview: "Document preview",
   viewDetails: "View Details",
   edit: "Edit",
   delete: "Delete",
   deleteStudent: "Delete Student",
-  
 
   
   // UI Components
