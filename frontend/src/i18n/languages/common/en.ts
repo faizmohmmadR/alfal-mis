@@ -137,11 +137,12 @@ export const commonEn = {
     subtitle: "Enterprise Resource Planning",
     version: "Version"
   },
+  notUploaded: "Not Uploaded",
+  print: "Print",
   export: "Export",
   import: "Import",
   download: "Download",
   upload: "Upload",
-  print: "",
   share: "Share",
   copy: "Copy",
   paste: "Paste",

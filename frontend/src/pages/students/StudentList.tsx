@@ -19,7 +19,7 @@ export const StudentList = () => {
   const [pageSize, setPageSize] = useState(25);
 
   const { data: studentsData, isLoading } = useFetchObjects<{
-    results: any[];
+    results: { id: number | string; registration_number?: string; full_name?: string; father_name?: string; category_details?: { name?: string }; status?: string; phone?: string }[];
     count: number;
   }>({
     queryKey: ['students', currentPage.toString(), pageSize.toString(), searchTerm, statusFilter, categoryFilter],
@@ -41,14 +41,13 @@ export const StudentList = () => {
   const students = studentsData?.results || [];
   const totalItems = studentsData?.count || 0;
 
-  const handleEdit = (student: any) => {
+  const handleEdit = (student: { id: number | string }) => {
     navigate(`/students/${student.id}/edit`);
   };
 
-  const handleDetails = (student: any) => {
+  const handleDetails = (student: { id: number | string }) => {
     navigate(`/students/${student.id}`);
   };
-
   const getStatusBadge = (status: string) => {
     const colors = {
       active: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
@@ -71,24 +70,24 @@ export const StudentList = () => {
       render: (value) => (
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-          <span className="font-semibold text-xs">{value || 'N/A'}</span>
+           <span className="font-semibold text-xs">{value || t('common.notAvailable')}</span>
         </div>
       )
     },
     {
       key: 'full_name',
       title: t('students.fullName'),
-      render: (value) => <span className="text-xs">{value || 'N/A'}</span>
+      render: (value) => <span className="text-xs">{value || t('common.notAvailable')}</span>
     },
     {
       key: 'father_name',
       title: t('students.fatherName'),
-      render: (value) => <span className="text-xs">{value || 'N/A'}</span>
+      render: (value) => <span className="text-xs">{value || t('common.notAvailable')}</span>
     },
     {
       key: 'category_details',
       title: t('students.category'),
-      render: (value) => <span className="text-xs">{value?.name || 'N/A'}</span>
+      render: (value) => <span className="text-xs">{value?.name || t('common.notAvailable')}</span>
     },
     {
       key: 'status',
@@ -98,7 +97,7 @@ export const StudentList = () => {
     {
       key: 'phone',
       title: t('students.phone'),
-      render: (value) => <span className="text-xs">{value || 'N/A'}</span>
+      render: (value) => <span className="text-xs">{value || t('common.notAvailable')}</span>
     }
   ];
 
@@ -121,7 +120,7 @@ export const StudentList = () => {
       key: 'delete',
       label: t('students.delete'),
       icon: <Trash2 className="h-4 w-4" />,
-      onClick: (record) => handleDelete(record.id, record.full_name || 'Student'),
+      onClick: (record) => handleDelete(record.id, record.full_name || t('students.student')),
       variant: 'ghost',
       className: 'text-red-600 hover:text-red-700',
       tooltip: t('students.deleteStudent')

@@ -74,14 +74,14 @@ export const StudentPaymentList = () => {
       render: (value) => (
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-          <span className="font-semibold text-xs">{value || 'N/A'}</span>
+          <span className="font-semibold text-xs">{value || t('common.notAvailable')}</span>
         </div>
       )
     },
     {
       key: 'student_details',
       title: t('student-payments.student'),
-      render: (value) => <span className="text-xs">{value?.full_name || 'N/A'}</span>
+      render: (value) => <span className="text-xs">{value?.full_name || t('common.notAvailable')}</span>
     },
     {
       key: 'amount',
@@ -95,12 +95,12 @@ export const StudentPaymentList = () => {
     {
       key: 'category_details',
       title: t('student-payments.category'),
-      render: (value) => <span className="text-xs">{value?.name || 'N/A'}</span>
+      render: (value) => <span className="text-xs">{value?.name || t('common.notAvailable')}</span>
     },
     {
       key: 'payment_date',
       title: t('student-payments.paymentDate'),
-      render: (value) => <span className="text-xs">{value || 'N/A'}</span>
+      render: (value) => <span className="text-xs">{value || t('common.notAvailable')}</span>
     },
     {
       key: 'payment_status',

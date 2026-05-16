@@ -115,7 +115,9 @@ export const commonPs = {
     subtitle: "د سازماني سرچینو پلان",
     version: "نسخه"
   },
-  export: "صادرول",
+  notUploaded: "اپلوډ نه شو",
+  print: " چاپ",
+  export: " صادرول",
   import: "وارول",
   download: "ډاونلوډ",
   upload: "اپلوډ",

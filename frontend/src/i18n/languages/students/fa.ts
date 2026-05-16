@@ -13,11 +13,17 @@ export const studentsFa = {
   fatherName: "نام پدر",
   grandfatherName: "نام پدربزرگ",
   dateOfBirth: "تاریخ تولد",
-  gender: "جنسیت",
   selectGender: "انتخاب جنسیت",
   tazkiraNumber: "شماره تذکره",
   
+  // Additional
+  age: "سن",
+  financialSummary: "خلاصه مالی",
+  totalPayments: "کل پرداخت‌ها",
+  remainingBalance: "مانده حساب",
+  
   // Gender
+  genderLabel: "جنسیت",
   gender: {
     male: "مرد",
     female: "زن",

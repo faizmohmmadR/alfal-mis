@@ -127,6 +127,8 @@ export const commonFa = {
     subtitle: "برنامهریزی منابع سازمانی",
     version: "نسخه"
   },
+  notUploaded: "آپلود نشده",
+  print: "چاپ",
   export: "صادرات",
   import: "واردات",
   download: "دانلود",

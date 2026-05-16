@@ -322,7 +322,7 @@ const EditStudent = () => {
                 {(previews.photo || existingFiles.photo) ? (
                   <img 
                     src={previews.photo || existingFiles.photo} 
-                    alt="Photo" 
+                    alt={t('students.photo')} 
                     className="h-full w-full object-cover" 
                   />
                 ) : (
@@ -348,7 +348,7 @@ const EditStudent = () => {
                   className="mt-2 h-7 text-xs"
                 >
                   <X className="h-3 w-3 mr-1" />
-                  {t('common.remove', 'Remove')}
+                  {t('common.remove')}
                 </Button>
               )}
             </div>

@@ -13,11 +13,17 @@ export const studentsEn = {
   fatherName: "Father Name",
   grandfatherName: "Grandfather Name",
   dateOfBirth: "Date of Birth",
-  gender: "Gender",
   selectGender: "Select Gender",
   tazkiraNumber: "Tazkira Number",
   
+  // Additional
+  age: "Age",
+  financialSummary: "Financial Summary",
+  totalPayments: "Total Payments",
+  remainingBalance: "Remaining Balance",
+  
   // Gender
+  genderLabel: "Gender",
   gender: {
     male: "Male",
     female: "Female",

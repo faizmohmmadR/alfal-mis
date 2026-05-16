@@ -13,11 +13,17 @@ export const studentsPs = {
   fatherName: "د پلار نوم",
   grandfatherName: "د پلار پلار نوم",
   dateOfBirth: "د زېږېدلو نېټه",
-  gender: "جنسیت",
   selectGender: "جنسیت وټاکئ",
   tazkiraNumber: "د تذکره شمېره",
   
+  // Additional
+  age: "عمر",
+  financialSummary: "مالي خلاصه",
+  totalPayments: "ټوله پاتې",
+  remainingBalance: "پاتې باقدار",
+  
   // Gender
+  genderLabel: "جنسیت",
   gender: {
     male: "نارینه",
     female: "ښځینه",

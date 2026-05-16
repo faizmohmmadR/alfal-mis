@@ -280,11 +280,11 @@ const StudentDetails = () => {
                     icon={<Calendar className="h-3.5 w-3.5" />}
                   />
                 )}
-                <InfoRow 
-                  label={t('students.gender')} 
-                  value={getGenderLabel(student.gender)} 
-                  icon={<User className="h-3.5 w-3.5" />}
-                />
+<InfoRow 
+                   label={t('students.genderLabel')} 
+                   value={getGenderLabel(student.gender)} 
+                   icon={<User className="h-3.5 w-3.5" />}
+                 />
                 <InfoRow 
                   label={t('students.tazkiraNumber')} 
                   value={student.tazkira_number} 
