@@ -4,29 +4,34 @@ export const studentPaymentsEn = {
   editPayment: "Edit Payment",
   paymentDetails: "Payment Details",
   paymentInformation: "Payment Information",
-  
+
   // Payment Information
   amount: "Amount",
-  category: "Category",
   paymentDate: "Payment Date",
   paymentStatus: "Payment Status",
+  paymentCycle: "Payment Cycle",
+  periodYear: "Period Year",
+  periodMonth: "Period Month",
   referenceNumber: "Reference Number",
   description: "Description",
   receipt: "Receipt",
   currency: "Currency",
   student: "Student",
   selectStudent: "Select student",
-  selectCategory: "Select category",
   selectStatus: "Select status",
+  selectMonth: "Select Month",
+  selectCycle: "Select cycle",
+  selectCurrency: "Select currency",
   enterAmount: "Enter amount",
   enterDescription: "Enter description",
   afn: "AFN - Afghan Afghani",
   usd: "USD - US Dollar",
-  student1: "Student 1",
-  student2: "Student 2",
-  category1: "Category 1",
-  category2: "Category 2",
-  
+  periodYearPlaceholder: "e.g. 2026",
+  cycleForThisPayment: "Cycle for this payment",
+  periodCoverage: "Period Coverage",
+  summary: "Summary",
+  referenceNumberPlaceholder: "e.g. BANK-2026-001",
+
   // Statuses
   status: {
     pending: "Pending",
@@ -34,7 +39,7 @@ export const studentPaymentsEn = {
     cancelled: "Cancelled",
     refunded: "Refunded"
   },
-  
+
   // Actions
   viewDetails: "View Details",
   edit: "Edit",
@@ -42,12 +47,11 @@ export const studentPaymentsEn = {
   deletePayment: "Delete Payment",
   markAsPaid: "Mark as Paid",
   markAsRefunded: "Mark as Refunded",
-  
+
   // UI Components
   managePayments: "Manage student payment records",
   searchPayments: "Search payments...",
   filterByStatus: "Filter by status",
-  filterByCategory: "Filter by category",
   filterByDate: "Filter by date",
   clearFilters: "Clear Filters",
   noPaymentsFound: "No payments found",
@@ -55,17 +59,16 @@ export const studentPaymentsEn = {
   addFirstPayment: "Add your first payment to get started",
   loadingPayments: "Loading payments...",
   allStatuses: "All Statuses",
-  
+
   // Summary
   dailySummary: "Daily Payment Summary",
   monthlySummary: "Monthly Payment Summary",
   totalAmount: "Total Amount",
   paymentCount: "Payment Count",
-  
+
   // Validation
   validation: {
     amount: "Amount is required",
-    category: "Category is required",
     paymentDate: "Payment date is required",
     paymentStatus: "Payment status is required",
     student: "Student is required"

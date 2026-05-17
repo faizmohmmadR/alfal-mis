@@ -8,8 +8,8 @@ from api.views.data.payroll import PayrollViewSet
 from api.views.data.advance import AdvanceViewSet
 
 # ====================== STUDENT MANAGEMENT ======================
-from api.views.data.student import StudentViewSet, StudentCategoryViewSet
-from api.views.data.student_payment import StudentPaymentViewSet, PaymentCategoryViewSet
+from api.views.data.student import StudentViewSet, ClassLevelViewSet
+from api.views.data.student_payment import StudentPaymentViewSet
 
 # ====================== SHOP RENTAL ======================
 from api.views.data.shop_rental import ShopViewSet, TenantViewSet, ShopRentalViewSet
@@ -53,9 +53,8 @@ router.register(r'payrolls', PayrollViewSet, basename='payroll')
 router.register(r'advances', AdvanceViewSet, basename='advance')
 
 # Student Management
-router.register(r'student-categories', StudentCategoryViewSet, basename='student-category')
+router.register(r'class-levels', ClassLevelViewSet, basename='class-level')
 router.register(r'students', StudentViewSet, basename='student')
-router.register(r'payment-categories', PaymentCategoryViewSet, basename='payment-category')
 router.register(r'student-payments', StudentPaymentViewSet, basename='student-payment')
 
 # Shop Rental

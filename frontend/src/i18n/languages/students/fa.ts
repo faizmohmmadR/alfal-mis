@@ -71,14 +71,13 @@ export const studentsFa = {
   
   // Documents
   documents: "مدرکها",
+  documentsPreview: "پیشنمایش مدرک",
   photo: "عکس",
   tazkiraCopy: "کپی تذکره",
   parentTazkiraCopy: "کپی تذکره والدین",
   previousResultCard: "کارت نتیجه قبلی",
   paymentReceipt: "رسید پرداخت",
-  category: "دستهبندی",
   phone: "تلفن",
-  selectCategory: "انتخاب دستهبندی",
   selectStudent: "انتخاب دانشآموز",
   documentPreview: "پیشنمایش مدرک",
   viewDetails: "مشاهده جزئیات",
@@ -86,7 +85,28 @@ export const studentsFa = {
   delete: "حذف",
   deleteStudent: "حذف دانشآموز",
 
-  
+  // Class & Fee Information
+  classFeeInformation: "اطلاعات کلاس و شهریه",
+  classLevel: "کلاس",
+  selectClassLevel: "انتخاب کلاس",
+  classLevelShort: "کلاس",
+  paymentCycle: "چرخه پرداخت",
+  selectPaymentCycle: "انتخاب چرخه پرداخت",
+  paymentCycleOptions: {
+    monthly: "ماهانه",
+    yearly: "سالانه",
+  },
+  monthlyFee: "شهریه ماهانه",
+  yearlyFee: "شهریه سالانه",
+  feeCurrency: "ارز شهریه",
+  enterMonthlyFee: "شهریه ماهانه را وارد کنید",
+  enterYearlyFee: "شهریه سالانه را وارد کنید",
+  paymentCycleLabel: "چرخه پرداخت",
+  monthlyFeeLabel: "شهریه ماهانه",
+  yearlyFeeLabel: "شهریه سالانه",
+  feeLabel: "شهریه",
+  notSet: "تنظیم نشده",
+
   // UI Components
   manageStudents: "مدیریت سوابق دانشآموزان",
   searchStudents: "جستجوی دانشآموزان...",

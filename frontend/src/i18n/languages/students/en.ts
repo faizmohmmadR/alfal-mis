@@ -71,14 +71,13 @@ export const studentsEn = {
   
   // Documents
   documents: "Documents",
+  documentsPreview: "Document preview",
   photo: "Photo",
   tazkiraCopy: "Tazkira Copy",
   parentTazkiraCopy: "Parent Tazkira Copy",
   previousResultCard: "Previous Result Card",
   paymentReceipt: "Payment Receipt",
-  category: "Category",
   phone: "Phone",
-  selectCategory: "Select category",
   selectStudent: "Select student",
   documentPreview: "Document preview",
   viewDetails: "View Details",
@@ -86,7 +85,28 @@ export const studentsEn = {
   delete: "Delete",
   deleteStudent: "Delete Student",
 
-  
+  // Class & Fee Information
+  classFeeInformation: "Class & Fee Information",
+  classLevel: "Class Level",
+  selectClassLevel: "Select Class Level",
+  classLevelShort: "Class",
+  paymentCycle: "Payment Cycle",
+  selectPaymentCycle: "Select Payment Cycle",
+  paymentCycleOptions: {
+    monthly: "Monthly",
+    yearly: "Yearly",
+  },
+  monthlyFee: "Monthly Fee",
+  yearlyFee: "Yearly Fee",
+  feeCurrency: "Fee Currency",
+  enterMonthlyFee: "Enter Monthly Fee",
+  enterYearlyFee: "Enter Yearly Fee",
+  paymentCycleLabel: "Payment Cycle",
+  monthlyFeeLabel: "Monthly Fee",
+  yearlyFeeLabel: "Yearly Fee",
+  feeLabel: "Fee",
+  notSet: "Not Set",
+
   // UI Components
   manageStudents: "Manage student records",
   searchStudents: "Search students...",

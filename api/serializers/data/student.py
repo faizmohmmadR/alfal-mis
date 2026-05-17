@@ -1,56 +1,62 @@
 from rest_framework import serializers
-from api.models.data.student import Student, StudentCategory
+from api.models.data.student import Student, ClassLevel
 from api.serializers.data.base import DataRootSerializer
 
 
-class StudentCategorySerializer(DataRootSerializer):
+class ClassLevelSerializer(DataRootSerializer):
     class Meta:
-        model = StudentCategory
-        fields = ['id', 'name', 'description', 'is_active', 'created_at', 'updated_at']
+        model = ClassLevel
+        fields = ['id', 'level', 'name', 'description', 'is_active', 'created_at', 'updated_at']
 
 
 class StudentSerializer(DataRootSerializer):
-    category_details = serializers.SerializerMethodField(read_only=True)
+    class_level_details = serializers.SerializerMethodField(read_only=True)
     financial_summary = serializers.SerializerMethodField(read_only=True)
     phone = serializers.CharField(source='parent_phone', read_only=True)
-    
+
     class Meta:
         model = Student
         fields = [
-            'id', 'full_name', 'father_name', 'grandfather_name', 'date_of_birth', 
-            'gender', 'tazkira_number', 'permanent_address', 'current_address', 
-            'province', 'district', 'area', 'parent_phone', 'student_phone', 
-            'alternative_phone', 'email', 'registration_number', 'registration_date', 
-            'category', 'status', 'transportation', 'photo', 'tazkira_copy', 
+            'id', 'full_name', 'father_name', 'grandfather_name', 'date_of_birth',
+            'gender', 'tazkira_number', 'permanent_address', 'current_address',
+            'province', 'district', 'area', 'parent_phone', 'student_phone',
+            'alternative_phone', 'email', 'registration_number', 'registration_date',
+            'status', 'transportation', 'photo', 'tazkira_copy',
             'parent_tazkira_copy', 'previous_result_card', 'payment_receipt',
-            'age', 'category_details', 'financial_summary', 'phone',
+            'class_level', 'payment_cycle', 'monthly_fee', 'yearly_fee', 'currency',
+            'age', 'class_level_details', 'financial_summary', 'phone',
             'created_at', 'updated_at'
         ]
-        read_only_fields = ['age', 'category_details', 'financial_summary', 'phone']
-    
-    def get_category_details(self, obj):
-        if obj.category:
+        read_only_fields = ['age', 'class_level_details', 'financial_summary', 'phone']
+
+    def get_class_level_details(self, obj):
+        if obj.class_level:
             return {
-                'id': obj.category.id,
-                'name': obj.category.name,
-                'description': obj.category.description
+                'id': obj.class_level.id,
+                'level': obj.class_level.level,
+                'name': obj.class_level.name,
             }
         return None
-    
+
     def get_financial_summary(self, obj):
         summary = obj.get_financial_summary()
         return {
             'total_payments': float(summary.get('total_payments', 0)),
             'remaining_balance': float(summary.get('remaining_balance', 0)),
+            'payment_cycle': summary.get('payment_cycle'),
+            'monthly_fee': float(summary.get('monthly_fee', 0)),
+            'yearly_fee': float(summary.get('yearly_fee', 0)),
+            'currency': summary.get('currency'),
             'registration_number': summary.get('registration_number'),
-            'status': summary.get('status')
+            'status': summary.get('status'),
+            'class_level': summary.get('class_level'),
         }
-    
+
     def validate(self, attrs):
         # Validate registration number uniqueness
         registration_number = attrs.get('registration_number')
         instance = self.instance
-        
+
         if registration_number:
             query = Student.objects.filter(registration_number=registration_number)
             if instance:
@@ -59,7 +65,7 @@ class StudentSerializer(DataRootSerializer):
                 raise serializers.ValidationError({
                     'registration_number': 'This registration number already exists'
                 })
-        
+
         # Validate tazkira number uniqueness
         tazkira_number = attrs.get('tazkira_number')
         if tazkira_number:
@@ -70,5 +76,5 @@ class StudentSerializer(DataRootSerializer):
                 raise serializers.ValidationError({
                     'tazkira_number': 'This Tazkira number already exists'
                 })
-        
+
         return attrs

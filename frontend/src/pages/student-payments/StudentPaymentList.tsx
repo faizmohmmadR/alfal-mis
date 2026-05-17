@@ -9,23 +9,43 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import useFetchObjects from '@/api/useFetchObjects';
 import useDelete from '@/api/useDelete';
 
+interface StudentDetails {
+  id: number;
+  full_name: string;
+  registration_number: string;
+  class_level?: string;
+  payment_cycle?: string;
+}
+
+interface PaymentRecord {
+  id: number;
+  reference_number: string | null;
+  student_details: StudentDetails | null;
+  payment_cycle: string;
+  amount: string | number;
+  currency: string;
+  payment_date: string;
+  payment_status: string;
+}
+
+interface PaginatedResponse {
+  results: PaymentRecord[];
+  count: number;
+  next: string | null;
+  previous: string | null;
+}
+
 export const StudentPaymentList = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [studentFilter, setStudentFilter] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
 
-  const { data: paymentsData, isLoading } = useFetchObjects<{
-    results: any[];
-    count: number;
-    next: string | null;
-    previous: string | null;
-  }>({
-    queryKey: ['student-payments', currentPage.toString(), pageSize.toString(), searchTerm, statusFilter, studentFilter, categoryFilter],
+  const { data: paymentsData, isLoading } = useFetchObjects<PaginatedResponse>({
+    queryKey: ['student-payments', currentPage.toString(), pageSize.toString(), searchTerm, statusFilter, studentFilter],
     endpoint: 'student-payments',
     params: {
       page: currentPage,
@@ -33,7 +53,6 @@ export const StudentPaymentList = () => {
       search: searchTerm,
       ...(statusFilter !== 'all' && { payment_status: statusFilter }),
       ...(studentFilter && { student: studentFilter }),
-      ...(categoryFilter && { category: categoryFilter })
     }
   });
 
@@ -45,11 +64,11 @@ export const StudentPaymentList = () => {
   const payments = paymentsData?.results || [];
   const totalItems = paymentsData?.count || 0;
 
-  const handleEdit = (payment: any) => {
+  const handleEdit = (payment: PaymentRecord) => {
     navigate(`/student-payments/${payment.id}/edit`);
   };
 
-  const handleDetails = (payment: any) => {
+  const handleDetails = (payment: PaymentRecord) => {
     navigate(`/student-payments/${payment.id}`);
   };
 
@@ -81,21 +100,34 @@ export const StudentPaymentList = () => {
     {
       key: 'student_details',
       title: t('student-payments.student'),
-      render: (value) => <span className="text-xs">{value?.full_name || t('common.notAvailable')}</span>
+      render: (value) => (
+        <div className="space-y-0.5">
+          <span className="text-xs">{value?.full_name || t('common.notAvailable')}</span>
+          {value?.class_level && (
+            <span className="text-[10px] text-muted-foreground block">Class: {value.class_level}</span>
+          )}
+        </div>
+      )
+    },
+    {
+      key: 'payment_cycle',
+      title: t('student-payments.paymentCycle'),
+      render: (value) => (
+        <Badge variant={value === 'yearly' ? 'secondary' : 'outline'} className="text-[10px]">
+          {value === 'yearly'
+            ? t('students.paymentCycleOptions.yearly', 'Yearly')
+            : t('students.paymentCycleOptions.monthly', 'Monthly')}
+        </Badge>
+      )
     },
     {
       key: 'amount',
       title: t('student-payments.amount'),
-      render: (value, record) => (
+      render: (value, record: { currency?: string }) => (
         <span className="font-bold text-xs text-green-600">
           {Number(value || 0).toFixed(2)} {record.currency || ''}
         </span>
       )
-    },
-    {
-      key: 'category_details',
-      title: t('student-payments.category'),
-      render: (value) => <span className="text-xs">{value?.name || t('common.notAvailable')}</span>
     },
     {
       key: 'payment_date',
@@ -128,7 +160,7 @@ export const StudentPaymentList = () => {
       key: 'delete',
       label: t('student-payments.delete'),
       icon: <Trash2 className="h-4 w-4" />,
-      onClick: (record) => handleDelete(record.id, record.reference_number || 'Payment'),
+      onClick: (record: PaymentRecord) => handleDelete(record.id, record.reference_number || 'Payment'),
       variant: 'ghost',
       className: 'text-red-600 hover:text-red-700',
       tooltip: t('student-payments.deletePayment')
@@ -152,23 +184,6 @@ export const StudentPaymentList = () => {
           getOptionValue={(s) => s.id.toString()}
         />
       )
-    },
-    {
-      key: 'category',
-      label: t('student-payments.category'),
-      component: (
-        <Autocomplete
-          endpoint="payment-categories"
-          value={categoryFilter}
-          onChange={(value) => {
-            setCategoryFilter(value);
-            setCurrentPage(1);
-          }}
-          placeholder={t('student-payments.selectCategory')}
-          getOptionLabel={(c) => c.name}
-          getOptionValue={(c) => c.id.toString()}
-        />
-      )
     }
   ];
 
@@ -180,12 +195,11 @@ export const StudentPaymentList = () => {
   const handleClearFilters = () => {
     setStatusFilter('all');
     setStudentFilter('');
-    setCategoryFilter('');
     setSearchTerm('');
     setCurrentPage(1);
   };
 
-  const hasActiveFilters = statusFilter !== 'all' || studentFilter || categoryFilter || searchTerm;
+  const hasActiveFilters = statusFilter !== 'all' || studentFilter || searchTerm;
 
   return (
     <div className="space-y-6 p-6">

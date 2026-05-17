@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Edit, Trash2, Eye, User } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, User, GraduationCap, DollarSign } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Autocomplete } from '@/components/ui/autocomplete';
@@ -19,7 +19,20 @@ export const StudentList = () => {
   const [pageSize, setPageSize] = useState(25);
 
   const { data: studentsData, isLoading } = useFetchObjects<{
-    results: { id: number | string; registration_number?: string; full_name?: string; father_name?: string; category_details?: { name?: string }; status?: string; phone?: string }[];
+    results: {
+      id: number | string;
+      registration_number?: string;
+      full_name?: string;
+      father_name?: string;
+      category_details?: { name?: string };
+      class_level_details?: { name?: string };
+      payment_cycle?: string;
+      monthly_fee?: number;
+      yearly_fee?: number;
+      status?: string;
+      currency?: string;
+      phone?: string;
+    }[];
     count: number;
   }>({
     queryKey: ['students', currentPage.toString(), pageSize.toString(), searchTerm, statusFilter, categoryFilter],
@@ -63,6 +76,15 @@ export const StudentList = () => {
     );
   };
 
+  const getPaymentCycleBadge = (cycle: string) => {
+    const isMonthly = cycle === 'monthly';
+    return (
+      <Badge variant={isMonthly ? 'outline' : 'secondary'}>
+        {isMonthly ? t('students.paymentCycleOptions.monthly', 'Monthly') : t('students.paymentCycleOptions.yearly', 'Yearly')}
+      </Badge>
+    );
+  };
+
   const columns: TableColumn[] = [
     {
       key: 'registration_number',
@@ -88,6 +110,21 @@ export const StudentList = () => {
       key: 'category_details',
       title: t('students.category'),
       render: (value) => <span className="text-xs">{value?.name || t('common.notAvailable')}</span>
+    },
+    {
+      key: 'class_level_details',
+      title: t('students.classLevel'),
+      render: (value) => (
+        <div className="flex items-center gap-1">
+          <GraduationCap className="h-3 w-3 text-muted-foreground" />
+          <span className="text-xs font-medium">{value?.name || t('students.notSet')}</span>
+        </div>
+      )
+    },
+    {
+      key: 'payment_cycle',
+      title: t('students.paymentCycle'),
+      render: (value) => getPaymentCycleBadge(value || 'monthly')
     },
     {
       key: 'status',

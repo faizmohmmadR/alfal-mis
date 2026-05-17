@@ -71,14 +71,13 @@ export const studentsPs = {
   
   // Documents
   documents: "مدرکونه",
+  documentsPreview: "د مدرک مخکتنه",
   photo: "عکس",
   tazkiraCopy: "د تذکره کاپي",
   parentTazkiraCopy: "د والدینو تذکره کاپي",
   previousResultCard: "پخوانۍ نتیجه کارت",
   paymentReceipt: "د تادیې رسید",
-  category: "وېشنيزه",
   phone: "تلیفون",
-  selectCategory: "وېشنيزه وټاکئ",
   selectStudent: "زده کونکی وټاکئ",
   documentPreview: "د مدرک مخکتنه",
   viewDetails: "تفصیلات وګورئ",
@@ -86,7 +85,28 @@ export const studentsPs = {
   delete: "حذف کول",
   deleteStudent: "زده کونکی حذف کول",
 
-  
+  // Class & Fee Information
+  classFeeInformation: "د صنف او فیس معلومات",
+  classLevel: "صنف",
+  selectClassLevel: "صنف وټاکئ",
+  classLevelShort: "صنف",
+  paymentCycle: "د تادیې چکل",
+  selectPaymentCycle: "د تادیې چکل وټاکئ",
+  paymentCycleOptions: {
+    monthly: "میاشتې",
+    yearly: "کلنه",
+  },
+  monthlyFee: "میاشتی فیس",
+  yearlyFee: "کلنه فیس",
+  feeCurrency: "د فیس اسعار",
+  enterMonthlyFee: "میاشتی فیس دننه کړئ",
+  enterYearlyFee: "کلنه فیس دننه کړئ",
+  paymentCycleLabel: "د تادیې چکل",
+  monthlyFeeLabel: "میاشتی فیس",
+  yearlyFeeLabel: "کلنه فیس",
+  feeLabel: "فیس",
+  notSet: "رامینځته نشوی",
+
   // UI Components
   manageStudents: "د زده کونکو ریکارډونه اداره کړئ",
   searchStudents: "زده کونکي لټول...",

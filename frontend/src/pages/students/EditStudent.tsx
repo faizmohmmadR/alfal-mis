@@ -30,6 +30,11 @@ interface StudentFormData {
   registration_date: string;
   status: string;
   transportation: string;
+  class_level: string;
+  payment_cycle: string;
+  monthly_fee: string;
+  yearly_fee: string;
+  currency: string;
   photo?: File | null;
   tazkira_copy?: File | null;
   parent_tazkira_copy?: File | null;
@@ -68,6 +73,11 @@ const EditStudent = () => {
     registration_date: new Date().toISOString().split('T')[0],
     status: 'active',
     transportation: 'school_bus',
+    class_level: '',
+    payment_cycle: 'monthly',
+    monthly_fee: '0',
+    yearly_fee: '0',
+    currency: 'AFN',
     photo: null,
     tazkira_copy: null,
     parent_tazkira_copy: null,
@@ -134,13 +144,18 @@ const EditStudent = () => {
         registration_date: data.registration_date ? data.registration_date.slice(0, 10) : new Date().toISOString().split('T')[0],
         status: data.status || 'active',
         transportation: data.transportation || 'school_bus',
+        class_level: data.class_level ? String(data.class_level) : '',
+        payment_cycle: data.payment_cycle || 'monthly',
+        monthly_fee: data.monthly_fee ? String(data.monthly_fee) : '0',
+        yearly_fee: data.yearly_fee ? String(data.yearly_fee) : '0',
+        currency: data.currency || 'AFN',
         photo: null,
         tazkira_copy: null,
         parent_tazkira_copy: null,
         previous_result_card: null,
         payment_receipt: null,
       });
-      
+
       // Set existing file URLs
       setExistingFiles({
         photo: data.photo || undefined,
@@ -608,6 +623,86 @@ const EditStudent = () => {
                     <SelectItem value="private_vehicle">{t("students.transportationOptions.private_vehicle")}</SelectItem>
                     <SelectItem value="walking">{t("students.transportationOptions.walking")}</SelectItem>
                     <SelectItem value="public_transport">{t("students.transportationOptions.public_transport")}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Class & Fee Information */}
+            <h3 className="section-header--bottom">{t('students.classFeeInformation', 'Class & Fee Information')}</h3>
+
+            <div className="sectionFieldGrid">
+              <div className="space-y-2">
+                <Label htmlFor="class_level">{t("students.classLevel")} *</Label>
+                <Select
+                  value={formData.class_level}
+                  onValueChange={(value) => setFormData((prev) => ({ ...prev, class_level: value }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={t("students.selectClassLevel")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Array.from({ length: 12 }, (_, i) => (i + 1).toString()).map((lv) => (
+                      <SelectItem key={lv} value={lv}>{t('students.classLevelShort', 'Class')} {lv}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="payment_cycle">{t("students.paymentCycle")} *</Label>
+                <Select
+                  value={formData.payment_cycle}
+                  onValueChange={(value) => setFormData((prev) => ({ ...prev, payment_cycle: value }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={t("students.selectPaymentCycle")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="monthly">{t("students.paymentCycleOptions.monthly")}</SelectItem>
+                    <SelectItem value="yearly">{t("students.paymentCycleOptions.yearly")}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="sectionFieldGrid">
+              <div className="space-y-2">
+                <Label htmlFor="monthly_fee">{t("students.monthlyFee")}</Label>
+                <Input
+                  id="monthly_fee"
+                  type="number"
+                  step="0.01"
+                  value={formData.monthly_fee}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, monthly_fee: e.target.value }))}
+                  placeholder={t("students.enterMonthlyFee")}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="yearly_fee">{t("students.yearlyFee")}</Label>
+                <Input
+                  id="yearly_fee"
+                  type="number"
+                  step="0.01"
+                  value={formData.yearly_fee}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, yearly_fee: e.target.value }))}
+                  placeholder={t("students.enterYearlyFee")}
+                />
+              </div>
+            </div>
+
+            <div className="sectionFieldGrid">
+              <div className="space-y-2">
+                <Label htmlFor="fee_currency">{t("students.feeCurrency")}</Label>
+                <Select
+                  value={formData.currency}
+                  onValueChange={(value) => setFormData((prev) => ({ ...prev, currency: value }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="AFN">{t("student-payments.afn")}</SelectItem>
+                    <SelectItem value="USD">{t("student-payments.usd")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

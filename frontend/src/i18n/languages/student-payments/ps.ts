@@ -4,29 +4,34 @@ export const studentPaymentsPs = {
   editPayment: "تادیه سمول",
   paymentDetails: "د تادیې معلومات",
   paymentInformation: "د تادیې معلومات",
-  
+
   // Payment Information
   amount: "مقدار",
-  category: "وېشنيزه",
   paymentDate: "د تادیې نېټه",
   paymentStatus: "د تادیې حالت",
+  paymentCycle: "د تادیې چکل",
+  periodYear: "د دوره کال",
+  periodMonth: "د دوره میاشت",
   referenceNumber: "د ارجاع شمېره",
   description: "توضیحات",
   receipt: "رسید",
   currency: "اسعار",
   student: "زده کونکی",
   selectStudent: "زده کونکی وټاکئ",
-  selectCategory: "وېشنيزه وټاکئ",
   selectStatus: "حالت وټاکئ",
+  selectMonth: "میاشت وټاکئ",
+  selectCycle: "چکل وټاکئ",
+  selectCurrency: "اسعار وټاکئ",
   enterAmount: "مقدار دننه کړئ",
   enterDescription: "توضیحات دننه کړئ",
   afn: "AFN - افغانۍ",
   usd: "USD - US ډالر",
-  student1: "زده کونکی ۱",
-  student2: "زده کونکی ۲",
-  category1: "کټګوري ۱",
-  category2: "کټګوري ۲",
-  
+  periodYearPlaceholder: "د. 2026",
+  cycleForThisPayment: "د دې تادیې چکل",
+  periodCoverage: "د دوره پوښتې",
+  summary: "خلاصه",
+  referenceNumberPlaceholder: "د. банк-2026-001",
+
   // Statuses
   status: {
     pending: "پاتې",
@@ -34,7 +39,7 @@ export const studentPaymentsPs = {
     cancelled: "لغو شوی",
     refunded: "بیرته ورکړل شوی"
   },
-  
+
   // Actions
   viewDetails: "تفصیلات وګورئ",
   edit: "سمول",
@@ -42,12 +47,11 @@ export const studentPaymentsPs = {
   deletePayment: "تادیه حذف کول",
   markAsPaid: "د تادیې په توګه علامت کول",
   markAsRefunded: "د بیرته ورکولو په توګه علامت کول",
-  
+
   // UI Components
   managePayments: "د زده کونکو تادیاتو ریکارډونه اداره کړئ",
   searchPayments: "تادیاتو لټون...",
   filterByStatus: "د حالت له مخې فلټر",
-  filterByCategory: "د وېشنيزې له مخې فلټر",
   filterByDate: "د نیټې له مخې فلټر",
   clearFilters: "فلټرونه پاکول",
   noPaymentsFound: "هیڅ تادیه ونه موندل شوه",
@@ -55,17 +59,16 @@ export const studentPaymentsPs = {
   addFirstPayment: "د پیل لپاره خپل لومړی تادیه زيات کړئ",
   loadingPayments: "تادیاتو لوډیږي...",
   allStatuses: "ټول حالتونه",
-  
+
   // Summary
   dailySummary: "د تادیې ټولنیز خلاصه",
   monthlySummary: "د میاشتې خلاصه",
   totalAmount: "ټول مقدار",
   paymentCount: "د تادیاتو شمېر",
-  
+
   // Validation
   validation: {
     amount: "مقدار اړین دی",
-    category: "وېشنيزه اړینه ده",
     paymentDate: "د تادیې نېټه اړینه ده",
     paymentStatus: "د تادیې حالت اړین دی",
     student: "زده کونکی اړین دی"

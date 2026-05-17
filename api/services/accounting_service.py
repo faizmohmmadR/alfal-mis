@@ -55,17 +55,31 @@ class AccountingService:
     
     @staticmethod
     @transaction.atomic
-    def record_student_payment(student_id, amount, date, description, reference=None):
-        """Record a student payment as a journal entry"""
+    def record_student_payment(student_id, amount, date, description, reference=None, payment_cycle='monthly'):
+        """Record a student payment as a journal entry
+
+        Args:
+            student_id: Student primary key
+            amount: Payment amount (Decimal or numeric)
+            date: Payment date
+            description: Human-readable description
+            reference: Reference / receipt number (optional)
+            payment_cycle: 'monthly' or 'yearly'
+        """
         cash_account = Account.objects.filter(code='1000').first()
         revenue_account = Account.objects.filter(code='4000').first()
-        
+
         if not cash_account or not revenue_account:
             raise ValueError("Default accounts not configured. Please set up Chart of Accounts.")
-        
+
+        cycle_label = payment_cycle.capitalize() if payment_cycle else ''
+        full_description = description
+        if cycle_label:
+            full_description = f"[{cycle_label}] {description}"
+
         return AccountingService.create_journal_entry(
             date=date,
-            description=f"Student Payment - {description}",
+            description=f"Student Payment - {full_description}",
             lines=[
                 {'account_id': cash_account.id, 'debit': amount, 'credit': 0},
                 {'account_id': revenue_account.id, 'debit': 0, 'credit': amount}

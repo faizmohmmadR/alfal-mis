@@ -168,27 +168,27 @@ class ComprehensiveReportView(APIView):
         """Student payments detailed report"""
         payment_filter = self._get_date_filter(period, start_date, end_date, 'payment_date')
         
-        payments = StudentPayment.objects.filter(**payment_filter).select_related('student', 'category')
-        
+        payments = StudentPayment.objects.filter(**payment_filter).select_related('student')
+
         total_afn = payments.filter(currency='AFN').aggregate(total=Sum('amount'))['total'] or 0
         total_usd = payments.filter(currency='USD').aggregate(total=Sum('amount'))['total'] or 0
-        
+
         by_status = payments.values('payment_status', 'currency').annotate(
             total=Sum('amount'),
             count=Count('id')
         )
-        
-        by_category = payments.values('category__name', 'currency').annotate(
+
+        by_payment_cycle = payments.values('payment_cycle', 'currency').annotate(
             total=Sum('amount'),
             count=Count('id')
         )
-        
+
         return {
             'period': period,
             'generated_at': timezone.now().isoformat(),
             'total': {'AFN': float(total_afn), 'USD': float(total_usd)},
             'by_status': list(by_status),
-            'by_category': list(by_category),
+            'by_payment_cycle': list(by_payment_cycle),
             'payment_count': payments.count()
         }
     
