@@ -121,6 +121,13 @@ export const ShopRentalListPage = () => {
     }
   ];
 
+  const rentalStatusOptions = [
+    { value: 'active', label: t('shop-rental.rentalStatusOptions.active') },
+    { value: 'expired', label: t('shop-rental.rentalStatusOptions.expired') },
+    { value: 'cancelled', label: t('shop-rental.rentalStatusOptions.cancelled') },
+    { value: 'renewed', label: t('shop-rental.rentalStatusOptions.renewed') },
+  ];
+
   const customFilters = [
     {
       key: 'shop',
@@ -141,11 +148,11 @@ export const ShopRentalListPage = () => {
       label: t('shop-rental.rentalStatus'),
       component: (
         <Autocomplete
-          endpoint="rental-statuses"
+          options={rentalStatusOptions}
           value={statusFilter}
-          onChange={(value) => { setStatusFilter(value); setCurrentPage(1); }}
+          onChange={(value) => { setStatusFilter(value as string); setCurrentPage(1); }}
           placeholder={t('shop-rental.selectRentalStatus')}
-          getOptionLabel={(s) => s.name}
+          getOptionLabel={(s) => s.label}
           getOptionValue={(s) => s.value}
         />
       )

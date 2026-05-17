@@ -156,7 +156,7 @@ export const ExpenseList = () => {
           endpoint="expense-categories"
           value={categoryFilter}
           onChange={(value) => {
-            setCategoryFilter(value);
+            setCategoryFilter(value as string);
             setCurrentPage(1);
           }}
           placeholder={t('expenses.selectCategory')}
@@ -170,10 +170,12 @@ export const ExpenseList = () => {
       label: t('expenses.user'),
       component: (
         <Autocomplete
-          endpoint="users" getOptionLabel={(u) => `${u.first_name || ''} ${u.last_name || ''}`.trim() || u.username} getOptionValue={(u) => u.id.toString()}
+          endpoint="users"
+          getOptionLabel={(u) => `${u.first_name || ''} ${u.last_name || ''}`.trim() || u.username}
+          getOptionValue={(u) => u.id.toString()}
           value={userFilter}
           onChange={(value) => {
-            setUserFilter(value);
+            setUserFilter(value as string);
             setCurrentPage(1);
           }}
           placeholder={t('expenses.selectUser')}

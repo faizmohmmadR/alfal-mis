@@ -122,7 +122,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
     );
   };
 
-  const options = staticOptions || (data?.results || data || []);
+  const options = Array.isArray(staticOptions) ? staticOptions : (Array.isArray(data?.results) ? data.results : (Array.isArray(data) ? data : []));
   const hasMore = data?.next ? true : false;
 
   useEffect(() => {

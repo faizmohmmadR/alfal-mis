@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Edit, Trash2, Eye, User, GraduationCap, DollarSign } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, User, GraduationCap, DollarSign, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Autocomplete } from '@/components/ui/autocomplete';
@@ -9,40 +9,45 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import useFetchObjects from '@/api/useFetchObjects';
 import useDelete from '@/api/useDelete';
 
+interface StudentItem {
+  id: number | string;
+  registration_number?: string;
+  full_name?: string;
+  father_name?: string;
+  class_level_details?: { name?: string };
+  payment_cycle?: string;
+  monthly_fee?: number;
+  yearly_fee?: number;
+  status?: string;
+  currency?: string;
+  phone?: string;
+}
+
+interface PaginatedResponse {
+  results: StudentItem[];
+  count: number;
+}
+
 export const StudentList = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('');
+  const [classLevelFilter, setClassLevelFilter] = useState('');
+  const [paymentCycleFilter, setPaymentCycleFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
 
-  const { data: studentsData, isLoading } = useFetchObjects<{
-    results: {
-      id: number | string;
-      registration_number?: string;
-      full_name?: string;
-      father_name?: string;
-      category_details?: { name?: string };
-      class_level_details?: { name?: string };
-      payment_cycle?: string;
-      monthly_fee?: number;
-      yearly_fee?: number;
-      status?: string;
-      currency?: string;
-      phone?: string;
-    }[];
-    count: number;
-  }>({
-    queryKey: ['students', currentPage.toString(), pageSize.toString(), searchTerm, statusFilter, categoryFilter],
+  const { data: studentsData, isLoading } = useFetchObjects<PaginatedResponse>({
+    queryKey: ['students', currentPage.toString(), pageSize.toString(), searchTerm, statusFilter, classLevelFilter, paymentCycleFilter],
     endpoint: 'students/',
     params: {
       page: currentPage,
       page_size: pageSize,
       search: searchTerm,
       ...(statusFilter && { status: statusFilter }),
-      ...(categoryFilter && { category: categoryFilter })
+      ...(classLevelFilter && { class_level: classLevelFilter }),
+      ...(paymentCycleFilter && { payment_cycle: paymentCycleFilter }),
     }
   });
 
@@ -61,6 +66,12 @@ export const StudentList = () => {
   const handleDetails = (student: { id: number | string }) => {
     navigate(`/students/${student.id}`);
   };
+
+  const handleBulkChangeClass = (selected: StudentItem[]) => {
+    const ids = selected.map((s) => s.id).join(',');
+    navigate(`/students/bulk-change-class?ids=${ids}`);
+  };
+
   const getStatusBadge = (status: string) => {
     const colors = {
       active: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
@@ -71,7 +82,7 @@ export const StudentList = () => {
     };
     return (
       <Badge variant={colors[status as keyof typeof colors] ? 'default' : 'secondary'}>
-        {t(`students.status.${status}`) || status}
+        {t(`students.statusOptions.${status}`) || status}
       </Badge>
     );
   };
@@ -80,7 +91,7 @@ export const StudentList = () => {
     const isMonthly = cycle === 'monthly';
     return (
       <Badge variant={isMonthly ? 'outline' : 'secondary'}>
-        {isMonthly ? t('students.paymentCycleOptions.monthly', 'Monthly') : t('students.paymentCycleOptions.yearly', 'Yearly')}
+        {isMonthly ? t('students.paymentCycleOptions.monthly') : t('students.paymentCycleOptions.yearly')}
       </Badge>
     );
   };
@@ -105,11 +116,6 @@ export const StudentList = () => {
       key: 'father_name',
       title: t('students.fatherName'),
       render: (value) => <span className="text-xs">{value || t('common.notAvailable')}</span>
-    },
-    {
-      key: 'category_details',
-      title: t('students.category'),
-      render: (value) => <span className="text-xs">{value?.name || t('common.notAvailable')}</span>
     },
     {
       key: 'class_level_details',
@@ -164,51 +170,96 @@ export const StudentList = () => {
     }
   ];
 
+  const bulkActions: TableAction<StudentItem>[] = [
+    {
+      key: 'bulk-change-class',
+      label: t('students.changeClassLevel', 'Change Class Level'),
+      icon: <GraduationCap className="h-4 w-4" />,
+      onClick: handleBulkChangeClass,
+    },
+  ];
+
+  const statusOptions = [
+    { value: 'active', label: t('students.statusOptions.active') },
+    { value: 'inactive', label: t('students.statusOptions.inactive') },
+    { value: 'graduated', label: t('students.statusOptions.graduated') },
+    { value: 'suspended', label: t('students.statusOptions.suspended') },
+    { value: 'transferred', label: t('students.statusOptions.transferred') },
+  ];
+
+  const paymentCycleOptions = [
+    { value: 'monthly', label: t('students.paymentCycleOptions.monthly') },
+    { value: 'yearly', label: t('students.paymentCycleOptions.yearly') },
+  ];
+
   const customFilters = [
+    {
+      key: 'class_level',
+      label: t('students.classLevel'),
+      component: (
+        <Autocomplete
+          endpoint="class-levels"
+          value={classLevelFilter}
+          onChange={(value) => {
+            setClassLevelFilter(value as string);
+            setCurrentPage(1);
+          }}
+          placeholder={t('students.selectClassLevel')}
+          getOptionLabel={(c) => c.name}
+          getOptionValue={(c) => c.id.toString()}
+        />
+      )
+    },
     {
       key: 'status',
       label: t('students.status'),
       component: (
         <Autocomplete
-          endpoint="student-statuses"
+          options={statusOptions}
           value={statusFilter}
           onChange={(value) => {
-            setStatusFilter(value);
+            setStatusFilter(value as string);
             setCurrentPage(1);
           }}
           placeholder={t('students.selectStatus')}
-          getOptionLabel={(s) => s.name}
+          getOptionLabel={(s) => s.label}
           getOptionValue={(s) => s.value}
         />
       )
     },
     {
-      key: 'category',
-      label: t('students.category'),
+      key: 'payment_cycle',
+      label: t('students.paymentCycle'),
       component: (
         <Autocomplete
-          endpoint="student-categories"
-          value={categoryFilter}
+          options={paymentCycleOptions}
+          value={paymentCycleFilter}
           onChange={(value) => {
-            setCategoryFilter(value);
+            setPaymentCycleFilter(value as string);
             setCurrentPage(1);
           }}
-          placeholder={t('students.selectCategory')}
-          getOptionLabel={(c) => c.name}
-          getOptionValue={(c) => c.id.toString()}
+          placeholder={t('students.selectPaymentCycle')}
+          getOptionLabel={(p) => p.label}
+          getOptionValue={(p) => p.value}
         />
       )
     }
   ];
 
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+    setCurrentPage(1);
+  };
+
   const handleClearFilters = () => {
     setStatusFilter('');
-    setCategoryFilter('');
+    setClassLevelFilter('');
+    setPaymentCycleFilter('');
     setSearchTerm('');
     setCurrentPage(1);
   };
 
-  const hasActiveFilters = statusFilter || categoryFilter || searchTerm;
+  const hasActiveFilters = statusFilter || classLevelFilter || paymentCycleFilter || searchTerm;
 
   return (
     <div className="space-y-6 p-6">
@@ -225,13 +276,12 @@ export const StudentList = () => {
             {t('students.addStudent')}
           </Button>
         }
+        selectable
+        bulkActions={bulkActions}
         searchable
         searchPlaceholder={t('students.searchStudents')}
         searchValue={searchTerm}
-        onSearch={(value) => {
-          setSearchTerm(value);
-          setCurrentPage(1);
-        }}
+        onSearch={handleSearch}
         customFilters={customFilters}
         showClearFilters={hasActiveFilters}
         clearFiltersLabel={t('students.clearFilters')}

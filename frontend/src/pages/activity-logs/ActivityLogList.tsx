@@ -110,6 +110,25 @@ const ActivityLogList = () => {
     }
   ];
 
+  const modelOptions = [
+    { value: 'Student', label: 'Student' },
+    { value: 'StudentPayment', label: 'Student Payment' },
+    { value: 'Employee', label: 'Employee' },
+    { value: 'Payroll', label: 'Payroll' },
+    { value: 'Advance', label: 'Advance' },
+    { value: 'Shop', label: 'Shop' },
+    { value: 'Tenant', label: 'Tenant' },
+    { value: 'ShopRental', label: 'Shop Rental' },
+    { value: 'Expense', label: 'Expense' },
+    { value: 'ExpenseCategory', label: 'Expense Category' },
+    { value: 'OtherIncome', label: 'Other Income' },
+    { value: 'IncomeCategory', label: 'Income Category' },
+    { value: 'User', label: 'User' },
+    { value: 'Account', label: 'Account' },
+    { value: 'JournalEntry', label: 'Journal Entry' },
+    { value: 'Transaction', label: 'Transaction' },
+  ];
+
   const customFilters = [
     {
       key: 'action',
@@ -128,10 +147,12 @@ const ActivityLogList = () => {
           ]}
           value={actionFilter}
           onChange={(value) => {
-            setActionFilter(value);
+            setActionFilter(value as string);
             setCurrentPage(1);
           }}
           placeholder={t('activityLogs.filterByAction')}
+          getOptionLabel={(o) => o.label}
+          getOptionValue={(o) => o.value}
         />
       )
     },
@@ -140,14 +161,15 @@ const ActivityLogList = () => {
       label: t('activityLogs.model'),
       component: (
         <Autocomplete
-          options={[]}
+          options={modelOptions}
           value={modelFilter}
           onChange={(value) => {
-            setModelFilter(value);
+            setModelFilter(value as string);
             setCurrentPage(1);
           }}
           placeholder={t('activityLogs.filterByModel')}
-          allowCustomValue
+          getOptionLabel={(o) => o.label}
+          getOptionValue={(o) => o.value}
         />
       )
     },
@@ -161,7 +183,7 @@ const ActivityLogList = () => {
           getOptionValue={(u) => u.id.toString()}
           value={userFilter}
           onChange={(value) => {
-            setUserFilter(value);
+            setUserFilter(value as string);
             setCurrentPage(1);
           }}
           placeholder={t('activityLogs.filterByUser')}

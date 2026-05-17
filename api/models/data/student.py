@@ -164,7 +164,7 @@ class Student(BaseModel):
             payment_date__gte=start_date,
             payment_date__lte=end_date
         ).aggregate(total=models.Sum('amount'))['total'] or 0
-        return total
+        return float(total)
 
     def get_total_paid_monthly(self):
         """Calculate total completed monthly-cycle payments"""
@@ -174,7 +174,7 @@ class Student(BaseModel):
             payment_status='completed',
             payment_cycle='monthly'
         ).aggregate(total=models.Sum('amount'))['total'] or 0
-        return total
+        return float(total)
 
     def get_total_paid_yearly(self):
         """Calculate total completed yearly-cycle payments"""
@@ -184,7 +184,7 @@ class Student(BaseModel):
             payment_status='completed',
             payment_cycle='yearly'
         ).aggregate(total=models.Sum('amount'))['total'] or 0
-        return total
+        return float(total)
 
     def get_total_payments(self):
         """Calculate total completed payments made by student"""
@@ -193,7 +193,7 @@ class Student(BaseModel):
             student=self,
             payment_status='completed'
         ).aggregate(total=models.Sum('amount'))['total'] or 0
-        return total
+        return float(total)
 
     def get_remaining_balance(self):
         """Calculate remaining balance based on payment cycle
@@ -203,10 +203,10 @@ class Student(BaseModel):
         """
         from api.models.data.student_payment import StudentPayment
         if self.payment_cycle == 'yearly':
-            paid = self.get_total_paid_yearly()
-            return max(self.yearly_fee - paid, 0)
+            paid = float(self.get_total_paid_yearly())
+            return max(float(self.yearly_fee) - paid, 0)
         # monthly
-        paid = self.get_total_paid_monthly()
+        paid = float(self.get_total_paid_monthly())
         expected = float(self.monthly_fee) * 12
         return max(expected - paid, 0)
 

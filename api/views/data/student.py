@@ -6,6 +6,7 @@ from api.models.data.student import Student, ClassLevel
 from api.serializers.data.student import StudentSerializer, ClassLevelSerializer
 from api.views.data.base import DataRootViewSet
 from decimal import Decimal
+from rest_framework import status as drf_status
 
 
 class ClassLevelViewSet(DataRootViewSet):
@@ -86,4 +87,45 @@ class StudentViewSet(DataRootViewSet):
             'inactive_students': inactive_students,
             'graduated_students': graduated_students,
             'students_by_status': list(students_by_status)
+        })
+
+    @action(detail=False, methods=['post'])
+    def bulk_change_class(self, request):
+        """Bulk update class_level for multiple students"""
+        student_ids = request.data.get('student_ids', [])
+        class_level_id = request.data.get('class_level')
+
+        if not student_ids or not isinstance(student_ids, list) or len(student_ids) == 0:
+            return Response(
+                {'error': 'student_ids must be a non-empty list'},
+                status=drf_status.HTTP_400_BAD_REQUEST
+            )
+
+        if not class_level_id:
+            return Response(
+                {'error': 'class_level is required'},
+                status=drf_status.HTTP_400_BAD_REQUEST
+            )
+
+        # Validate class level exists
+        try:
+            class_level = ClassLevel.objects.get(id=class_level_id)
+        except ClassLevel.DoesNotExist:
+            return Response(
+                {'error': 'Class level not found'},
+                status=drf_status.HTTP_404_NOT_FOUND
+            )
+
+        # Fetch and update students
+        students = Student.objects.filter(id__in=student_ids)
+        updated_count = students.update(class_level_id=class_level_id)
+
+        # Return updated students
+        updated_students = Student.objects.filter(id__in=student_ids)
+        serializer = StudentSerializer(updated_students, many=True)
+
+        return Response({
+            'updated_count': updated_count,
+            'class_level': ClassLevelSerializer(class_level).data,
+            'students': serializer.data,
         })

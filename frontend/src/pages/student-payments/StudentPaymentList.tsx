@@ -167,6 +167,13 @@ export const StudentPaymentList = () => {
     }
   ];
 
+  const statusOptions = [
+    { value: 'pending', label: t('student-payments.status.pending') },
+    { value: 'completed', label: t('student-payments.status.completed') },
+    { value: 'cancelled', label: t('student-payments.status.cancelled') },
+    { value: 'refunded', label: t('student-payments.status.refunded') },
+  ];
+
   const customFilters = [
     {
       key: 'student',
@@ -176,12 +183,29 @@ export const StudentPaymentList = () => {
           endpoint="students"
           value={studentFilter}
           onChange={(value) => {
-            setStudentFilter(value);
+            setStudentFilter(value as string);
             setCurrentPage(1);
           }}
           placeholder={t('student-payments.selectStudent')}
           getOptionLabel={(s) => s.full_name}
           getOptionValue={(s) => s.id.toString()}
+        />
+      )
+    },
+    {
+      key: 'status',
+      label: t('student-payments.paymentStatus'),
+      component: (
+        <Autocomplete
+          options={statusOptions}
+          value={statusFilter === 'all' ? '' : statusFilter}
+          onChange={(value) => {
+            setStatusFilter(value as string || 'all');
+            setCurrentPage(1);
+          }}
+          placeholder={t('student-payments.selectStatus')}
+          getOptionLabel={(s) => s.label}
+          getOptionValue={(s) => s.value}
         />
       )
     }

@@ -107,6 +107,27 @@ export const studentsEn = {
   feeLabel: "Fee",
   notSet: "Not Set",
 
+  // Bulk Change Class Level
+  bulkChangeClassLevel: "Bulk Change Class Level",
+  selectNewClassLevel: "New Class Level",
+  moveToClass: "Move Students To",
+  selectClassLevel: "Select a class level",
+  changeSummary: "Change Summary",
+  totalSelected: "Total Selected",
+  willChange: "Will Be Changed",
+  alreadyInLevel: "Already in Level",
+  targetLevel: "Target Level",
+  applyChanges: "Apply Changes",
+  bulkUpdateSuccess: "Class Level Updated",
+  studentsUpdated: "students updated",
+  bulkUpdateFailed: "Failed to update class levels",
+  selectedStudents: "Selected Students",
+  currentClass: "Current Class",
+  noStudentsSelected: "No students selected. Go back to the student list and select students first.",
+  backToList: "Back to Student List",
+  alreadyAtLevel: "already at this level",
+  changeClassLevel: "Change Class Level",
+
   // UI Components
   manageStudents: "Manage student records",
   searchStudents: "Search students...",
