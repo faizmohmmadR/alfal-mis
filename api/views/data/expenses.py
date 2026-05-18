@@ -15,23 +15,8 @@ class ExpenseViewSet(DataRootViewSet):
     search_fields = ["description", "receipt"]
     
     def perform_create(self, serializer):
-        """Create expense and record journal entry"""
-        from api.services.accounting_service import AccountingService
-        expense = serializer.save(user=self.request.user)
-        
-        # Record journal entry for expense
-        try:
-            AccountingService.record_expense(
-                amount=expense.amount,
-                date=expense.expense_date,
-                description=expense.description or expense.category.name,
-                expense_category=expense.category.name,
-                reference=f"EXPENSE-{expense.id}"
-            )
-        except Exception as e:
-            import logging
-            logger = logging.getLogger(__name__)
-            logger.error(f"Failed to create journal entry for expense {expense.id}: {e}")
+        """Create expense - journal entry created automatically by signal"""
+        serializer.save(user=self.request.user)
     
     def perform_update(self, serializer):
         """Update expense"""

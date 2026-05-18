@@ -53,6 +53,7 @@ export const coreFa = {
     shopRental: 'اجاره مغازه ها',
     shopsList: 'لیست مغازه ها',
     shopRentalList: 'لیست اجاره ها',
+    shopRentalPayments: 'پرداخت اجاره ها',
     otherIncome: 'درآمدهای دیگر',
     otherIncomeList: 'لیست درآمدهای دیگر',
     incomeCategoryList: 'دستهبندی درآمدها',

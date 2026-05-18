@@ -420,5 +420,21 @@ export const commonPs = {
   validation: {
     required: "دا ساحه اړینه ده",
     positive: "ارزښت باید مثبت وي"
+  },
+  
+  // Date translations
+  date: {
+    january: "جنوري",
+    february: "فبروري",
+    march: "مارچ",
+    april: "اپریل",
+    may: "می",
+    june: "جون",
+    july: "جولای",
+    august: "اگست",
+    september: "سپتمبر",
+    october: "اکتبر",
+    november: "نومبر",
+    december: "دسمبر"
   }
 };

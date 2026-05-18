@@ -429,5 +429,21 @@ export const commonFa = {
   validation: {
     required: "این فیلد الزامی است",
     positive: "مقدار باید مثبت باشد"
+  },
+  
+  // Date translations
+  date: {
+    january: "ژانویه",
+    february: "فوریه",
+    march: "مارس",
+    april: "آوریل",
+    may: "مه",
+    june: "ژوئن",
+    july: "ژوئیه",
+    august: "اوت",
+    september: "سپتامبر",
+    october: "اکتبر",
+    november: "نوامبر",
+    december: "دسامبر"
   }
 };

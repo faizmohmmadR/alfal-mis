@@ -114,5 +114,61 @@ export const shopRentalEn = {
     fullName: "Full name is required",
     phone: "Phone is required",
     tazkiraNumber: "Tazkira number is required"
-  }
+  },
+
+  // Payments
+  payments: "Payments",
+  managePayments: "Manage rental payment records",
+  addPayment: "Add Payment",
+  editPayment: "Edit Payment",
+  paymentDetails: "Payment Details",
+  referenceNumber: "Reference Number",
+  amount: "Amount",
+  paymentDate: "Payment Date",
+  period: "Period",
+  periodMonth: "Month",
+  periodYear: "Year",
+  paymentStatus: "Payment Status",
+  paymentStatusOptions: {
+    pending: "Pending",
+    completed: "Completed",
+    cancelled: "Cancelled",
+    refunded: "Refunded"
+  },
+  receipt: "Receipt",
+  hasReceipt: "Has Receipt",
+  viewReceipt: "View Receipt",
+  viewCurrentReceipt: "View Current",
+  remove: "Remove",
+  enterAmount: "Enter amount",
+  enterDescription: "Enter description",
+  selectRental: "Select rental",
+  searchPayments: "Search payments...",
+  noPaymentsFound: "No payments found",
+  addFirstPayment: "Add your first payment to get started",
+  loadingPayments: "Loading payments...",
+  deletePayment: "Delete Payment",
+  paymentNotFound: "Payment not found",
+  
+  // Financial Info
+  rentalInfo: "Rental Information",
+  monthlyPaymentStatus: "Monthly Payment Status",
+  paidThisMonth: "Paid This Month",
+  remaining: "Remaining",
+  paymentProgress: "Payment Progress",
+  maxAmount: "Max amount",
+  monthFullyPaid: "Month Fully Paid",
+  monthPendingPayment: "Pending Payment",
+  transactionInfo: "Transaction Information",
+  transactionNumber: "Transaction Number",
+  
+  // Financial Summary
+  financialSummary: "Financial Summary",
+  totalPaid: "Total Paid",
+  totalRemaining: "Total Remaining",
+  paymentHistory: "Payment History",
+  
+  // Additional
+  selectPaymentStatus: "Select Payment Status",
+  allPaymentStatuses: "All Payment Statuses"
 };

@@ -1,36 +1,107 @@
 export const reportsFa = {
-  financialDashboard: 'داشبورد مالی',
-  comprehensiveFinancialOverview: 'نمای کلی جامع مالی',
+  // Page Title
+  reports: 'گزارشات',
+  comprehensiveReports: 'گزارشات جامع',
+  financialReports: 'گزارشات مالی',
+  
+  // Report Types
+  reportType: 'نوع گزارش',
+  summary: 'خلاصه',
+  trialBalance: 'تراز آزمایشی',
+  incomeStatement: 'صورت سود و زیان',
+  balanceSheet: 'ترازنامه',
+  studentPayments: 'پرداخت دانش‌آموزان',
+  payroll: 'حقوق و دستمزد',
+  rental: 'درآمد اجاره',
+  expenses: 'هزینه‌ها',
+  dailyReport: 'گزارش روزانه',
+  
+  // Period
   period: 'دوره',
-  today: 'امروز',
-  thisWeek: 'این هفته',
-  thisMonth: 'این ماه',
-  thisYear: 'امسال',
-  customRange: 'بازه دلخواه',
+  daily: 'روزانه',
+  weekly: 'هفتگی',
+  monthly: 'ماهانه',
+  yearly: 'سالانه',
+  custom: 'سفارشی',
   startDate: 'تاریخ شروع',
   endDate: 'تاریخ پایان',
   
-  totalBudget: 'کل بودجه',
-  paidAmount: 'مبلغ پرداخت شده',
-  remainingAmount: 'مبلغ باقیمانده',
-  totalIncome: 'کل درآمد',
-  totalExpenses: 'کل هزینه ها',
-  profit: 'سود',
+  // Actions
+  refresh: 'بروزرسانی',
+  export: 'خروجی',
+  exportExcel: 'خروجی اکسل',
+  exportPDF: 'خروجی PDF',
+  print: 'چاپ',
   
+  // Income Categories
   income: 'درآمد',
-  expenses: 'هزینه ها',
+  totalIncome: 'کل درآمد',
+  projectIncome: 'درآمد پروژه',
+  studentPaymentsIncome: 'پرداخت دانش‌آموزان',
+  rentalIncome: 'درآمد اجاره',
+  otherIncome: 'درآمد سایر',
   
-  byCurrency: 'بر اساس ارز',
-  financialOverview: 'نمای کلی مالی',
-  expenseDetails: 'جزئیات هزینه ها',
-  expenseBreakdown: 'تفکیک هزینه ها',
-  incomeByCustomer: 'درآمد بر اساس مشتری',
-  expenseByCategory: 'هزینه بر اساس دسته',
+  // Expense Categories
+  expenses: 'هزینه‌ها',
+  totalExpenses: 'کل هزینه‌ها',
+  generalExpenses: 'هزینه‌های عمومی',
+  payrollExpenses: 'حقوق و دستمزد',
+  advanceExpenses: 'پیش‌پرداخت‌ها',
   
-  generalExpenses: 'هزینه های عمومی',
-  payroll: 'حقوق و دستمزد',
-  advances: 'پیشپرداختها',
+  // Financial Results
+  profit: 'سود',
+  netProfit: 'سود خالص',
+  netLoss: 'زیان خالص',
+  netIncome: 'درآمد خالص',
   
-  loadingReport: 'در حال بارگذاری گزارش مالی...',
-  noData: 'دادهای موجود نیست',
+  // Currency
+  currency: 'ارز',
+  afn: 'افغانی',
+  usd: 'دلار',
+  total: 'مجموع',
+  grandTotal: 'مجموع کل',
+  
+  // Status
+  status: 'وضعیت',
+  balanced: 'متوازن',
+  notBalanced: 'نامتوازن',
+  
+  // Table Headers
+  category: 'دسته‌بندی',
+  accountCode: 'کد',
+  accountName: 'نام حساب',
+  debit: 'بدهکار',
+  credit: 'بستانکار',
+  amount: 'مبلغ',
+  count: 'تعداد',
+  
+  // Messages
+  loading: 'در حال بارگذاری...',
+  noData: 'داده‌ای موجود نیست',
+  reportGenerated: 'گزارش با موفقیت ایجاد شد',
+  
+  // Financial Summary
+  financialSummary: 'خلاصه مالی',
+  incomeSummary: 'خلاصه درآمد',
+  expenseSummary: 'خلاصه هزینه',
+  assets: 'دارایی‌ها',
+  liabilities: 'بدهی‌ها',
+  equity: 'سرمایه',
+  totalAssets: 'مجموع دارایی‌ها',
+  totalLiabilities: 'مجموع بدهی‌ها',
+  totalEquity: 'مجموع سرمایه',
+  totalLiabilitiesAndEquity: 'مجموع بدهیها و سرمایه',
+  
+  // Tabs
+  overview: 'نمای کلی',
+  details: 'جزئیات',
+  all: 'همه',
+  
+  // Date
+  date: 'تاریخ',
+  today: 'امروز',
+  
+  // Export
+  exportReport: 'خروجی گزارش',
+  download: 'دانلود',
 };

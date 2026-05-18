@@ -22,6 +22,9 @@ class ShopRentalSerializer(DataRootSerializer):
     shop_details = serializers.SerializerMethodField()
     tenant_details = serializers.SerializerMethodField()
     currency_details = serializers.SerializerMethodField()
+    # Include nested shop and tenant for autocomplete getOptionLabel compatibility
+    shop = serializers.SerializerMethodField()
+    tenant = serializers.SerializerMethodField()
     
     class Meta:
         model = ShopRental
@@ -32,6 +35,23 @@ class ShopRentalSerializer(DataRootSerializer):
             'created_at', 'updated_at'
         ]
         read_only_fields = ['is_active', 'is_expired', 'currency_details']
+    
+    def get_shop(self, obj):
+        if obj.shop:
+            return {
+                'id': obj.shop.id,
+                'shop_number': obj.shop.shop_number,
+                'name': obj.shop.name
+            }
+        return None
+    
+    def get_tenant(self, obj):
+        if obj.tenant:
+            return {
+                'id': obj.tenant.id,
+                'full_name': obj.tenant.full_name
+            }
+        return None
     
     def get_shop_details(self, obj):
         if obj.shop:

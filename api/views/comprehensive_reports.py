@@ -259,18 +259,18 @@ class ComprehensiveReportView(APIView):
         }
     
     def _trial_balance_report(self):
-        """Trial balance from accounting system"""
+        """Trial balance from accounting system with multi-currency support"""
         return AccountingService.get_trial_balance()
     
     def _income_statement_report(self, start_date, end_date):
-        """Income statement (Profit & Loss)"""
+        """Income statement (Profit & Loss) with multi-currency support"""
         today = timezone.now().date()
         start = start_date or today.replace(day=1).isoformat()
         end = end_date or today.isoformat()
         return AccountingService.get_income_statement(start, end)
     
     def _balance_sheet_report(self):
-        """Balance sheet"""
+        """Balance sheet with multi-currency support"""
         return AccountingService.get_balance_sheet()
     
     def _export_excel(self, data, report_type):

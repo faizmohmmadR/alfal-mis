@@ -15,7 +15,6 @@ export const shopRentalFa = {
   area: "مساحت",
   monthlyRent: "اجاره ماهانه",
   currency: "ارز",
-  status: "وضعیت",
   description: "توضیحات",
   shop: "فروشگاه",
   selectShop: "انتخاب فروشگاه",
@@ -32,7 +31,7 @@ export const shopRentalFa = {
   selectRentalStatus: "انتخاب وضعیت اجاره",
   
   // Statuses
-  status: {
+  statusOptions: {
     available: "در دسترس",
     rented: "اجاره شده",
     maintenance: "در حال تعمیر",
@@ -57,8 +56,8 @@ export const shopRentalFa = {
   rentalStatus: "وضعیت اجاره",
   securityDeposit: "سپرده امنیتی",
   
-  // Statuses
-  rentalStatus: {
+  // Rental Statuses
+  rentalStatusOptions: {
     active: "فعال",
     expired: "منقضی شده",
     cancelled: "لغو شده",
@@ -117,5 +116,61 @@ export const shopRentalFa = {
     fullName: "نام کامل الزامی است",
     phone: "تلفن الزامی است",
     tazkiraNumber: "شماره تذکره الزامی است"
-  }
+  },
+
+  // Payments
+  payments: "پرداختها",
+  managePayments: "مدیریت سوابق پرداخت اجاره",
+  addPayment: "افزودن پرداخت",
+  editPayment: "ویرایش پرداخت",
+  paymentDetails: "جزئیات پرداخت",
+  referenceNumber: "شماره مرجع",
+  amount: "مبلغ",
+  paymentDate: "تاریخ پرداخت",
+  period: "دوره",
+  periodMonth: "ماه",
+  periodYear: "سال",
+  paymentStatus: "وضعیت پرداخت",
+  paymentStatusOptions: {
+    pending: "در انتظار",
+    completed: "تکمیل شده",
+    cancelled: "لغو شده",
+    refunded: "بازگشت داده شده"
+  },
+  receipt: "رسید",
+  hasReceipt: "رسید دارد",
+  viewReceipt: "مشاهده رسید",
+  viewCurrentReceipt: "مشاهده فعلی",
+  remove: "حذف",
+  enterAmount: "مبلغ را وارد کنید",
+  enterDescription: "توضیحات را وارد کنید",
+  selectRental: "انتخاب اجاره",
+  searchPayments: "جستجوی پرداختها...",
+  noPaymentsFound: "هیچ پرداختی یافت نشد",
+  addFirstPayment: "برای شروع اولین پرداخت خود را اضافه کنید",
+  loadingPayments: "در حال بارگذاری پرداختها...",
+  deletePayment: "حذف پرداخت",
+  paymentNotFound: "پرداخت یافت نشد",
+  
+  // Financial Info
+  rentalInfo: "اطلاعات اجاره",
+  monthlyPaymentStatus: "وضعیت پرداخت ماهانه",
+  paidThisMonth: "پرداخت شده این ماه",
+  remaining: "باقیمانده",
+  paymentProgress: "پیشرفت پرداخت",
+  maxAmount: "حداکثر مبلغ",
+  monthFullyPaid: "ماه به طور کامل پرداخت شد",
+  monthPendingPayment: "در انتظار پرداخت",
+  transactionInfo: "اطلاعات تراکنش",
+  transactionNumber: "شماره تراکنش",
+  
+  // Financial Summary
+  financialSummary: "خلاصه مالی",
+  totalPaid: "کل پرداخت شده",
+  totalRemaining: "کل باقیمانده",
+  paymentHistory: "تاریخچه پرداخت",
+  
+  // Additional
+  selectPaymentStatus: "انتخاب وضعیت پرداخت",
+  allPaymentStatuses: "همه وضعیتهای پرداخت"
 };

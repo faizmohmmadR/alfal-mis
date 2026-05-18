@@ -1,1 +1,146 @@
-# Signals are imported here
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
+from django.utils import timezone
+from decimal import Decimal
+from api.models.data.student_payment import StudentPayment
+from api.models.data.expenses import Expense
+from api.models.data.payroll import Payroll
+from api.models.data.advance import Advance
+from api.models.data.other_income import OtherIncome
+from api.models.data.shop_rental_payment import ShopRentalPayment
+from api.services.accounting_service import AccountingService
+
+
+@receiver(post_save, sender=StudentPayment)
+def create_student_payment_journal(sender, instance, created, **kwargs):
+    """Create journal entry when student payment is created or marked as completed"""
+    # Create journal entry when payment is created and status is completed
+    if created and instance.payment_status == 'completed':
+        try:
+            cycle_label = instance.payment_cycle or 'monthly'
+            AccountingService.record_student_payment(
+                student_id=instance.student.id,
+                amount=instance.amount,
+                date=instance.payment_date,
+                description=f"{instance.student.full_name}",
+                reference=instance.reference_number,
+                payment_cycle=cycle_label
+            )
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Failed to create journal entry for student payment {instance.id}: {e}")
+    
+    # Create journal entry when payment status changes to completed
+    if not created:
+        try:
+            old_instance = StudentPayment.objects.get(pk=instance.pk)
+            if old_instance.payment_status != 'completed' and instance.payment_status == 'completed':
+                cycle_label = instance.payment_cycle or 'monthly'
+                AccountingService.record_student_payment(
+                    student_id=instance.student.id,
+                    amount=instance.amount,
+                    date=instance.payment_date,
+                    description=f"{instance.student.full_name}",
+                    reference=instance.reference_number,
+                    payment_cycle=cycle_label
+                )
+        except StudentPayment.DoesNotExist:
+            pass
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Failed to create journal entry for student payment {instance.id}: {e}")
+
+
+@receiver(post_save, sender=Expense)
+def create_expense_journal(sender, instance, created, **kwargs):
+    """Create journal entry when expense is created"""
+    if created:
+        try:
+            AccountingService.record_expense(
+                amount=instance.amount,
+                date=instance.expense_date,
+                description=instance.description or instance.category.name,
+                expense_category=instance.category.name,
+                reference=f"EXPENSE-{instance.id}"
+            )
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Failed to create journal entry for expense {instance.id}: {e}")
+
+
+@receiver(post_save, sender=Payroll)
+def create_payroll_journal(sender, instance, created, **kwargs):
+    """Create journal entry when payroll is created"""
+    if created:
+        try:
+            AccountingService.record_payroll(
+                employee_name=instance.employee.full_name,
+                amount=instance.salary,
+                date=instance.payment_date,
+                reference=f"PAYROLL-{instance.id}"
+            )
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Failed to create journal entry for payroll {instance.id}: {e}")
+
+
+@receiver(post_save, sender=Advance)
+def create_advance_journal(sender, instance, created, **kwargs):
+    """Create journal entry when advance is created"""
+    if created:
+        try:
+            AccountingService.record_advance(
+                employee_name=instance.employee.full_name,
+                amount=instance.amount,
+                date=instance.payment_date,
+                reference=f"ADVANCE-{instance.id}"
+            )
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Failed to create journal entry for advance {instance.id}: {e}")
+
+
+@receiver(post_save, sender=OtherIncome)
+def create_other_income_journal(sender, instance, created, **kwargs):
+    """Create journal entry when other income is created"""
+    if created:
+        try:
+            from api.models.data.accounting import Account
+            currency = instance.currency if instance.currency else 'AFN'
+            AccountingService.create_journal_entry(
+                date=instance.income_date,
+                description=f"Other Income - {instance.income_category.name if instance.income_category else 'General'} - {instance.source or 'N/A'}",
+                lines=[
+                    {'account_id': Account.objects.get(code=f'1000_{currency}').id, 'debit': instance.amount, 'credit': 0},
+                    {'account_id': Account.objects.get(code=f'4300_{currency}').id, 'debit': 0, 'credit': instance.amount}
+                ],
+                transaction_type='other_income',
+                reference=f"INCOME-{instance.id}"
+            )
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Failed to create journal entry for other income {instance.id}: {e}")
+
+
+@receiver(post_save, sender=ShopRentalPayment)
+def create_rental_payment_journal(sender, instance, created, **kwargs):
+    """Create journal entry when rental payment is created"""
+    if created:
+        try:
+            AccountingService.record_rental_payment(
+                tenant_name=instance.rental.tenant.full_name,
+                amount=instance.amount,
+                date=instance.payment_date,
+                reference=instance.reference_number,
+                rental_id=instance.rental.id
+            )
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Failed to create journal entry for rental payment {instance.id}: {e}")

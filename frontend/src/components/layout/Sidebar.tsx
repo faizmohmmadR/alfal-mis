@@ -92,7 +92,8 @@ const navigationItems = [
     subItems: [
       { key: 'shopsList', icon: Store, path: '/shops' },
       { key: 'tenantsList', icon: Users, path: '/tenants' },
-      { key: 'shopRentalList', icon: Receipt, path: '/shop-rentals' }
+      { key: 'shopRentalList', icon: Receipt, path: '/shop-rentals' },
+      { key: 'shopRentalPayments', icon: CreditCard, path: '/shop-rental-payments' }
     ]
   },
   { 
@@ -214,7 +215,7 @@ export const Sidebar: React.FC = () => {
   };
 
   const isShopRentalRoute = (path: string) => {
-    const shopRentalRoutes = ['/shops', '/tenants', '/shop-rentals'];
+    const shopRentalRoutes = ['/shops', '/tenants', '/shop-rentals', '/shop-rental-payments'];
     return shopRentalRoutes.some(route => path.startsWith(route));
   };
 

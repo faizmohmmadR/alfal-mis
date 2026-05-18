@@ -53,6 +53,7 @@ export const corePs = {
     shopRental: 'د مغازو اجاره',
     shopsList: 'د مغازو لیست',
     shopRentalList: 'د اجارو لیست',
+    shopRentalPayments: 'د اجارو تادیات',
     otherIncome: 'نور عوائد',
     otherIncomeList: 'د نورو عوایدو لیست',
     incomeCategoryList: 'د عوایدو کټګورۍ',

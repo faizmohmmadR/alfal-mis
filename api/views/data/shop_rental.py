@@ -3,7 +3,9 @@ from rest_framework.response import Response
 from django.db.models import Sum, Count
 from django.utils import timezone
 from api.models.data.shop_rental import Shop, Tenant, ShopRental
+from api.models.data.shop_rental_payment import ShopRentalPayment
 from api.serializers.data.shop_rental import ShopSerializer, TenantSerializer, ShopRentalSerializer
+from api.serializers.data.shop_rental_payment import ShopRentalPaymentSerializer
 from api.views.data.base import DataRootViewSet
 from decimal import Decimal
 
@@ -123,20 +125,21 @@ class ShopRentalViewSet(DataRootViewSet):
             'active_rentals_count': queryset.count()
         })
     
-    def perform_create(self, serializer):
-        """Create shop rental and record journal entry"""
-        from api.services.accounting_service import AccountingService
-        rental = serializer.save()
+    @action(detail=True, methods=['get'])
+    def payments(self, request, pk=None):
+        """Get payments for a specific rental"""
+        rental = self.get_object()
+        payments = ShopRentalPayment.objects.filter(rental=rental).order_by('-payment_date')
+        serializer = ShopRentalPaymentSerializer(payments, many=True)
+        return Response(serializer.data)
+    
+    @action(detail=True, methods=['post'])
+    def add_payment(self, request, pk=None):
+        """Add a payment for a rental - journal entry created automatically by signal"""
+        rental = self.get_object()
         
-        # Record journal entry for rental income
-        try:
-            AccountingService.record_rental_income(
-                tenant_name=rental.tenant.full_name,
-                amount=rental.monthly_rent,
-                date=rental.start_date,
-                reference=f"RENTAL-{rental.id}"
-            )
-        except Exception as e:
-            import logging
-            logger = logging.getLogger(__name__)
-            logger.error(f"Failed to create journal entry for shop rental {rental.id}: {e}")
+        serializer = ShopRentalPaymentSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        payment = serializer.save(rental=rental)
+        
+        return Response(serializer.data, status=201)

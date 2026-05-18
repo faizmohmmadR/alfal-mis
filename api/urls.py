@@ -13,6 +13,7 @@ from api.views.data.student_payment import StudentPaymentViewSet
 
 # ====================== SHOP RENTAL ======================
 from api.views.data.shop_rental import ShopViewSet, TenantViewSet, ShopRentalViewSet
+from api.views.data.shop_rental_payment import ShopRentalPaymentViewSet
 
 # ====================== OTHER INCOME ======================
 from api.views.data.other_income import OtherIncomeViewSet, IncomeCategoryViewSet
@@ -61,6 +62,7 @@ router.register(r'student-payments', StudentPaymentViewSet, basename='student-pa
 router.register(r'shops', ShopViewSet, basename='shop')
 router.register(r'tenants', TenantViewSet, basename='tenant')
 router.register(r'shop-rentals', ShopRentalViewSet, basename='shop-rental')
+router.register(r'shop-rental-payments', ShopRentalPaymentViewSet, basename='shop-rental-payment')
 
 # Other Income
 router.register(r'income-categories', IncomeCategoryViewSet, basename='income-category')

@@ -15,7 +15,6 @@ export const shopRentalPs = {
   area: "وړتیا",
   monthlyRent: "د میاشتې اجاره",
   currency: "اسعار",
-  status: "حالت",
   description: "توضیحات",
   shop: "فروشگاه",
   selectShop: "فروشگاه وټاکئ",
@@ -32,7 +31,7 @@ export const shopRentalPs = {
   selectRentalStatus: "د اجارې حالت وټاکئ",
   
   // Statuses
-  status: {
+  statusOptions: {
     available: "شتون لري",
     rented: "اجاره شوی",
     maintenance: "د تعمیر حالت",
@@ -58,7 +57,7 @@ export const shopRentalPs = {
   securityDeposit: "امنیتي سپرې",
   
   // Statuses
-  rentalStatus: {
+  rentalStatusOptions: {
     active: "فعال",
     expired: "ختم شوی",
     cancelled: "لغو شوی",
@@ -117,5 +116,61 @@ export const shopRentalPs = {
     fullName: "ټول نوم اړین دی",
     phone: "تلیفون اړین دی",
     tazkiraNumber: "د تذکره شمېره اړینه ده"
-  }
+  },
+
+  // Payments
+  payments: "پیښوونې",
+  managePayments: "د اجارې پیښوونو ریکارډونه اداره کړئ",
+  addPayment: "پیښونه زياتول",
+  editPayment: "پیښونه سمول",
+  paymentDetails: "د پیښونې تفصیلات",
+  referenceNumber: "د حوالې شمېره",
+  amount: "مبلغ",
+  paymentDate: "د پیښونې نېټه",
+  period: "موده",
+  periodMonth: "میاشت",
+  periodYear: "کال",
+  paymentStatus: "د پیښونې حالت",
+  paymentStatusOptions: {
+    pending: "در انتظار",
+    completed: "تکمیل شوی",
+    cancelled: "لغو شوی",
+    refunded: "بیرته ستن شوی"
+  },
+  receipt: "رسید",
+  hasReceipt: "رسید لري",
+  viewReceipt: "رسید وګورئ",
+  viewCurrentReceipt: "اوسنی وګورئ",
+  remove: "لیرې کول",
+  enterAmount: "مبلغ entered کړئ",
+  enterDescription: "توضیحات entered کړئ",
+  selectRental: "اجاره وټاکئ",
+  searchPayments: "پیښونې لټول...",
+  noPaymentsFound: "هیڅ پیښونه ونه موندل شوه",
+  addFirstPayment: "د پیل لپاره خپله لومړی پیښونه زيات کړئ",
+  loadingPayments: "پیښونې لوډیږي...",
+  deletePayment: "پیښونه حذف کول",
+  paymentNotFound: "پیښونه ونه موندل شوه",
+  
+  // Financial Info
+  rentalInfo: "د اجارې معلومات",
+  monthlyPaymentStatus: "د میاشتې پیښونې حالت",
+  paidThisMonth: "دا میاشت تادیه شوی",
+  remaining: "پاتې",
+  paymentProgress: "د پیښونې پرمختګ",
+  maxAmount: "اعظمي مبلغ",
+  monthFullyPaid: "میاشت بشپړ تادیه شوې",
+  monthPendingPayment: "در انتظار پیښونه",
+  transactionInfo: "د معاملې معلومات",
+  transactionNumber: "د معاملې شمېره",
+  
+  // Financial Summary
+  financialSummary: "مالي لنډيز",
+  totalPaid: "ټول تادیه شوی",
+  totalRemaining: "ټول پاتې",
+  paymentHistory: "د تادیو تاریخچه",
+  
+  // Additional
+  selectPaymentStatus: "د تادیې حالت وټاکئ",
+  allPaymentStatuses: "ټول د تادیې حالتونه"
 };

@@ -437,5 +437,21 @@ export const commonEn = {
   validation: {
     required: "This field is required",
     positive: "Value must be positive"
+  },
+  
+  // Date translations
+  date: {
+    january: "January",
+    february: "February",
+    march: "March",
+    april: "April",
+    may: "May",
+    june: "June",
+    july: "July",
+    august: "August",
+    september: "September",
+    october: "October",
+    november: "November",
+    december: "December"
   }
 };

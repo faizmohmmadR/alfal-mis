@@ -1,27 +1,31 @@
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from api.models.data.accounting import AccountCategory, Account, FiscalYear
+from api.models.data.choices import CURRENCY_CHOICES
 from datetime import date
 
 
 class Command(BaseCommand):
-    help = 'Initialize the Chart of Accounts with standard accounts'
+    help = 'Initialize the Chart of Accounts with standard accounts for AFN and USD currencies'
     
     def handle(self, *args, **options):
-        self.stdout.info('Initializing Chart of Accounts...')
+        self.stdout.write('Initializing Chart of Accounts for AFN and USD...')
         
         with transaction.atomic():
             # Create Account Categories
             categories = self._create_categories()
             
-            # Create Chart of Accounts
-            self._create_accounts(categories)
+            # Create Chart of Accounts for AFN
+            self._create_accounts(categories, 'AFN')
+            
+            # Create Chart of Accounts for USD
+            self._create_accounts(categories, 'USD')
             
             # Create current fiscal year
             self._create_fiscal_year()
         
-        self.stdout.info(
-            self.style.SUCCESS('Chart of Accounts initialized successfully')
+        self.stdout.write(
+            self.style.SUCCESS('Chart of Accounts initialized successfully for AFN and USD')
         )
     
     def _create_categories(self):
@@ -42,53 +46,56 @@ class Command(BaseCommand):
             )
             categories[cat_data['code']] = category
             if created:
-                self.stdout.info(f'Created category: {category.name}')
+                self.stdout.write(f'Created category: {category.name}')
         
         return categories
     
-    def _create_accounts(self, categories):
-        """Create standard chart of accounts"""
+    def _create_accounts(self, categories, currency):
+        """Create standard chart of accounts for specific currency"""
+        currency_name = dict(CURRENCY_CHOICES).get(currency, currency)
+        self.stdout.write(f'\nCreating accounts for {currency} ({currency_name})...')
+        
         accounts_data = [
             # Assets (1xxx)
-            {'name': 'Cash', 'code': '1000', 'category': categories['1'], 'is_detail': True},
-            {'name': 'Bank Accounts', 'code': '1100', 'category': categories['1'], 'is_detail': True},
-            {'name': 'Accounts Receivable', 'code': '1200', 'category': categories['1'], 'is_detail': True},
-            {'name': 'Employee Advances', 'code': '1210', 'category': categories['1'], 'is_detail': True},
-            {'name': 'Inventory', 'code': '1300', 'category': categories['1'], 'is_detail': True},
-            {'name': 'Prepaid Expenses', 'code': '1400', 'category': categories['1'], 'is_detail': True},
-            {'name': 'Fixed Assets', 'code': '1500', 'category': categories['1'], 'is_detail': True},
+            {'name': f'Cash - {currency}', 'code': f'1000_{currency}', 'category': categories['1'], 'is_detail': True},
+            {'name': f'Bank Accounts - {currency}', 'code': f'1100_{currency}', 'category': categories['1'], 'is_detail': True},
+            {'name': f'Accounts Receivable - {currency}', 'code': f'1200_{currency}', 'category': categories['1'], 'is_detail': True},
+            {'name': f'Employee Advances - {currency}', 'code': f'1210_{currency}', 'category': categories['1'], 'is_detail': True},
+            {'name': f'Inventory - {currency}', 'code': f'1300_{currency}', 'category': categories['1'], 'is_detail': True},
+            {'name': f'Prepaid Expenses - {currency}', 'code': f'1400_{currency}', 'category': categories['1'], 'is_detail': True},
+            {'name': f'Fixed Assets - {currency}', 'code': f'1500_{currency}', 'category': categories['1'], 'is_detail': True},
             
             # Liabilities (2xxx)
-            {'name': 'Accounts Payable', 'code': '2000', 'category': categories['2'], 'is_detail': True},
-            {'name': 'Accrued Expenses', 'code': '2100', 'category': categories['2'], 'is_detail': True},
-            {'name': 'Short-term Loans', 'code': '2200', 'category': categories['2'], 'is_detail': True},
-            {'name': 'Long-term Loans', 'code': '2300', 'category': categories['2'], 'is_detail': True},
-            {'name': 'Customer Deposits', 'code': '2400', 'category': categories['2'], 'is_detail': True},
+            {'name': f'Accounts Payable - {currency}', 'code': f'2000_{currency}', 'category': categories['2'], 'is_detail': True},
+            {'name': f'Accrued Expenses - {currency}', 'code': f'2100_{currency}', 'category': categories['2'], 'is_detail': True},
+            {'name': f'Short-term Loans - {currency}', 'code': f'2200_{currency}', 'category': categories['2'], 'is_detail': True},
+            {'name': f'Long-term Loans - {currency}', 'code': f'2300_{currency}', 'category': categories['2'], 'is_detail': True},
+            {'name': f'Customer Deposits - {currency}', 'code': f'2400_{currency}', 'category': categories['2'], 'is_detail': True},
             
             # Equity (3xxx)
-            {'name': 'Owner\'s Capital', 'code': '3000', 'category': categories['3'], 'is_detail': True},
-            {'name': 'Retained Earnings', 'code': '3100', 'category': categories['3'], 'is_detail': True},
-            {'name': 'Current Year Earnings', 'code': '3200', 'category': categories['3'], 'is_detail': True},
+            {'name': f"Owner's Capital - {currency}", 'code': f'3000_{currency}', 'category': categories['3'], 'is_detail': True},
+            {'name': f'Retained Earnings - {currency}', 'code': f'3100_{currency}', 'category': categories['3'], 'is_detail': True},
+            {'name': f'Current Year Earnings - {currency}', 'code': f'3200_{currency}', 'category': categories['3'], 'is_detail': True},
             
             # Income (4xxx)
-            {'name': 'Student Fees Revenue', 'code': '4000', 'category': categories['4'], 'is_detail': True},
-            {'name': 'Rental Income', 'code': '4100', 'category': categories['4'], 'is_detail': True},
-            {'name': 'Other Income', 'code': '4300', 'category': categories['4'], 'is_detail': True},
-            {'name': 'Service Income', 'code': '4400', 'category': categories['4'], 'is_detail': True},
-            {'name': 'Donations', 'code': '4500', 'category': categories['4'], 'is_detail': True},
-            {'name': 'Discounts Given', 'code': '4900', 'category': categories['4'], 'is_detail': True},
+            {'name': f'Student Fees Revenue - {currency}', 'code': f'4000_{currency}', 'category': categories['4'], 'is_detail': True},
+            {'name': f'Rental Income - {currency}', 'code': f'4100_{currency}', 'category': categories['4'], 'is_detail': True},
+            {'name': f'Other Income - {currency}', 'code': f'4300_{currency}', 'category': categories['4'], 'is_detail': True},
+            {'name': f'Service Income - {currency}', 'code': f'4400_{currency}', 'category': categories['4'], 'is_detail': True},
+            {'name': f'Donations - {currency}', 'code': f'4500_{currency}', 'category': categories['4'], 'is_detail': True},
+            {'name': f'Discounts Given - {currency}', 'code': f'4900_{currency}', 'category': categories['4'], 'is_detail': True},
             
             # Expenses (5xxx)
-            {'name': 'Salaries and Wages', 'code': '5000', 'category': categories['5'], 'is_detail': True},
-            {'name': 'Employee Benefits', 'code': '5100', 'category': categories['5'], 'is_detail': True},
-            {'name': 'Rent Expense', 'code': '5200', 'category': categories['5'], 'is_detail': True},
-            {'name': 'Utilities', 'code': '5300', 'category': categories['5'], 'is_detail': True},
-            {'name': 'Office Supplies', 'code': '5400', 'category': categories['5'], 'is_detail': True},
-            {'name': 'Transportation', 'code': '5500', 'category': categories['5'], 'is_detail': True},
-            {'name': 'Maintenance and Repairs', 'code': '5600', 'category': categories['5'], 'is_detail': True},
-            {'name': 'Insurance', 'code': '5700', 'category': categories['5'], 'is_detail': True},
-            {'name': 'Professional Fees', 'code': '5800', 'category': categories['5'], 'is_detail': True},
-            {'name': 'Miscellaneous Expenses', 'code': '5900', 'category': categories['5'], 'is_detail': True},
+            {'name': f'Salaries and Wages - {currency}', 'code': f'5000_{currency}', 'category': categories['5'], 'is_detail': True},
+            {'name': f'Employee Benefits - {currency}', 'code': f'5100_{currency}', 'category': categories['5'], 'is_detail': True},
+            {'name': f'Rent Expense - {currency}', 'code': f'5200_{currency}', 'category': categories['5'], 'is_detail': True},
+            {'name': f'Utilities - {currency}', 'code': f'5300_{currency}', 'category': categories['5'], 'is_detail': True},
+            {'name': f'Office Supplies - {currency}', 'code': f'5400_{currency}', 'category': categories['5'], 'is_detail': True},
+            {'name': f'Transportation - {currency}', 'code': f'5500_{currency}', 'category': categories['5'], 'is_detail': True},
+            {'name': f'Maintenance and Repairs - {currency}', 'code': f'5600_{currency}', 'category': categories['5'], 'is_detail': True},
+            {'name': f'Insurance - {currency}', 'code': f'5700_{currency}', 'category': categories['5'], 'is_detail': True},
+            {'name': f'Professional Fees - {currency}', 'code': f'5800_{currency}', 'category': categories['5'], 'is_detail': True},
+            {'name': f'Miscellaneous Expenses - {currency}', 'code': f'5900_{currency}', 'category': categories['5'], 'is_detail': True},
         ]
         
         created_count = 0
@@ -99,9 +106,9 @@ class Command(BaseCommand):
             )
             if created:
                 created_count += 1
-                self.stdout.info(f'Created account: {account.code} - {account.name}')
+                self.stdout.write(f'  Created: {account.code} - {account.name}')
         
-        self.stdout.info(f'Created {created_count} accounts')
+        self.stdout.write(f'Created {created_count} accounts for {currency}')
     
     def _create_fiscal_year(self):
         """Create current fiscal year"""
@@ -117,6 +124,6 @@ class Command(BaseCommand):
         )
         
         if created:
-            self.stdout.info(f'Created fiscal year: {fiscal_year.name}')
+            self.stdout.write(f'Created fiscal year: {fiscal_year.name}')
         else:
-            self.stdout.info(f'Fiscal year already exists: {fiscal_year.name}')
+            self.stdout.write(f'Fiscal year already exists: {fiscal_year.name}')

@@ -53,6 +53,7 @@ export const coreEn = {
     shopRental: 'Shop Rental',
     shopsList: 'Shops List',
     shopRentalList: 'Shop Rental List',
+    shopRentalPayments: 'Rental Payments',
     otherIncome: 'Other Income',
     otherIncomeList: 'Other Income List',
     incomeCategoryList: 'Income Categories',

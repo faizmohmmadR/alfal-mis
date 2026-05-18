@@ -36,10 +36,28 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     const keys = key.split('.').map(k => toCamelCase(k));
     let value: any = translations;
     
+    // First try to find the key at the root level
     for (const k of keys) {
       if (value && typeof value === 'object' && k in value) {
         value = value[k];
       } else {
+        // If not found at root, try common prefix
+        if (keys[0] !== 'common' && translations.common && typeof translations.common === 'object') {
+          const commonKeys = ['common', ...keys];
+          value = translations.common;
+          let foundInCommon = true;
+          for (const k of commonKeys) {
+            if (value && typeof value === 'object' && k in value) {
+              value = value[k];
+            } else {
+              foundInCommon = false;
+              break;
+            }
+          }
+          if (foundInCommon) {
+            return typeof value === 'string' ? value : (defaultValue || key);
+          }
+        }
         return defaultValue || key;
       }
     }
