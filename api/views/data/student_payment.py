@@ -1,8 +1,9 @@
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django.db.models import Sum, Count
+from django.db.models import Sum, Count, Q
 from django.utils import timezone
 from api.models.data.student_payment import StudentPayment
+from api.models.data.student import Student
 from api.serializers.data.student_payment import StudentPaymentSerializer
 from api.views.data.base import DataRootViewSet
 from decimal import Decimal
@@ -118,4 +119,69 @@ class StudentPaymentViewSet(DataRootViewSet):
         return Response({
             'message': 'Payment marked as refunded',
             'payment_status': payment.payment_status
+        })
+
+    @action(detail=False, methods=['get'])
+    def financial_info(self, request):
+        """Get financial info for a student based on month/year"""
+        student_id = request.query_params.get('student')
+        month = request.query_params.get('month', timezone.now().month)
+        year = request.query_params.get('year', timezone.now().year)
+        
+        if not student_id:
+            return Response({'error': 'student parameter is required'}, status=400)
+        
+        try:
+            student = Student.objects.get(id=student_id)
+        except Student.DoesNotExist:
+            return Response({'error': 'Student not found'}, status=404)
+        
+        # Ensure month is zero-padded for consistent querying
+        month_str = str(month).zfill(2)
+        year_str = str(year)
+        
+        # Get payments for the specified month - check both padded and non-padded formats
+        monthly_payments = StudentPayment.objects.filter(
+            student=student,
+            period_year=year_str,
+            payment_status='completed',
+            payment_cycle='monthly'
+        ).filter(
+            Q(period_month=month_str) | Q(period_month=str(month))
+        ).aggregate(total_paid=Sum('amount'))['total_paid'] or Decimal('0')
+        
+        # Calculate yearly payments if payment cycle is yearly
+        yearly_payments = StudentPayment.objects.filter(
+            student=student,
+            period_year=year_str,
+            payment_status='completed',
+            payment_cycle='yearly'
+        ).aggregate(total_paid=Sum('amount'))['total_paid'] or Decimal('0')
+        
+        # Determine fee and payments based on payment cycle
+        if student.payment_cycle == 'yearly':
+            total_fee = student.yearly_fee
+            paid_amount = yearly_payments
+        else:
+            total_fee = student.monthly_fee
+            paid_amount = monthly_payments
+        
+        remaining = total_fee - paid_amount
+        
+        return Response({
+            'student_id': student.id,
+            'student_name': student.full_name,
+            'currency': student.currency,
+            'payment_cycle': student.payment_cycle,
+            'monthly_fee': float(student.monthly_fee),
+            'yearly_fee': float(student.yearly_fee),
+            'period': {
+                'month': int(month),
+                'year': int(year)
+            },
+            'total_amount': float(total_fee),
+            'paid_amount': float(paid_amount),
+            'remaining_amount': float(remaining),
+            'is_paid': paid_amount >= total_fee,
+            'payment_percentage': float((paid_amount / total_fee * 100) if total_fee > 0 else 0)
         })

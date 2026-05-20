@@ -50,8 +50,8 @@ const EditShopRental = () => {
   useEffect(() => {
     if (data) {
       setFormData({
-        shop: data.shop?.toString() || '',
-        tenant: data.tenant?.toString() || '',
+        shop: data.shop?.id?.toString() || '',
+        tenant: data.tenant?.id?.toString() || '',
         start_date: data.start_date || '',
         end_date: data.end_date || '',
         monthly_rent: data.monthly_rent?.toString() || '',
@@ -96,7 +96,7 @@ const EditShopRental = () => {
             <div className="space-y-2">
               <Label htmlFor="shop">{t("shop-rental.shop")} *</Label>
               <Autocomplete
-                endpoint="shops"
+                endpoint="shops/"
                 value={formData.shop}
                 onChange={(value) => { setFormData((prev) => ({ ...prev, shop: value })); if (errors.shop) setErrors((prev) => ({ ...prev, shop: "" })); }}
                 placeholder={t("shop-rental.selectShop")}
@@ -108,7 +108,7 @@ const EditShopRental = () => {
             <div className="space-y-2">
               <Label htmlFor="tenant">{t("shop-rental.tenant")} *</Label>
               <Autocomplete
-                endpoint="tenants"
+                endpoint="tenants/"
                 value={formData.tenant}
                 onChange={(value) => { setFormData((prev) => ({ ...prev, tenant: value })); if (errors.tenant) setErrors((prev) => ({ ...prev, tenant: "" })); }}
                 placeholder={t("shop-rental.selectTenant")}

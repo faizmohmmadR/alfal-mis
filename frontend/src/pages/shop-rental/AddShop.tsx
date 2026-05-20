@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -42,11 +42,11 @@ const AddShop = () => {
     endpoint: 'shops/',
   });
 
-  const handleSuccess = () => {
+  useEffect(() => {
     if (isSuccess) {
       navigate('/shops');
     }
-  };
+  }, [isSuccess, navigate]);
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -61,7 +61,6 @@ const AddShop = () => {
   const handleSubmit = async () => {
     if (!validateForm()) return;
     handleAdd(formData);
-    handleSuccess();
   };
 
   return (

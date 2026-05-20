@@ -10,9 +10,11 @@ import { Autocomplete } from '@/components/ui/autocomplete';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { RotateCw, ArrowLeft, User, CreditCard, Calendar as CalendarIcon, DollarSign, Info } from 'lucide-react';
 import useAdd from '@/api/useAdd';
+import useFetchObject from '@/api/useFetchObject';
 
 interface StudentPaymentFormData {
   student: string;
+  class_level: string;
   amount: string;
   currency: string;
   payment_date: string;
@@ -39,14 +41,15 @@ interface StudentInfo {
 
 const defaultForm: StudentPaymentFormData = {
   student: '',
+  class_level: 'all',
   amount: '',
   currency: 'AFN',
   payment_date: new Date().toISOString().split('T')[0],
   payment_status: 'completed',
   payment_cycle: 'monthly',
   period_year: new Date().getFullYear().toString(),
-  period_month: new Date().getMonth() + 1 + '',
-  period_months: [],
+  period_month: (new Date().getMonth() + 1).toString().padStart(2, '0'),
+  period_months: [(new Date().getMonth() + 1).toString().padStart(2, '0')],
   reference_number: '',
   description: '',
 };
@@ -92,6 +95,14 @@ const AddStudentPayment = () => {
     endpoint: 'student-payments/',
   });
 
+  // Fetch financial info based on student and selected month
+  const firstMonth = formData.period_months[0];
+  const { data: financialInfo, refetch: refetchFinancialInfo } = useFetchObject<any>({
+    queryKey: ['student-financial-info', formData.student, firstMonth || formData.period_month, formData.period_year],
+    endpoint: `student-payments/financial_info/?student=${formData.student}&month=${firstMonth || formData.period_month || new Date().getMonth() + 1}&year=${formData.period_year}`,
+    enabled: !!formData.student && !!(firstMonth || formData.period_month),
+  });
+
   // Fetch student info when a student is selected
   useEffect(() => {
     if (!formData.student) {
@@ -118,11 +129,12 @@ const AddStudentPayment = () => {
   // When cycle changes to yearly, clear monthly month selection
   // handled inline in onValueChange to avoid eslint react-hooks/exhaustive-deps warning
 
-  const handleSuccess = () => {
+  // Navigate on success
+  useEffect(() => {
     if (isSuccess) {
       navigate('/student-payments');
     }
-  };
+  }, [isSuccess, navigate]);
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -149,7 +161,6 @@ const AddStudentPayment = () => {
       payload.period_month = formData.period_months[0];
     }
     handleAdd(payload);
-    handleSuccess();
   };
 
   const toggleMonth = (value: string) => {
@@ -195,23 +206,58 @@ const AddStudentPayment = () => {
         </CardHeader>
         <CardContent className="space-y-5">
 
-          {/* ── Student ── */}
-          <div className="space-y-1.5">
-            <Label htmlFor="student" className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-              {t('student-payments.student')} <span className="text-destructive">*</span>
-            </Label>
-            <Autocomplete
-              endpoint="students"
-              value={formData.student}
-              onChange={(value) => {
-                setFormData((prev) => ({ ...prev, student: value }));
-                if (errors.student) setErrors((prev) => ({ ...prev, student: '' }));
-              }}
-              placeholder={t('student-payments.selectStudent')}
-              getOptionLabel={(s) => s.full_name}
-              getOptionValue={(s) => s.id.toString()}
-            />
-            {errors.student && <p className="text-xs text-destructive mt-1">{errors.student}</p>}
+          {/* ── Class Level Filter ── */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="class_level" className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                {t('students.classLevel', 'Class Level')}
+              </Label>
+              <Select
+                value={formData.class_level}
+                onValueChange={(value) => {
+                  setFormData((prev) => ({ ...prev, class_level: value, student: '' }));
+                  setSelectedStudent(null);
+                }}
+              >
+                <SelectTrigger className="h-10">
+                  <SelectValue placeholder={t('students.selectClassLevel', 'Select Class Level')} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{t('common.all', 'All')}</SelectItem>
+                  <SelectItem value="1">{t('students.classLevels.1', 'Class 1')}</SelectItem>
+                  <SelectItem value="2">{t('students.classLevels.2', 'Class 2')}</SelectItem>
+                  <SelectItem value="3">{t('students.classLevels.3', 'Class 3')}</SelectItem>
+                  <SelectItem value="4">{t('students.classLevels.4', 'Class 4')}</SelectItem>
+                  <SelectItem value="5">{t('students.classLevels.5', 'Class 5')}</SelectItem>
+                  <SelectItem value="6">{t('students.classLevels.6', 'Class 6')}</SelectItem>
+                  <SelectItem value="7">{t('students.classLevels.7', 'Class 7')}</SelectItem>
+                  <SelectItem value="8">{t('students.classLevels.8', 'Class 8')}</SelectItem>
+                  <SelectItem value="9">{t('students.classLevels.9', 'Class 9')}</SelectItem>
+                  <SelectItem value="10">{t('students.classLevels.10', 'Class 10')}</SelectItem>
+                  <SelectItem value="11">{t('students.classLevels.11', 'Class 11')}</SelectItem>
+                  <SelectItem value="12">{t('students.classLevels.12', 'Class 12')}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* ── Student ── */}
+            <div className="space-y-1.5">
+              <Label htmlFor="student" className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                {t('student-payments.student')} <span className="text-destructive">*</span>
+              </Label>
+              <Autocomplete
+                endpoint={formData.class_level && formData.class_level !== 'all' ? `students?class_level=${formData.class_level}` : 'students'}
+                value={formData.student}
+                onChange={(value) => {
+                  setFormData((prev) => ({ ...prev, student: value }));
+                  if (errors.student) setErrors((prev) => ({ ...prev, student: '' }));
+                }}
+                placeholder={t('student-payments.selectStudent')}
+                getOptionLabel={(s) => s.full_name}
+                getOptionValue={(s) => s.id.toString()}
+              />
+              {errors.student && <p className="text-xs text-destructive mt-1">{errors.student}</p>}
+            </div>
           </div>
 
           {/* ── Student Finance Banner ── */}
@@ -242,14 +288,9 @@ const AddStudentPayment = () => {
                   }
                 />
                 <FinanceBox
-                  label={cycleIsYearly
-                    ? t('students.yearlyFeeLabel', 'Yearly Fee')
-                    : t('students.monthlyFeeLabel', 'Monthly Fee')}
-                  value={formatCurrency(
-                    cycleIsYearly ? (selectedStudent.yearly_fee ?? 0) : (selectedStudent.monthly_fee ?? 0),
-                    formData.currency
-                  )}
-                  highlight
+                  label={t('students.totalPaid', 'Total Paid')}
+                  value={formatCurrency(selectedStudent.total_paid ?? 0, selectedStudent.currency || 'AFN')}
+                  valueClass="text-emerald-600 dark:text-emerald-400"
                 />
                 <FinanceBox
                   label={t('students.remainingBalance', 'Balance Due')}
@@ -257,10 +298,32 @@ const AddStudentPayment = () => {
                   highlight
                   valueClass="text-red-600 dark:text-red-400"
                 />
+              </div>
+            </div>
+          )}
+          
+          {/* ── Period Financial Info ── */}
+          {financialInfo && (formData.period_months.length > 0 || formData.period_month) && (
+            <div className="rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 px-4 py-4 space-y-3">
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-blue-800 dark:text-blue-200 uppercase tracking-wide">
+                <DollarSign className="h-3.5 w-3.5" />
+                {t('student-payments.periodFinancialInfo', 'Period Financial Info')}
+              </div>
+              <div className="grid grid-cols-3 gap-3">
                 <FinanceBox
-                  label={t('students.totalPaid', 'Total Paid')}
-                  value={formatCurrency(selectedStudent.total_paid ?? 0, selectedStudent.currency || 'AFN')}
+                  label={t('student-payments.totalAmount', 'Total Amount')}
+                  value={formatCurrency(financialInfo.total_amount, financialInfo.currency)}
+                />
+                <FinanceBox
+                  label={t('student-payments.paidAmount', 'Paid Amount')}
+                  value={formatCurrency(financialInfo.paid_amount, financialInfo.currency)}
                   valueClass="text-emerald-600 dark:text-emerald-400"
+                />
+                <FinanceBox
+                  label={t('student-payments.remainingAmount', 'Remaining Amount')}
+                  value={formatCurrency(financialInfo.remaining_amount, financialInfo.currency)}
+                  highlight
+                  valueClass={financialInfo.remaining_amount > 0 ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400'}
                 />
               </div>
             </div>
@@ -304,7 +367,7 @@ const AddStudentPayment = () => {
               </Label>
               <Select
                 value={formData.currency}
-                disabled={!!selectedStudent}
+                disabled
                 onValueChange={(value) => setFormData((prev) => ({ ...prev, currency: value }))}
               >
                 <SelectTrigger className="h-10">
@@ -315,11 +378,9 @@ const AddStudentPayment = () => {
                   <SelectItem value="USD">USD ($)</SelectItem>
                 </SelectContent>
               </Select>
-              {selectedStudent && (
-                <p className="text-[10px] text-muted-foreground mt-0.5">
-                  {t('students.feeCurrency')} — {formData.currency}
-                </p>
-              )}
+              <p className="text-[10px] text-muted-foreground mt-0.5">
+                {t('students.feeCurrency')} — {formData.currency}
+              </p>
             </div>
           </div>
 

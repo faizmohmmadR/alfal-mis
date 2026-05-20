@@ -62,3 +62,15 @@ class StudentPaymentSerializer(DataRootSerializer):
                 raise serializers.ValidationError({'period_month': 'Month must be a number between 1 and 12'})
 
         return attrs
+
+    def create(self, validated_data):
+        # Ensure period_month is zero-padded
+        if validated_data.get('period_month'):
+            validated_data['period_month'] = str(validated_data['period_month']).zfill(2)
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        # Ensure period_month is zero-padded
+        if validated_data.get('period_month'):
+            validated_data['period_month'] = str(validated_data['period_month']).zfill(2)
+        return super().update(instance, validated_data)

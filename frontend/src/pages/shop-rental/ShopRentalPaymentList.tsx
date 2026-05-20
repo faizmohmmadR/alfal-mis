@@ -60,7 +60,7 @@ export const ShopRentalPaymentList = () => {
     };
     return (
       <Badge className={colors[status] || 'bg-gray-100'}>
-        {t(`shop-rental.paymentStatusOptions.${status}`) || t(`shop-rental.paymentStatus.${status}`) || status}
+        {t(`shop-rental.paymentStatusOptions.${status}`) || status}
       </Badge>
     );
   };
@@ -190,13 +190,13 @@ export const ShopRentalPaymentList = () => {
             setStatusFilter(e.target.value);
             setCurrentPage(1);
           }}
-          className="border rounded px-3 py-2 text-sm w-40"
+          className="border rounded px-3 py-2 text-sm w-40 bg-background"
         >
           <option value="">{t('shop-rental.allPaymentStatuses') || t('shop-rental.allStatuses')}</option>
-          <option value="pending">{t('shop-rental.paymentStatusOptions.pending') || t('shop-rental.paymentStatus.pending')}</option>
-          <option value="completed">{t('shop-rental.paymentStatusOptions.completed') || t('shop-rental.paymentStatus.completed')}</option>
-          <option value="cancelled">{t('shop-rental.paymentStatusOptions.cancelled') || t('shop-rental.paymentStatus.cancelled')}</option>
-          <option value="refunded">{t('shop-rental.paymentStatusOptions.refunded') || t('shop-rental.paymentStatus.refunded')}</option>
+          <option value="pending">{t('shop-rental.paymentStatusOptions.pending')}</option>
+          <option value="completed">{t('shop-rental.paymentStatusOptions.completed')}</option>
+          <option value="cancelled">{t('shop-rental.paymentStatusOptions.cancelled')}</option>
+          <option value="refunded">{t('shop-rental.paymentStatusOptions.refunded')}</option>
         </select>
       )
     }

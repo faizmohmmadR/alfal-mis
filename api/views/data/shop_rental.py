@@ -1,6 +1,6 @@
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django.db.models import Sum, Count
+from django.db.models import Sum, Count, Q
 from django.utils import timezone
 from api.models.data.shop_rental import Shop, Tenant, ShopRental
 from api.models.data.shop_rental_payment import ShopRentalPayment
@@ -143,3 +143,57 @@ class ShopRentalViewSet(DataRootViewSet):
         payment = serializer.save(rental=rental)
         
         return Response(serializer.data, status=201)
+    
+    @action(detail=True, methods=['get'])
+    def financial_info(self, request, pk=None):
+        """Get financial info for a specific rental based on month/year"""
+        rental = self.get_object()
+        month = request.query_params.get('month', timezone.now().month)
+        year = request.query_params.get('year', timezone.now().year)
+        
+        # Ensure month is zero-padded for consistent querying
+        month_str = str(month).zfill(2)
+        year_str = str(year)
+        
+        # Get payments for the specified month - check both padded and non-padded formats
+        monthly_payments = ShopRentalPayment.objects.filter(
+            rental=rental,
+            period_year=year_str,
+            payment_status='completed'
+        ).filter(
+            Q(period_month=month_str) | Q(period_month=str(month))
+        ).aggregate(total_paid=Sum('amount'))['total_paid'] or Decimal('0')
+        
+        monthly_rent = rental.monthly_rent
+        remaining = monthly_rent - monthly_payments
+        
+        return Response({
+            'rental_id': rental.id,
+            'shop': {
+                'id': rental.shop.id,
+                'shop_number': rental.shop.shop_number,
+                'name': rental.shop.name,
+            },
+            'tenant': {
+                'id': rental.tenant.id,
+                'full_name': rental.tenant.full_name,
+            },
+            'currency': rental.currency,
+            'monthly_rent': float(monthly_rent),
+            'period': {
+                'month': int(month),
+                'year': int(year)
+            },
+            'current_month': {
+                'total_paid': float(monthly_payments),
+                'remaining': float(remaining),
+                'is_paid': monthly_payments >= monthly_rent,
+                'payment_percentage': float((monthly_payments / monthly_rent * 100) if monthly_rent > 0 else 0)
+            },
+            'rental_period': {
+                'start_date': rental.start_date.isoformat(),
+                'end_date': rental.end_date.isoformat(),
+                'is_active': rental.is_active,
+                'is_expired': rental.is_expired
+            }
+        })

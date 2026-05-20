@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -32,10 +32,16 @@ const AddTenant = () => {
   const [formData, setFormData] = useState<TenantFormData>(defaultForm);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const { handleAdd, loading } = useAdd<TenantFormData>({
+  const { handleAdd, loading, isSuccess } = useAdd<TenantFormData>({
     queryKey: ['tenants'],
     endpoint: 'tenants/',
   });
+
+  useEffect(() => {
+    if (isSuccess) {
+      navigate('/tenants');
+    }
+  }, [isSuccess, navigate]);
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -49,7 +55,6 @@ const AddTenant = () => {
   const handleSubmit = async () => {
     if (!validateForm()) return;
     handleAdd(formData);
-    navigate('/tenants');
   };
 
   return (

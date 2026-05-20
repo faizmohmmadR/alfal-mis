@@ -69,4 +69,18 @@ class ShopRentalPaymentSerializer(DataRootSerializer):
         rental = validated_data.get('rental')
         if rental and not validated_data.get('currency'):
             validated_data['currency'] = rental.currency
+        
+        # Ensure period_month is zero-padded
+        period_month = validated_data.get('period_month')
+        if period_month:
+            validated_data['period_month'] = str(period_month).zfill(2)
+        
         return super().create(validated_data)
+    
+    def update(self, instance, validated_data):
+        # Ensure period_month is zero-padded
+        period_month = validated_data.get('period_month')
+        if period_month:
+            validated_data['period_month'] = str(period_month).zfill(2)
+        
+        return super().update(instance, validated_data)

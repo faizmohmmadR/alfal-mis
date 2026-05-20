@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -45,11 +45,11 @@ const AddShopRental = () => {
     endpoint: 'shop-rentals/',
   });
 
-  const handleSuccess = () => {
+  useEffect(() => {
     if (isSuccess) {
       navigate('/shop-rentals');
     }
-  };
+  }, [isSuccess, navigate]);
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -64,7 +64,6 @@ const AddShopRental = () => {
   const handleSubmit = async () => {
     if (!validateForm()) return;
     handleAdd(formData);
-    handleSuccess();
   };
 
   return (
@@ -85,7 +84,7 @@ const AddShopRental = () => {
               <div className="space-y-2">
                 <Label htmlFor="shop">{t("shop-rental.shop")} *</Label>
                 <Autocomplete
-                  endpoint="shops"
+                  endpoint="shops/"
                   value={formData.shop}
                   onChange={(value) => {
                     setFormData((prev) => ({ ...prev, shop: value }));
@@ -100,14 +99,14 @@ const AddShopRental = () => {
               <div className="space-y-2">
                 <Label htmlFor="tenant">{t("shop-rental.tenant")} *</Label>
                 <Autocomplete
-                  endpoint="tenants"
+                  endpoint="tenants/"
                   value={formData.tenant}
                   onChange={(value) => {
                     setFormData((prev) => ({ ...prev, tenant: value }));
                     if (errors.tenant) setErrors((prev) => ({ ...prev, tenant: "" }));
                   }}
                   placeholder={t("shop-rental.selectTenant")}
-                  getOptionLabel={(t) => t.name}
+                  getOptionLabel={(t) => t.full_name}
                   getOptionValue={(t) => t.id.toString()}
                 />
                 {errors.tenant && <p className="text-base text-destructive text-xs">{errors.tenant}</p>}

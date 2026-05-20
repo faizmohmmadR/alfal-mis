@@ -62,12 +62,46 @@ export const ShopRentalListPage = () => {
     {
       key: 'shop_details',
       title: t('shop-rental.shop'),
-      render: (value) => <span className="text-xs font-medium">{value?.name || 'N/A'}</span>
+      render: (value) => <span className="text-xs font-medium">{value?.shop_number || 'N/A'} - {value?.name || ''}</span>
     },
     {
       key: 'tenant_details',
       title: t('shop-rental.tenant'),
       render: (value) => <span className="text-xs">{value?.full_name || 'N/A'}</span>
+    },
+    {
+      key: 'monthly_rent',
+      title: t('shop-rental.monthlyRent'),
+      render: (value, record) => (
+        <span className="text-xs font-bold text-blue-600">
+          {Number(value || 0).toFixed(2)} {record.currency_details?.code || record.currency || ''}
+        </span>
+      )
+    },
+    {
+      key: 'paid_amount',
+      title: t('shop-rental.paidThisMonth'),
+      render: (value, record) => {
+        const paid = record.paid_amount || 0;
+        return (
+          <span className="text-xs font-bold text-green-600">
+            {Number(paid).toFixed(2)} {record.currency_details?.code || record.currency || ''}
+          </span>
+        );
+      }
+    },
+    {
+      key: 'remaining_amount',
+      title: t('shop-rental.remaining'),
+      render: (value, record) => {
+        const remaining = record.remaining_amount || record.monthly_rent || 0;
+        const isPaid = remaining <= 0;
+        return (
+          <span className={`text-xs font-bold ${isPaid ? 'text-green-600' : 'text-red-600'}`}>
+            {Number(remaining).toFixed(2)} {record.currency_details?.code || record.currency || ''}
+          </span>
+        );
+      }
     },
     {
       key: 'start_date',
@@ -78,15 +112,6 @@ export const ShopRentalListPage = () => {
       key: 'end_date',
       title: t('shop-rental.endDate'),
       render: (value) => <span className="text-xs">{value || 'N/A'}</span>
-    },
-    {
-      key: 'monthly_rent',
-      title: t('shop-rental.monthlyRent'),
-      render: (value, record) => (
-        <span className="text-xs font-bold text-green-600">
-          {Number(value || 0).toFixed(2)} {record.currency_details?.code || ''}
-        </span>
-      )
     },
     {
       key: 'rental_status',
@@ -134,7 +159,7 @@ export const ShopRentalListPage = () => {
       label: t('shop-rental.shop'),
       component: (
         <Autocomplete
-          endpoint="shops"
+          endpoint="shops/"
           value={shopFilter}
           onChange={(value) => { setShopFilter(value); setCurrentPage(1); }}
           placeholder={t('shop-rental.selectShop')}

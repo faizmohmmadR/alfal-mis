@@ -40,7 +40,7 @@ const EditShopRentalPayment = () => {
     amount: '',
     payment_date: new Date().toISOString().slice(0, 10),
     payment_status: 'completed',
-    period_month: new Date().getMonth() + 1,
+    period_month: (new Date().getMonth() + 1).toString().padStart(2, '0'),
     period_year: new Date().getFullYear().toString(),
     description: '',
     receipt: null as File | null
@@ -60,20 +60,20 @@ const EditShopRentalPayment = () => {
   });
 
   // Fetch rental financial info when rental is selected
-  const { data: financialInfo } = useFetchObject<{ data: RentalFinancialInfo }>({
-    queryKey: ['rental-financial-info', formData.rental],
-    endpoint: `shop-rental-payments/rental_financial_info/?rental_id=${formData.rental}`,
+  const { data: financialInfo, refetch: refetchFinancialInfo } = useFetchObject<RentalFinancialInfo>({
+    queryKey: ['rental-financial-info', formData.rental, formData.period_month, formData.period_year],
+    endpoint: `shop-rentals/${formData.rental}/financial_info/?month=${formData.period_month}&year=${formData.period_year}`,
     enabled: !!formData.rental
   });
 
   useEffect(() => {
     if (payment) {
       setFormData({
-        rental: payment.rental?.toString() || '',
+        rental: payment.rental?.id?.toString() || '',
         amount: payment.amount?.toString() || '',
         payment_date: payment.payment_date ? payment.payment_date.slice(0, 10) : new Date().toISOString().slice(0, 10),
         payment_status: payment.payment_status || 'completed',
-        period_month: parseInt(payment.period_month) || new Date().getMonth() + 1,
+        period_month: payment.period_month || (new Date().getMonth() + 1).toString().padStart(2, '0'),
         period_year: payment.period_year || new Date().getFullYear().toString(),
         description: payment.description || '',
         receipt: null
@@ -82,10 +82,17 @@ const EditShopRentalPayment = () => {
   }, [payment]);
 
   useEffect(() => {
-    if (financialInfo?.data) {
-      setSelectedRentalInfo(financialInfo.data);
+    if (financialInfo) {
+      setSelectedRentalInfo(financialInfo);
     }
   }, [financialInfo]);
+
+  // Refetch financial info when month or year changes
+  useEffect(() => {
+    if (formData.rental) {
+      refetchFinancialInfo();
+    }
+  }, [formData.period_month, formData.period_year, formData.rental, refetchFinancialInfo]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -111,7 +118,7 @@ const EditShopRentalPayment = () => {
     submitData.append('amount', formData.amount);
     submitData.append('payment_date', formData.payment_date);
     submitData.append('payment_status', formData.payment_status);
-    submitData.append('period_month', formData.period_month.toString());
+    submitData.append('period_month', formData.period_month);
     submitData.append('period_year', formData.period_year);
     if (formData.description?.trim()) {
       submitData.append('description', formData.description.trim());
@@ -127,18 +134,18 @@ const EditShopRentalPayment = () => {
   };
 
   const months = [
-    { value: 1, label: t('date.january') },
-    { value: 2, label: t('date.february') },
-    { value: 3, label: t('date.march') },
-    { value: 4, label: t('date.april') },
-    { value: 5, label: t('date.may') },
-    { value: 6, label: t('date.june') },
-    { value: 7, label: t('date.july') },
-    { value: 8, label: t('date.august') },
-    { value: 9, label: t('date.september') },
-    { value: 10, label: t('date.october') },
-    { value: 11, label: t('date.november') },
-    { value: 12, label: t('date.december') }
+    { value: 1, label: t('common.date.january') },
+    { value: 2, label: t('common.date.february') },
+    { value: 3, label: t('common.date.march') },
+    { value: 4, label: t('common.date.april') },
+    { value: 5, label: t('common.date.may') },
+    { value: 6, label: t('common.date.june') },
+    { value: 7, label: t('common.date.july') },
+    { value: 8, label: t('common.date.august') },
+    { value: 9, label: t('common.date.september') },
+    { value: 10, label: t('common.date.october') },
+    { value: 11, label: t('common.date.november') },
+    { value: 12, label: t('common.date.december') }
   ];
 
   const currentYear = new Date().getFullYear();
@@ -195,18 +202,18 @@ const EditShopRentalPayment = () => {
                     <div className="grid grid-cols-3 gap-4">
                       <div className="text-center p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
                         <div className="text-xs text-muted-foreground mb-1">{t('shop-rental.monthlyRent')}</div>
-                        <div className="font-bold text-lg">{formatNumber(selectedRentalInfo.monthly_rent)}</div>
+                        <div className="font-bold text-lg">{formatNumber(selectedRentalInfo.monthly_rent)} <span className="text-sm font-normal">{selectedRentalInfo.currency}</span></div>
                       </div>
                       
                       <div className="text-center p-3 bg-green-50 dark:bg-green-950 rounded-lg">
                         <div className="text-xs text-muted-foreground mb-1">{t('shop-rental.paidThisMonth')}</div>
-                        <div className="font-bold text-lg text-green-600">{formatNumber(selectedRentalInfo.current_month.total_paid)}</div>
+                        <div className="font-bold text-lg text-green-600">{formatNumber(selectedRentalInfo.current_month.total_paid)} <span className="text-sm font-normal">{selectedRentalInfo.currency}</span></div>
                       </div>
                       
                       <div className="text-center p-3 bg-red-50 dark:bg-red-950 rounded-lg">
                         <div className="text-xs text-muted-foreground mb-1">{t('shop-rental.remaining')}</div>
                         <div className={`font-bold text-lg ${selectedRentalInfo.current_month.remaining > 0 ? 'text-red-600' : 'text-green-600'}`}>
-                          {formatNumber(selectedRentalInfo.current_month.remaining)}
+                          {formatNumber(selectedRentalInfo.current_month.remaining)} <span className="text-sm font-normal">{selectedRentalInfo.currency}</span>
                         </div>
                       </div>
                     </div>
@@ -287,11 +294,11 @@ const EditShopRentalPayment = () => {
                 <select
                   id="period_month"
                   value={formData.period_month}
-                  onChange={(e) => setFormData(prev => ({ ...prev, period_month: parseInt(e.target.value) }))}
-                  className="w-full p-2 border rounded-md"
+                  onChange={(e) => setFormData(prev => ({ ...prev, period_month: e.target.value }))}
+                  className="w-full p-2 border rounded-md bg-background"
                 >
                   {months.map(month => (
-                    <option key={month.value} value={month.value}>{month.label}</option>
+                    <option key={month.value} value={month.value.toString().padStart(2, '0')}>{month.label}</option>
                   ))}
                 </select>
               </div>
@@ -302,7 +309,7 @@ const EditShopRentalPayment = () => {
                   id="period_year"
                   value={formData.period_year}
                   onChange={(e) => setFormData(prev => ({ ...prev, period_year: e.target.value }))}
-                  className="w-full p-2 border rounded-md"
+                  className="w-full p-2 border rounded-md bg-background"
                 >
                   {years.map(year => (
                     <option key={year} value={year.toString()}>{year}</option>
@@ -318,12 +325,12 @@ const EditShopRentalPayment = () => {
                   id="payment_status"
                   value={formData.payment_status}
                   onChange={(e) => setFormData(prev => ({ ...prev, payment_status: e.target.value }))}
-                  className="w-full p-2 border rounded-md"
+                  className="w-full p-2 border rounded-md bg-background"
                 >
-                  <option value="pending">{t('shop-rental.paymentStatus.pending') || t('shop-rental.paymentStatusOptions.pending')}</option>
-                  <option value="completed">{t('shop-rental.paymentStatus.completed') || t('shop-rental.paymentStatusOptions.completed')}</option>
-                  <option value="cancelled">{t('shop-rental.paymentStatus.cancelled') || t('shop-rental.paymentStatusOptions.cancelled')}</option>
-                  <option value="refunded">{t('shop-rental.paymentStatus.refunded') || t('shop-rental.paymentStatusOptions.refunded')}</option>
+                  <option value="pending">{t('shop-rental.paymentStatusOptions.pending')}</option>
+                  <option value="completed">{t('shop-rental.paymentStatusOptions.completed')}</option>
+                  <option value="cancelled">{t('shop-rental.paymentStatusOptions.cancelled')}</option>
+                  <option value="refunded">{t('shop-rental.paymentStatusOptions.refunded')}</option>
                 </select>
               </div>
 

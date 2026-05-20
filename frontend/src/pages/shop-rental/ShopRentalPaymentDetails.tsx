@@ -33,7 +33,7 @@ const ShopRentalPaymentDetails = () => {
     };
     return (
       <Badge className={colors[status] || 'bg-gray-100'}>
-        {t(`shop-rental.paymentStatus.${status}`) || status}
+        {t(`shop-rental.paymentStatusOptions.${status}`) || status}
       </Badge>
     );
   };
