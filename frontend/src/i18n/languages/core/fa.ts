@@ -58,6 +58,7 @@ export const coreFa = {
     otherIncomeList: 'لیست درآمدهای دیگر',
     incomeCategoryList: 'دستهبندی درآمدها',
     tenantsList: 'مستاجران',
+    reports: 'گزارشات',
     settings: 'تنظیمات',
     activityLogs: 'گزارش فعالیتها',
     backups: 'پشتیبانگیری',

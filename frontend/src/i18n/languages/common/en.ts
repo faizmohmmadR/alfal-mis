@@ -120,7 +120,29 @@ export const commonEn = {
     entryTypes: "Entry Types",
     superuserAnalytics: "Superuser Analytics",
     search: "Search...",
-    collapseAll: "Collapse All"
+    collapseAll: "Collapse All",
+    
+    // Additional navigation items
+    employees: "Employees",
+    payroll: "Payroll",
+    advance: "Advance",
+    expenses: "Expenses",
+    expenseCategories: "Expense Categories",
+    accounts: "Accounts",
+    accountCategories: "Account Categories",
+    transactions: "Transactions",
+    fiscalYears: "Fiscal Years",
+    journalEntries: "Journal Entries",
+    students: "Students",
+    studentPayments: "Student Payments",
+    shops: "Shops",
+    tenants: "Tenants",
+    shopRentalList: "Shop Rentals",
+    shopRentalPayments: "Shop Rental Payments",
+    otherIncomeList: "Other Income",
+    incomeCategoryList: "Income Categories",
+    activityLogs: "Activity Logs",
+    backups: "Backups"
   },
   sections: {
     main: "Main",
@@ -129,13 +151,17 @@ export const commonEn = {
     contacts: "Contacts",
     hr: "Human Resources",
     finance: "Finance",
+    education: "Education",
+    business: "Business",
     analytics: "Analytics",
     system: "System"
   },
   app: {
     title: "ERP System",
     subtitle: "Enterprise Resource Planning",
-    version: "Version"
+    version: "Version",
+    companyName: "Noor Ul-Falah",
+    subtitle: "Management Information System"
   },
   notUploaded: "Not Uploaded",
   print: "Print",

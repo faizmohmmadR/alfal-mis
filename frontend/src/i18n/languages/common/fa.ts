@@ -110,7 +110,29 @@ export const commonFa = {
     entryTypes: "انواع ثبت",
     superuserAnalytics: "تحلیلات مدیر کل",
     search: "جستجو...",
-    collapseAll: "جمع کردن همه"
+    collapseAll: "جمع کردن همه",
+    
+    // Additional navigation items
+    employees: "کارمندان",
+    payroll: "حقوق و دستمزد",
+    advance: "پیشپرداخت",
+    expenses: "هزینه ها",
+    expenseCategories: "دستههای هزینه",
+    accounts: "حسابها",
+    accountCategories: "دسته بندی حساب",
+    transactions: "تراکنشها",
+    fiscalYears: "سالهای مالی",
+    journalEntries: "سندهای دفترروزنامه",
+    students: "دانشآموزان",
+    studentPayments: "پرداخت دانشآموزان",
+    shops: "فروشگاهها",
+    tenants: "مستاجرین",
+    shopRentalList: "اجاره فروشگاه",
+    shopRentalPayments: "پرداختهای اجاره فروشگاه",
+    otherIncomeList: "درآمد دیگر",
+    incomeCategoryList: "دسته بندی درآمد",
+    activityLogs: "گزارش فعالیتها",
+    backups: "پشتیبانها"
   },
   sections: {
     main: "اصلی",
@@ -119,13 +141,17 @@ export const commonFa = {
     contacts: "مخاطبین",
     hr: "منابع انسانی",
     finance: "مالی",
+    education: "آموزش",
+    business: "تجارت",
     analytics: "تحلیلات",
     system: "سیستم"
   },
   app: {
     title: "سیستم ERP",
     subtitle: "برنامهریزی منابع سازمانی",
-    version: "نسخه"
+    version: "نسخه",
+    companyName: "نورالفلح",
+    subtitle: "سیستم اطلاعات مدیریت"
   },
   notUploaded: "آپلود نشده",
   print: "چاپ",

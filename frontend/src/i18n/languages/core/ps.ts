@@ -58,6 +58,7 @@ export const corePs = {
     otherIncomeList: 'د نورو عوایدو لیست',
     incomeCategoryList: 'د عوایدو کټګورۍ',
     tenantsList: 'اجاره لرونکي',
+    reports: 'راپورونه',
     settings: 'تنظیمات',
     activityLogs: 'د فعالیتونو راپورونه',
     backups: 'بیک اپ',

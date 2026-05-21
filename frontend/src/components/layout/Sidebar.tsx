@@ -27,14 +27,15 @@ import {
   Database,
   BookOpen,
   Store,
-  PieChart
+  PieChart,
+  Briefcase,
+  Home,
+  FileBarChart
 } from 'lucide-react';
 
 const navigationItems = [
   { key: 'dashboard', icon: LayoutDashboard, path: '/', section: 'main' },
 
-  { key: 'users', icon: UserCheck, path: '/users', permission: 'view_users', section: 'main' },
-  
   { 
     key: 'hr', 
     icon: UsersIcon, 
@@ -56,6 +57,17 @@ const navigationItems = [
     subItems: [
       { key: 'expensesList', icon: Receipt, path: '/expenses' },
       { key: 'expenseCategories', icon: Tag, path: '/expense-categories' }
+    ]
+  },
+  { 
+    key: 'otherIncome', 
+    icon: TrendingUp, 
+    path: '/other-incomes',
+    isExpandable: true,
+    section: 'finance',
+    subItems: [
+      { key: 'otherIncomeList', icon: TrendingUp, path: '/other-incomes' },
+      { key: 'incomeCategoryList', icon: Tag, path: '/income-categories' }
     ]
   },
   { 
@@ -97,19 +109,8 @@ const navigationItems = [
     ]
   },
   { 
-    key: 'otherIncome', 
-    icon: TrendingUp, 
-    path: '/other-incomes',
-    isExpandable: true,
-    section: 'finance',
-    subItems: [
-      { key: 'otherIncomeList', icon: TrendingUp, path: '/other-incomes' },
-      { key: 'incomeCategoryList', icon: Tag, path: '/income-categories' }
-    ]
-  },
-  { 
     key: 'reports', 
-    icon: PieChart, 
+    icon: FileBarChart, 
     path: '/reports',
     section: 'finance',
   },
@@ -133,7 +134,6 @@ const sections = {
   finance: 'Finance',
   business: 'Business',
   education: 'Education',
-  reports: 'Reports',
   system: 'System'
 };
 
@@ -159,10 +159,10 @@ export const Sidebar: React.FC = () => {
     
     if (isHRRoute(currentPath)) sectionsToExpand.push('hr');
     if (isExpensesRoute(currentPath)) sectionsToExpand.push('expenses');
+    if (isOtherIncomeRoute(currentPath)) sectionsToExpand.push('otherIncome');
     if (isAccountingRoute(currentPath)) sectionsToExpand.push('accounting');
     if (isStudentsRoute(currentPath)) sectionsToExpand.push('students');
     if (isShopRentalRoute(currentPath)) sectionsToExpand.push('shopRental');
-    if (isOtherIncomeRoute(currentPath)) sectionsToExpand.push('otherIncome');
     if (isReportsRoute(currentPath)) sectionsToExpand.push('reports');
     if (isSettingsRoute(currentPath)) sectionsToExpand.push('settings');
 
@@ -174,7 +174,7 @@ export const Sidebar: React.FC = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      const activeElement = navRef.current?.querySelector('.bg-primary, .bg-primary\\/20');
+      const activeElement = navRef.current?.querySelector('.bg-primary, .bg-primary\\\\/20');
       if (activeElement) {
         activeElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
@@ -204,6 +204,11 @@ export const Sidebar: React.FC = () => {
     return expenseRoutes.some(route => path.startsWith(route));
   };
 
+  const isOtherIncomeRoute = (path: string) => {
+    const otherIncomeRoutes = ['/other-incomes', '/income-categories'];
+    return otherIncomeRoutes.some(route => path.startsWith(route));
+  };
+
   const isAccountingRoute = (path: string) => {
     const accountingRoutes = ['/accounts', '/categories', '/transactions', '/fiscal-years', '/journal-entries'];
     return accountingRoutes.some(route => path.startsWith(route));
@@ -217,11 +222,6 @@ export const Sidebar: React.FC = () => {
   const isShopRentalRoute = (path: string) => {
     const shopRentalRoutes = ['/shops', '/tenants', '/shop-rentals', '/shop-rental-payments'];
     return shopRentalRoutes.some(route => path.startsWith(route));
-  };
-
-  const isOtherIncomeRoute = (path: string) => {
-    const otherIncomeRoutes = ['/other-incomes', '/income-categories'];
-    return otherIncomeRoutes.some(route => path.startsWith(route));
   };
 
   const isReportsRoute = (path: string) => {
@@ -241,13 +241,13 @@ export const Sidebar: React.FC = () => {
 
   return (
     <div className={cn(
-      "h-full bg-sidebar border-sidebar-border flex flex-col shadow-xl",
+      "h-full bg-sidebar border-sidebar-border flex flex-col shadow-xl transition-all duration-300",
       direction === 'rtl' ? 'border-l' : 'border-r'
     )}>
       {/* Logo */}
-      <div className="p-5 border-b border-sidebar-border">
+      <div className="p-5 border-b border-sidebar-border bg-sidebar">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg overflow-hidden shadow-lg">
+          <div className="w-10 h-10 rounded-lg overflow-hidden shadow-lg ring-2 ring-primary/20">
             <img 
               src="/logo.jpeg" 
               alt="Noor Ul-Falah" 
@@ -266,12 +266,12 @@ export const Sidebar: React.FC = () => {
       </div>
 
       {/* Search Bar & Controls */}
-      <div className="p-2 border-b border-sidebar-border">
+      <div className="p-3 border-b border-sidebar-border bg-sidebar/50">
         <div className="flex items-center gap-2">
           <div className="relative flex-1">
             <Search size={14} className={cn(
               "absolute top-1/2 -translate-y-1/2 text-sidebar-foreground/50",
-              direction === 'rtl' ? 'right-2' : 'left-2'
+              direction === 'rtl' ? 'right-2.5' : 'left-2.5'
             )} />
             <input
               type="text"
@@ -279,16 +279,16 @@ export const Sidebar: React.FC = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t('core.navigation.search', 'Search...')}
               className={cn(
-                "w-full py-1.5 text-sm bg-sidebar-accent border border-sidebar-border rounded-md focus:outline-none focus:ring-1 focus:ring-primary/50 text-sidebar-foreground placeholder:text-sidebar-foreground/50",
-                direction === 'rtl' ? 'pr-7 pl-7' : 'pl-7 pr-7'
+                "w-full py-2 text-sm bg-sidebar-accent border border-sidebar-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent text-sidebar-foreground placeholder:text-sidebar-foreground/50 transition-all",
+                direction === 'rtl' ? 'pr-7 pl-8' : 'pl-7 pr-8'
               )}
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
                 className={cn(
-                  "absolute top-1/2 -translate-y-1/2 text-sidebar-foreground/50 hover:text-sidebar-foreground",
-                  direction === 'rtl' ? 'left-2' : 'right-2'
+                  "absolute top-1/2 -translate-y-1/2 text-sidebar-foreground/50 hover:text-sidebar-foreground transition-colors",
+                  direction === 'rtl' ? 'left-2.5' : 'right-2.5'
                 )}
               >
                 <X size={12} />
@@ -298,7 +298,7 @@ export const Sidebar: React.FC = () => {
           {expandedSections.length > 0 && (
             <button
               onClick={collapseAll}
-              className="p-1.5 text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent rounded-md transition-colors"
+              className="p-2 text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent rounded-md transition-all"
               title={t('core.navigation.collapseAll', 'Collapse All')}
             >
               <Minimize2 size={14} />
@@ -308,8 +308,7 @@ export const Sidebar: React.FC = () => {
       </div>
 
       {/* Navigation */}
-      <nav ref={navRef} className="flex-1 p-2 space-y-3 overflow-y-auto custom-scrollbar">
-
+      <nav ref={navRef} className="flex-1 p-3 space-y-2 overflow-y-auto custom-scrollbar">
         {/* Grouped Navigation */}
         {Object.entries(groupedItems).map(([sectionKey, items]) => {
           const visibleItems = items.filter(item => {
@@ -331,15 +330,15 @@ export const Sidebar: React.FC = () => {
             <div key={sectionKey}>
               {sectionKey !== 'main' && !isCustomer && (
                 <div className={cn(
-                  "px-2 mb-0.5 pb-0.5",
+                  "px-3 mb-1 pb-1 border-b border-sidebar-border/30",
                   direction === 'rtl' ? 'text-right' : 'text-left'
                 )}>
-                  <h3 className="text-[8px] font-semibold text-sidebar-foreground/50 uppercase tracking-wider">
+                  <h3 className="text-[10px] font-bold text-sidebar-foreground/40 uppercase tracking-widest">
                     {t(`core.sections.${sectionKey}`, sections[sectionKey as keyof typeof sections])}
                   </h3>
                 </div>
               )}
-              <div className="space-y-1">
+              <div className="space-y-0.5">
                 {visibleItems.map((item) => {
                   const Icon = item.icon;
                   const isActive = !item.isExpandable && location.pathname === item.path;
@@ -353,15 +352,18 @@ export const Sidebar: React.FC = () => {
                         <button
                           onClick={() => toggleSection(item.key)}
                           className={cn(
-                            "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200",
-                            "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground",
+                            "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group",
+                            "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground hover:shadow-sm",
                             isHighlighted && "ring-1 ring-primary/50 bg-primary/5"
                           )}
                         >
-                          <Icon size={18} />
+                          <Icon size={18} className={cn(
+                            "transition-colors",
+                            isActive ? "text-primary" : "text-sidebar-foreground/70 group-hover:text-sidebar-foreground"
+                          )} />
                           <span className={cn("flex-1", direction === 'rtl' ? 'text-right' : 'text-left')}>{itemLabel}</span>
                           <ChevronDown size={14} className={cn(
-                            "transition-transform duration-200",
+                            "transition-transform duration-200 text-sidebar-foreground/40",
                             isExpanded ? "rotate-180" : ""
                           )} />
                         </button>
@@ -369,21 +371,24 @@ export const Sidebar: React.FC = () => {
                         <NavLink
                           to={item.path}
                           className={cn(
-                            "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200",
+                            "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group",
                             isActive 
-                              ? "bg-primary text-primary-foreground shadow-sm" 
-                              : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground",
+                              ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20" 
+                              : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground hover:shadow-sm",
                             isHighlighted && !isActive && "ring-1 ring-primary/50 bg-primary/5"
                           )}
                         >
-                          <Icon size={18} />
+                          <Icon size={18} className={cn(
+                            "transition-colors",
+                            isActive ? "text-primary-foreground" : "text-sidebar-foreground/70 group-hover:text-sidebar-foreground"
+                          )} />
                           <span className={cn("flex-1", direction === 'rtl' ? 'text-right' : 'text-left')}>{itemLabel}</span>
                         </NavLink>
                       )}
                       
                       {item.subItems && isExpanded && (
                         <div className={cn(
-                          "mt-1 space-y-1",
+                          "mt-1 space-y-0.5 overflow-hidden transition-all duration-300 ease-in-out",
                           direction === 'rtl' ? 'pr-7' : 'pl-7'
                         )}>
                           {item.subItems.filter(subItem => {
@@ -399,14 +404,17 @@ export const Sidebar: React.FC = () => {
                                 key={subItem.key}
                                 to={subItem.path}
                                 className={cn(
-                                  "flex items-center gap-2 px-3 py-1.5 rounded-sm text-xs font-medium transition-all duration-200",
+                                  "flex items-center gap-3 px-3 py-2 rounded-md text-xs font-medium transition-all duration-200",
                                   isSubActive 
-                                    ? "bg-primary/20 text-primary" 
-                                    : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground",
+                                    ? "bg-primary/10 text-primary" 
+                                    : "text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground",
                                   isSubHighlighted && !isSubActive && "ring-1 ring-primary/50 bg-primary/5"
                                 )}
                               >
-                                <SubIcon size={16} />
+                                <SubIcon size={16} className={cn(
+                                  "transition-colors",
+                                  isSubActive ? "text-primary" : "text-sidebar-foreground/50"
+                                )} />
                                 <span className={cn("flex-1", direction === 'rtl' ? 'text-right' : 'text-left')}>{subLabel}</span>
                               </NavLink>
                             );
@@ -429,9 +437,9 @@ export const Sidebar: React.FC = () => {
       </nav>
       
       {/* Footer */}
-      <div className="p-2 border-t border-sidebar-border">
+      <div className="p-3 border-t border-sidebar-border bg-sidebar/50">
         <div className={cn(
-          "text-[9px] text-sidebar-foreground/50",
+          "text-[9px] text-sidebar-foreground/40 font-medium",
           direction === 'rtl' ? 'text-right' : 'text-center'
         )}>
           {t('core.app.version', 'Version')} 1.0.0

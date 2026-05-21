@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { BarChart3, DollarSign, TrendingUp, TrendingDown, PieChart } from 'lucide-react';
+import { BarChart3, DollarSign, TrendingUp, TrendingDown, PieChart, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 import { formatNumber } from '@/lib/formatNumber';
 import useFetchObjects from '@/api/useFetchObjects';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -19,6 +19,7 @@ export const Dashboard = () => {
   const [period, setPeriod] = useState('monthly');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [customRange, setCustomRange] = useState<'today' | 'yesterday' | 'this_week' | 'last_week' | 'this_month' | 'last_month' | 'this_year' | 'custom'>('this_month');
 
   const getParams = () => {
     const filters: any = { period: period || 'monthly' };
@@ -30,7 +31,7 @@ export const Dashboard = () => {
   };
 
   const { data: report, isLoading } = useFetchObjects<any>({
-    queryKey: ['financial-report', period, startDate, endDate],
+    queryKey: ['financial-report', period, startDate, endDate, customRange],
     endpoint: 'reports/financial/',
     params: getParams()
   });
@@ -80,12 +81,6 @@ export const Dashboard = () => {
   const advancesAFN = report.expenses?.breakdown?.advances?.AFN || 0;
   const advancesUSD = report.expenses?.breakdown?.advances?.USD || 0;
 
-  // Debug: Log the report data
-  console.log('Dashboard Report Data:', report);
-  console.log('Income:', { incomeAFN, incomeUSD, studentIncomeAFN, studentIncomeUSD, rentalIncomeAFN, rentalIncomeUSD, otherIncomeAFN, otherIncomeUSD });
-  console.log('Expenses:', { expenseAFN, expenseUSD, profitAFN, profitUSD });
-  console.log('Expense Breakdown:', { generalExpensesAFN, generalExpensesUSD, payrollAFN, payrollUSD, advancesAFN, advancesUSD });
-
   // Chart data
   const currencyComparisonData = [
     { name: 'AFN', income: incomeAFN, expense: expenseAFN, profit: profitAFN },
@@ -125,8 +120,6 @@ export const Dashboard = () => {
   // Filter to only show categories with non-zero values
   const expenseByCategory = expenseByCategoryRaw.filter(item => item.value > 0);
 
-  console.log('Expense By Category:', expenseByCategory);
-
   const financialOverviewData = [
     { name: t('reports.studentPaymentsIncome'), AFN: studentIncomeAFN, USD: studentIncomeUSD },
     { name: t('reports.rentalIncome'), AFN: rentalIncomeAFN, USD: rentalIncomeUSD },
@@ -135,118 +128,214 @@ export const Dashboard = () => {
     { name: t('reports.profit'), AFN: profitAFN, USD: profitUSD }
   ];
 
+  // Helper to set date range
+  const setDateRange = (range: typeof customRange) => {
+    setCustomRange(range);
+    const today = new Date();
+    
+    if (range === 'today') {
+      setStartDate(today.toISOString().split('T')[0]);
+      setEndDate(today.toISOString().split('T')[0]);
+    } else if (range === 'yesterday') {
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      setStartDate(yesterday.toISOString().split('T')[0]);
+      setEndDate(yesterday.toISOString().split('T')[0]);
+    } else if (range === 'this_week') {
+      const weekStart = new Date(today);
+      weekStart.setDate(today.getDate() - today.getDay());
+      setStartDate(weekStart.toISOString().split('T')[0]);
+      setEndDate(today.toISOString().split('T')[0]);
+    } else if (range === 'last_week') {
+      const lastWeekStart = new Date(today);
+      lastWeekStart.setDate(today.getDate() - today.getDay() - 7);
+      const lastWeekEnd = new Date(lastWeekStart);
+      lastWeekEnd.setDate(lastWeekStart.getDate() + 6);
+      setStartDate(lastWeekStart.toISOString().split('T')[0]);
+      setEndDate(lastWeekEnd.toISOString().split('T')[0]);
+    } else if (range === 'this_month') {
+      const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+      setStartDate(monthStart.toISOString().split('T')[0]);
+      setEndDate(today.toISOString().split('T')[0]);
+    } else if (range === 'last_month') {
+      const lastMonthStart = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+      const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
+      setStartDate(lastMonthStart.toISOString().split('T')[0]);
+      setEndDate(lastMonthEnd.toISOString().split('T')[0]);
+    } else if (range === 'this_year') {
+      const yearStart = new Date(today.getFullYear(), 0, 1);
+      setStartDate(yearStart.toISOString().split('T')[0]);
+      setEndDate(today.toISOString().split('T')[0]);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-      <div className="max-w-full mx-auto p-6 space-y-6">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+      <div className="max-w-7xl mx-auto p-4 sm:p-6 space-y-6">
         
         {/* Header */}
-        <Card>
-          <CardHeader>
-            <div>
-              <h1 className="text-2xl font-bold">{t('reports.financialDashboard')}</h1>
-              <p className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
-                <BarChart3 className="h-4 w-4" />
-                {t('reports.comprehensiveFinancialOverview')}
-              </p>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center">
-              <Tabs value={period} onValueChange={setPeriod} className="flex-1">
-                <TabsList className="grid w-full grid-cols-5">
-                  <TabsTrigger value="daily">{t('reports.today')}</TabsTrigger>
-                  <TabsTrigger value="weekly">{t('reports.thisWeek')}</TabsTrigger>
-                  <TabsTrigger value="monthly">{t('reports.thisMonth')}</TabsTrigger>
-                  <TabsTrigger value="yearly">{t('reports.thisYear')}</TabsTrigger>
-                  <TabsTrigger value="custom">{t('reports.customRange')}</TabsTrigger>
-                </TabsList>
-              </Tabs>
+        <Card className="border-0 shadow-sm">
+          <CardHeader className="pb-4">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
+                  {t('reports.financialDashboard')}
+                </h1>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-2">
+                  <BarChart3 className="h-4 w-4" />
+                  {t('reports.comprehensiveFinancialOverview')}
+                </p>
+              </div>
 
-              {period === 'custom' && (
-                <div className="flex gap-3 w-full lg:w-auto">
-                  <div className="flex-1 lg:w-40">
+              {/* Period Selector - Clean and Professional */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                {/* Quick Period Buttons */}
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    variant={customRange === 'today' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setDateRange('today')}
+                    className="h-9 text-xs"
+                  >
+                    {t('reports.today')}
+                  </Button>
+                  <Button
+                    variant={customRange === 'this_week' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setDateRange('this_week')}
+                    className="h-9 text-xs"
+                  >
+                    {t('reports.thisWeek')}
+                  </Button>
+                  <Button
+                    variant={customRange === 'this_month' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setDateRange('this_month')}
+                    className="h-9 text-xs"
+                  >
+                    {t('reports.thisMonth')}
+                  </Button>
+                  <Button
+                    variant={customRange === 'this_year' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setDateRange('this_year')}
+                    className="h-9 text-xs"
+                  >
+                    {t('reports.thisYear')}
+                  </Button>
+                </div>
+
+                {/* Custom Date Range */}
+                {customRange === 'custom' && (
+                  <div className="flex gap-2 items-center">
                     <Input 
                       type="date" 
                       value={startDate} 
                       onChange={(e) => setStartDate(e.target.value)}
-                      placeholder={t('reports.startDate')}
-                      className="h-10"
+                      className="h-9 text-sm"
                     />
-                  </div>
-                  <div className="flex-1 lg:w-40">
+                    <span className="text-sm text-slate-500">-</span>
                     <Input 
                       type="date" 
                       value={endDate} 
                       onChange={(e) => setEndDate(e.target.value)}
-                      placeholder={t('reports.endDate')}
-                      className="h-10"
+                      className="h-9 text-sm"
                     />
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
-          </CardContent>
+          </CardHeader>
         </Card>
 
         {/* Financial Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Total Income */}
-          <Card>
+          <Card className="border-0 shadow-sm hover:shadow-md transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{t('reports.totalIncome')}</CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium text-slate-500 dark:text-slate-400">
+                {t('reports.totalIncome')}
+              </CardTitle>
+              <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                <DollarSign className="h-4 w-4 text-green-600 dark:text-green-400" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{formatNumber(incomeAFN)} AFN</div>
-              <p className="text-xs text-muted-foreground">{formatNumber(incomeUSD)} USD</p>
+              <div className="text-2xl font-bold text-slate-900 dark:text-white">
+                {formatNumber(incomeAFN)} <span className="text-sm font-normal text-slate-500">AFN</span>
+              </div>
+              <div className="text-xs text-slate-500 mt-1">
+                {formatNumber(incomeUSD)} USD
+              </div>
             </CardContent>
           </Card>
 
           {/* Total Expenses */}
-          <Card>
+          <Card className="border-0 shadow-sm hover:shadow-md transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{t('reports.expenses')}</CardTitle>
-              <TrendingDown className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium text-slate-500 dark:text-slate-400">
+                {t('reports.expenses')}
+              </CardTitle>
+              <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
+                <TrendingDown className="h-4 w-4 text-red-600 dark:text-red-400" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{formatNumber(expenseAFN)} AFN</div>
-              <p className="text-xs text-muted-foreground">{formatNumber(expenseUSD)} USD</p>
+              <div className="text-2xl font-bold text-slate-900 dark:text-white">
+                {formatNumber(expenseAFN)} <span className="text-sm font-normal text-slate-500">AFN</span>
+              </div>
+              <div className="text-xs text-slate-500 mt-1">
+                {formatNumber(expenseUSD)} USD
+              </div>
             </CardContent>
           </Card>
 
           {/* Profit */}
-          <Card>
+          <Card className="border-0 shadow-sm hover:shadow-md transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{t('reports.profit')}</CardTitle>
-              {profitAFN >= 0 ? <TrendingUp className="h-4 w-4 text-green-500" /> : <TrendingDown className="h-4 w-4 text-red-500" />}
+              <CardTitle className="text-sm font-medium text-slate-500 dark:text-slate-400">
+                {t('reports.profit')}
+              </CardTitle>
+              <div className={`p-2 rounded-lg ${profitAFN >= 0 ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
+                {profitAFN >= 0 
+                  ? <TrendingUp className="h-4 w-4 text-green-600 dark:text-green-400" /> 
+                  : <TrendingDown className="h-4 w-4 text-red-600 dark:text-red-400" />
+                }
+              </div>
             </CardHeader>
             <CardContent>
-              <div className={`text-2xl font-bold ${profitAFN >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                {formatNumber(profitAFN)} AFN
+              <div className={`text-2xl font-bold ${profitAFN >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                {formatNumber(profitAFN)} <span className="text-sm font-normal">AFN</span>
               </div>
-              <p className="text-xs text-muted-foreground">{formatNumber(profitUSD)} USD</p>
+              <div className="text-xs text-slate-500 mt-1">
+                {formatNumber(profitUSD)} USD
+              </div>
             </CardContent>
           </Card>
 
           {/* Income Breakdown Summary */}
-          <Card>
+          <Card className="border-0 shadow-sm hover:shadow-md transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{t('reports.incomeBreakdown')}</CardTitle>
-              <PieChart className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium text-slate-500 dark:text-slate-400">
+                {t('reports.incomeBreakdown')}
+              </CardTitle>
+              <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                <PieChart className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="space-y-1">
-                <div className="text-sm">
-                  <span className="text-muted-foreground">Student: </span>
-                  <span className="font-medium">{formatNumber(studentIncomeAFN)} AFN</span>
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-sm">
+                  <span className="text-slate-500">Student:</span>
+                  <span className="font-semibold text-slate-900 dark:text-white">{formatNumber(studentIncomeAFN)} AFN</span>
                 </div>
-                <div className="text-sm">
-                  <span className="text-muted-foreground">Rental: </span>
-                  <span className="font-medium">{formatNumber(rentalIncomeAFN)} AFN</span>
+                <div className="flex justify-between text-sm">
+                  <span className="text-slate-500">Rental:</span>
+                  <span className="font-semibold text-slate-900 dark:text-white">{formatNumber(rentalIncomeAFN)} AFN</span>
                 </div>
-                <div className="text-sm">
-                  <span className="text-muted-foreground">Other: </span>
-                  <span className="font-medium">{formatNumber(otherIncomeAFN)} AFN</span>
+                <div className="flex justify-between text-sm">
+                  <span className="text-slate-500">Other:</span>
+                  <span className="font-semibold text-slate-900 dark:text-white">{formatNumber(otherIncomeAFN)} AFN</span>
                 </div>
               </div>
             </CardContent>
@@ -257,13 +346,15 @@ export const Dashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           
           {/* 1. Income vs Expenses vs Profit by Currency - Bar Chart */}
-          <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <Card className="border-0 shadow-sm hover:shadow-md transition-shadow">
             <CardHeader>
-              <CardTitle className="text-center text-lg font-semibold">{t('reports.byCurrency')}</CardTitle>
+              <CardTitle className="text-lg font-semibold text-slate-900 dark:text-white">
+                {t('reports.byCurrency')}
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div dir="ltr">
-                <ResponsiveContainer width="100%" height={300}>
+              <div dir="ltr" className="h-[300px]">
+                <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={currencyComparisonData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
                     <XAxis dataKey="name" axisLine={false} tickLine={false} />
@@ -292,13 +383,15 @@ export const Dashboard = () => {
           </Card>
 
           {/* 2. Financial Overview - Line Chart */}
-          <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <Card className="border-0 shadow-sm hover:shadow-md transition-shadow">
             <CardHeader>
-              <CardTitle className="text-center text-lg font-semibold">{t('reports.financialOverview')}</CardTitle>
+              <CardTitle className="text-lg font-semibold text-slate-900 dark:text-white">
+                {t('reports.financialOverview')}
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div dir="ltr">
-                <ResponsiveContainer width="100%" height={300}>
+              <div dir="ltr" className="h-[300px]">
+                <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={financialOverviewData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
                     <XAxis 
@@ -347,13 +440,15 @@ export const Dashboard = () => {
           </Card>
 
           {/* 3. Income Breakdown - Donut Chart */}
-          <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <Card className="border-0 shadow-sm hover:shadow-md transition-shadow">
             <CardHeader>
-              <CardTitle className="text-center text-lg font-semibold">{t('reports.incomeBreakdown') || 'Income Breakdown'}</CardTitle>
+              <CardTitle className="text-lg font-semibold text-slate-900 dark:text-white">
+                {t('reports.incomeBreakdown')}
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div dir="ltr">
-                <ResponsiveContainer width="100%" height={300}>
+              <div dir="ltr" className="h-[300px]">
+                <ResponsiveContainer width="100%" height="100%">
                   <RechartsPieChart>
                     <Pie
                       data={incomeBreakdownData}
@@ -389,13 +484,15 @@ export const Dashboard = () => {
 
           {/* 4. Expense Breakdown by Type - Bar Chart */}
           {expenseBreakdown.length > 0 && (
-            <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <Card className="border-0 shadow-sm hover:shadow-md transition-shadow">
               <CardHeader>
-                <CardTitle className="text-center text-lg font-semibold">{t('reports.expenseBreakdown')}</CardTitle>
+                <CardTitle className="text-lg font-semibold text-slate-900 dark:text-white">
+                  {t('reports.expenseBreakdown')}
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                <div dir="ltr">
-                  <ResponsiveContainer width="100%" height={300}>
+                <div dir="ltr" className="h-[300px]">
+                  <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={expenseBreakdown} layout="vertical" margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" horizontal={false} />
                       <XAxis 
@@ -425,13 +522,15 @@ export const Dashboard = () => {
 
           {/* 5. Expense by Category - Radar Chart */}
           {expenseByCategory.length > 0 && (
-            <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 lg:col-span-2">
+            <Card className="border-0 shadow-sm hover:shadow-md transition-shadow lg:col-span-2">
               <CardHeader>
-                <CardTitle className="text-center text-lg font-semibold">{t('reports.expenseByCategory')}</CardTitle>
+                <CardTitle className="text-lg font-semibold text-slate-900 dark:text-white">
+                  {t('reports.expenseByCategory')}
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                <div dir="ltr">
-                  <ResponsiveContainer width="100%" height={350}>
+                <div dir="ltr" className="h-[350px]">
+                  <ResponsiveContainer width="100%" height="100%">
                     <RadarChart cx="50%" cy="50%" outerRadius="80%" data={expenseByCategory}>
                       <PolarGrid stroke="#e2e8f0" />
                       <PolarAngleAxis dataKey="name" tick={{ fontSize: 12 }} />

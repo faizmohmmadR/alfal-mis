@@ -3,8 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { RefreshCw, FileSpreadsheet, File } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 import useFetchObject from '@/api/useFetchObject';
 import { formatNumber } from '@/lib/formatNumber';
 import {
@@ -30,18 +31,6 @@ const ComprehensiveReports = () => {
   });
 
   const handleRefresh = () => refetch();
-
-  const handleExport = (format: 'pdf' | 'excel') => {
-    const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
-    const params = new URLSearchParams({
-      type: activeTab,
-      period: period,
-      export: format,
-    });
-    if (startDate) params.append('start_date', startDate);
-    if (endDate) params.append('end_date', endDate);
-    window.open(`${baseUrl}/reports/comprehensive/?${params.toString()}`, '_blank');
-  };
 
   const report = data as any;
 
@@ -745,20 +734,10 @@ const ComprehensiveReports = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight">{t('reports.comprehensiveReports')}</h1>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={handleRefresh} disabled={loading}>
-            <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-            {t('reports.refresh')}
-          </Button>
-          <Button variant="outline" onClick={() => handleExport('excel')}>
-            <FileSpreadsheet className="mr-2 h-4 w-4" />
-            Excel
-          </Button>
-          <Button variant="outline" onClick={() => handleExport('pdf')}>
-            <File className="mr-2 h-4 w-4" />
-            PDF
-          </Button>
-        </div>
+        <Button variant="outline" onClick={handleRefresh} disabled={loading}>
+          <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+          {t('reports.refresh')}
+        </Button>
       </div>
 
       {/* Filters */}
@@ -794,19 +773,19 @@ const ComprehensiveReports = () => {
                 
                 {period === 'custom' && (
                   <>
-                    <input
+                    <Input
                       type="date"
                       value={startDate}
                       onChange={(e) => setStartDate(e.target.value)}
-                      className="border rounded px-3 py-2 w-36"
                       placeholder={t('reports.startDate')}
+                      className="w-36"
                     />
-                    <input
+                    <Input
                       type="date"
                       value={endDate}
                       onChange={(e) => setEndDate(e.target.value)}
-                      className="border rounded px-3 py-2 w-36"
                       placeholder={t('reports.endDate')}
+                      className="w-36"
                     />
                   </>
                 )}

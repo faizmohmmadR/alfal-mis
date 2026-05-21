@@ -71,7 +71,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                 key={code}
                 onClick={() => changeLanguage(code as Language)}
                 className={cn(
-                  "cursor-pointer",
+                  "cursor-pointer my-1",
                   language === code && 'bg-accent'
                 )}
               >

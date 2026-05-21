@@ -58,6 +58,7 @@ export const coreEn = {
     otherIncomeList: 'Other Income List',
     incomeCategoryList: 'Income Categories',
     tenantsList: 'Tenants',
+    reports: 'Reports',
     settings: 'Settings',
     units: 'Units',
     currencies: 'Currencies',

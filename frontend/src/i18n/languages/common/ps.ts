@@ -108,12 +108,50 @@ export const commonPs = {
     accountsList: "حسابونه",
     accountEntries: "د حساب ننوتل",
     entryTypes: "د ننوتلو ډولونه",
-    superuserAnalytics: "د سوپر یوزر تحلیل"
+    superuserAnalytics: "د سوپر یوزر تحلیل",
+    search: "لټون...",
+    collapseAll: "ټول ځمکه کول",
+    
+    // Additional navigation items
+    employees: "کارمندان",
+    payroll: "معاشونه",
+    advance: "مخکې تادیه",
+    expenses: "لګښتونه",
+    expenseCategories: "د لګښت کټګورۍ",
+    accounts: "حسابونه",
+    accountCategories: "د حساب وېشنيزې",
+    transactions: "معاملې",
+    fiscalYears: "د مالي کالونه",
+    journalEntries: "د ډیری کتاب مخونه",
+    students: "زده کونکي",
+    studentPayments: "د زده کونکو پیسې",
+    shops: "فروشگاهونه",
+    tenants: "مستاجرونه",
+    shopRentalList: "د فروشگاه اجاره",
+    shopRentalPayments: "د فروشگاه اجاره تادیات",
+    otherIncomeList: "نوره درېدنه",
+    incomeCategoryList: "د درېدې وېشنيزې",
+    activityLogs: "د فعالیتونو راپورونه",
+    backups: "بیک اپونه"
   },
   app: {
     title: "ERP سیسټم",
     subtitle: "د سازماني سرچینو پلان",
-    version: "نسخه"
+    version: "نسخه",
+    companyName: "نورالفلح",
+    subtitle: "د مدیریت معلوماتو سیسټم"
+  },
+  sections: {
+    main: "اصلی",
+    inventory: "ذخیره",
+    transactions: "معاملې",
+    contacts: "اړیکې",
+    hr: "بشري سرچینې",
+    finance: "مالي",
+    education: "زده کړې",
+    business: "تجارت",
+    analytics: "تحلیل",
+    system: "سیسټم"
   },
   notUploaded: "اپلوډ نه شو",
   print: " چاپ",
