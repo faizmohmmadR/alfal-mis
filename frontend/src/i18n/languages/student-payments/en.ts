@@ -5,6 +5,15 @@ export const studentPaymentsEn = {
   paymentDetails: "Payment Details",
   paymentInformation: "Payment Information",
 
+  // Export
+  exportPayments: "Export Student Payments",
+  exportDescription: "Export student payments with monthly breakdown to Excel",
+  exportToExcel: "Export to Excel",
+  startDate: "Start Date",
+  endDate: "End Date",
+  selectClassLevels: "Select Class Levels (Optional - Multi-select creates separate tabs)",
+  multiTabInfo: "Multiple classes selected - each class will have its own tab in Excel",
+
   // Payment Information
   amount: "Amount",
   paymentDate: "Payment Date",

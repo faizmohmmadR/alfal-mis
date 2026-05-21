@@ -43,6 +43,12 @@ class StudentViewSet(DataRootViewSet):
         if payment_cycle:
             queryset = queryset.filter(payment_cycle=payment_cycle)
 
+        # Filter by list of IDs (for bulk operations)
+        id_in = self.request.query_params.get('id__in')
+        if id_in:
+            ids = [int(i) for i in id_in.split(',') if i.strip().isdigit()]
+            queryset = queryset.filter(id__in=ids)
+
         return queryset
 
     @action(detail=True, methods=['get'])

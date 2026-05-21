@@ -111,19 +111,10 @@ class AccountingService:
     
     @staticmethod
     @transaction.atomic
-    def record_expense(amount, date, description, expense_category, reference=None):
+    def record_expense(amount, date, description, expense_category, reference=None, currency='AFN'):
         """Record an expense as a journal entry"""
-        from api.models.data.expenses import Expense
-        
-        # Get the most recent expense to determine currency
-        last_expense = Expense.objects.filter(category__name=expense_category).first()
-        currency = last_expense.currency if last_expense else 'AFN'
-        
         cash_account = Account.objects.filter(code=f'1000_{currency}').first()
-        expense_account = Account.objects.filter(
-            category__account_type='expense',
-            code__startswith='5'
-        ).first()
+        expense_account = Account.objects.filter(code=f'5000_{currency}').first()
         
         if not cash_account or not expense_account:
             raise ValueError(f"Default accounts not configured for {currency}. Please run init_chart_of_accounts.")

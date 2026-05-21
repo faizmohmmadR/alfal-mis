@@ -38,7 +38,8 @@ class FinancialReportView(APIView):
         rental_income_usd = rental_query.filter(currency='USD').aggregate(total=Sum('monthly_rent'))['total'] or 0
         
         # Other Income
-        other_income_query = OtherIncome.objects.filter(**payment_filter)
+        other_income_filter = self._get_income_date_filter(period, start_date, end_date)
+        other_income_query = OtherIncome.objects.filter(**other_income_filter)
         other_income_afn = other_income_query.filter(currency='AFN').aggregate(total=Sum('amount'))['total'] or 0
         other_income_usd = other_income_query.filter(currency='USD').aggregate(total=Sum('amount'))['total'] or 0
         
@@ -173,5 +174,28 @@ class FinancialReportView(APIView):
         elif period == 'yearly':
             year_start = today.replace(month=1, day=1)
             return {'expense_date__gte': year_start, 'expense_date__lte': today}
+        else:
+            return {}
+    
+    def _get_income_date_filter(self, period, start_date=None, end_date=None):
+        """Calculate date filter for income_date field"""
+        today = datetime.now().date()
+        
+        if period == 'custom' and start_date and end_date:
+            return {
+                'income_date__gte': datetime.strptime(start_date, '%Y-%m-%d').date(),
+                'income_date__lte': datetime.strptime(end_date, '%Y-%m-%d').date()
+            }
+        elif period == 'daily':
+            return {'income_date': today}
+        elif period == 'weekly':
+            week_start = today - timedelta(days=today.weekday())
+            return {'income_date__gte': week_start, 'income_date__lte': today}
+        elif period == 'monthly':
+            month_start = today.replace(day=1)
+            return {'income_date__gte': month_start, 'income_date__lte': today}
+        elif period == 'yearly':
+            year_start = today.replace(month=1, day=1)
+            return {'income_date__gte': year_start, 'income_date__lte': today}
         else:
             return {}

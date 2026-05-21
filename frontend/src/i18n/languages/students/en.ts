@@ -138,6 +138,8 @@ export const studentsEn = {
   addFirstStudent: "Add your first student to get started",
   loadingStudents: "Loading students...",
   allStatuses: "All Statuses",
+  studentsSelected: "students selected",
+  failedToLoadClassLevels: "Failed to load class levels",
   
   // Validation
   validation: {

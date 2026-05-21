@@ -100,6 +100,22 @@ export const reportsEn = {
   // Date
   date: 'Date',
   today: 'Today',
+  thisWeek: 'This Week',
+  thisMonth: 'This Month',
+  thisYear: 'This Year',
+  customRange: 'Custom Range',
+  
+  // Dashboard
+  financialDashboard: 'Financial Dashboard',
+  comprehensiveFinancialOverview: 'Comprehensive financial overview',
+  byCurrency: 'By Currency',
+  financialOverview: 'Financial Overview',
+  expenseDetails: 'Expense Details',
+  incomeBreakdown: 'Income Breakdown',
+  expenseBreakdown: 'Expense Breakdown',
+  expenseByCategory: 'Expenses by Category',
+  advances: 'Advances',
+  loadingReport: 'Loading report...',
   
   // Export
   exportReport: 'Export Report',

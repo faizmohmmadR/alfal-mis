@@ -7,8 +7,15 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { RefreshCw, FileSpreadsheet, File } from 'lucide-react';
 import useFetchObject from '@/api/useFetchObject';
 import { formatNumber } from '@/lib/formatNumber';
+import {
+  BarChart, Bar, PieChart as RechartsPieChart, Cell, Pie,
+  XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+  ResponsiveContainer
+} from 'recharts';
 
-type ReportType = 'summary' | 'trial_balance' | 'income_statement' | 'balance_sheet';
+const COLORS = ['#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#f97316'];
+
+type ReportType = 'summary' | 'financial' | 'student_payments' | 'payroll' | 'rental' | 'trial_balance' | 'income_statement' | 'balance_sheet';
 
 const ComprehensiveReports = () => {
   const { t } = useLanguage();
@@ -43,9 +50,125 @@ const ComprehensiveReports = () => {
     if (!report) return null;
     const { income, expenses, profit } = report;
     
+    // Chart data
+    const incomeComparisonData = [
+      { name: t('reports.studentPaymentsIncome'), AFN: income?.student?.AFN || 0, USD: income?.student?.USD || 0 },
+      { name: t('reports.rentalIncome'), AFN: income?.rental?.AFN || 0, USD: income?.rental?.USD || 0 },
+      { name: t('reports.otherIncome'), AFN: income?.other?.AFN || 0, USD: income?.other?.USD || 0 },
+    ];
+    
+    const expenseComparisonData = [
+      { name: t('reports.generalExpenses'), AFN: expenses?.general?.AFN || 0, USD: expenses?.general?.USD || 0 },
+      { name: t('reports.payrollExpenses'), AFN: expenses?.payroll?.AFN || 0, USD: expenses?.payroll?.USD || 0 },
+      { name: t('reports.advanceExpenses'), AFN: expenses?.advances?.AFN || 0, USD: expenses?.advances?.USD || 0 },
+    ];
+    
+    const profitData = [
+      { name: 'AFN', profit: profit?.AFN || 0 },
+      { name: 'USD', profit: profit?.USD || 0 }
+    ];
+    
     return (
       <div className="space-y-6">
-        {/* Income Section */}
+        {/* Summary Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card className="border-l-4 border-l-green-500">
+            <CardContent className="pt-4">
+              <h3 className="text-sm font-medium text-muted-foreground">{t('reports.totalIncome')}</h3>
+              <div className="mt-2 space-y-1">
+                <div className="text-xl font-bold text-green-600">{formatNumber(income?.total?.AFN || 0)} AFN</div>
+                <div className="text-lg text-green-500">{formatNumber(income?.total?.USD || 0)} USD</div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="border-l-4 border-l-red-500">
+            <CardContent className="pt-4">
+              <h3 className="text-sm font-medium text-muted-foreground">{t('reports.totalExpenses')}</h3>
+              <div className="mt-2 space-y-1">
+                <div className="text-xl font-bold text-red-600">{formatNumber(expenses?.total?.AFN || 0)} AFN</div>
+                <div className="text-lg text-red-500">{formatNumber(expenses?.total?.USD || 0)} USD</div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className={`border-l-4 ${(profit?.AFN || 0) >= 0 ? 'border-l-purple-500' : 'border-l-red-500'}`}>
+            <CardContent className="pt-4">
+              <h3 className="text-sm font-medium text-muted-foreground">{(profit?.AFN || 0) >= 0 ? t('reports.netProfit') : t('reports.netLoss')}</h3>
+              <div className="mt-2 space-y-1">
+                <div className={`text-xl font-bold ${(profit?.AFN || 0) >= 0 ? 'text-purple-600' : 'text-red-600'}`}>{formatNumber(profit?.AFN || 0)} AFN</div>
+                <div className={`text-lg ${(profit?.USD || 0) >= 0 ? 'text-purple-500' : 'text-red-500'}`}>{formatNumber(profit?.USD || 0)} USD</div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        
+        {/* Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Income Breakdown Chart */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-center">{t('reports.incomeSummary')}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div dir="ltr">
+                <ResponsiveContainer width="100%" height={250}>
+                  <BarChart data={incomeComparisonData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis tickFormatter={(value) => formatNumber(value)} />
+                    <Tooltip formatter={(value) => formatNumber(Number(value))} />
+                    <Legend />
+                    <Bar dataKey="AFN" fill="#10b981" />
+                    <Bar dataKey="USD" fill="#3b82f6" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+          
+          {/* Expense Breakdown Chart */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-center">{t('reports.expenseSummary')}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div dir="ltr">
+                <ResponsiveContainer width="100%" height={250}>
+                  <BarChart data={expenseComparisonData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis tickFormatter={(value) => formatNumber(value)} />
+                    <Tooltip formatter={(value) => formatNumber(Number(value))} />
+                    <Legend />
+                    <Bar dataKey="AFN" fill="#ef4444" />
+                    <Bar dataKey="USD" fill="#f59e0b" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        
+        {/* Profit Chart */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-center">{t('reports.netProfit')}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div dir="ltr">
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={profitData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis tickFormatter={(value) => formatNumber(value)} />
+                  <Tooltip formatter={(value) => formatNumber(Number(value))} />
+                  <Bar dataKey="profit" fill="#8b5cf6" name={t('reports.profit')} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+        
+        {/* Income Table */}
         <div>
           <h3 className="text-lg font-semibold mb-3">{t('reports.incomeSummary')}</h3>
           <div className="rounded-md border">
@@ -83,7 +206,7 @@ const ComprehensiveReports = () => {
           </div>
         </div>
 
-        {/* Expenses Section */}
+        {/* Expenses Table */}
         <div>
           <h3 className="text-lg font-semibold mb-3">{t('reports.expenseSummary')}</h3>
           <div className="rounded-md border">
@@ -286,6 +409,192 @@ const ComprehensiveReports = () => {
     );
   };
 
+  // Student Payments Report
+  const renderStudentPaymentsReport = () => {
+    if (!report) return null;
+    const { total, by_status, by_payment_cycle, payment_count } = report;
+    
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="p-4 rounded-lg bg-green-50 border border-green-200">
+            <div className="text-sm text-muted-foreground">{t('reports.totalAFN', 'Total AFN')}</div>
+            <div className="text-2xl font-bold text-green-700">{formatNumber(total?.AFN || 0)}</div>
+          </div>
+          <div className="p-4 rounded-lg bg-amber-50 border border-amber-200">
+            <div className="text-sm text-muted-foreground">{t('reports.totalUSD', 'Total USD')}</div>
+            <div className="text-2xl font-bold text-amber-700">{formatNumber(total?.USD || 0)}</div>
+          </div>
+          <div className="p-4 rounded-lg bg-blue-50 border border-blue-200">
+            <div className="text-sm text-muted-foreground">{t('reports.paymentCount', 'Payment Count')}</div>
+            <div className="text-2xl font-bold text-blue-700">{payment_count || 0}</div>
+          </div>
+        </div>
+
+        {by_status && by_status.length > 0 && (
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>{t('reports.status', 'Status')}</TableHead>
+                  <TableHead>{t('reports.currency', 'Currency')}</TableHead>
+                  <TableHead className="text-right">{t('reports.total', 'Total')}</TableHead>
+                  <TableHead className="text-right">{t('reports.count', 'Count')}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {by_status.map((item: any, index: number) => (
+                  <TableRow key={index}>
+                    <TableCell className="capitalize">{item.payment_status}</TableCell>
+                    <TableCell>{item.currency}</TableCell>
+                    <TableCell className="text-right">{formatNumber(item.total)}</TableCell>
+                    <TableCell className="text-right">{item.count}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // Payroll Report
+  const renderPayrollReport = () => {
+    if (!report) return null;
+    const { payroll, advances } = report;
+    
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Payroll */}
+          <div className="rounded-lg border p-4">
+            <h3 className="text-lg font-semibold mb-3">{t('reports.payroll', 'Payroll')}</h3>
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div className="p-3 bg-green-50 rounded-md">
+                <div className="text-xs text-muted-foreground">AFN</div>
+                <div className="text-xl font-bold">{formatNumber(payroll?.total?.AFN || 0)}</div>
+              </div>
+              <div className="p-3 bg-amber-50 rounded-md">
+                <div className="text-xs text-muted-foreground">USD</div>
+                <div className="text-xl font-bold">{formatNumber(payroll?.total?.USD || 0)}</div>
+              </div>
+            </div>
+            {payroll?.by_employee && (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t('reports.employee', 'Employee')}</TableHead>
+                    <TableHead>{t('reports.currency', 'Currency')}</TableHead>
+                    <TableHead className="text-right">{t('reports.total', 'Total')}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {payroll.by_employee.map((item: any, index: number) => (
+                    <TableRow key={index}>
+                      <TableCell>{item.employee__full_name}</TableCell>
+                      <TableCell>{item.currency}</TableCell>
+                      <TableCell className="text-right">{formatNumber(item.total)}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </div>
+
+          {/* Advances */}
+          <div className="rounded-lg border p-4">
+            <h3 className="text-lg font-semibold mb-3">{t('reports.advances', 'Advances')}</h3>
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div className="p-3 bg-orange-50 rounded-md">
+                <div className="text-xs text-muted-foreground">AFN</div>
+                <div className="text-xl font-bold">{formatNumber(advances?.total?.AFN || 0)}</div>
+              </div>
+              <div className="p-3 bg-amber-50 rounded-md">
+                <div className="text-xs text-muted-foreground">USD</div>
+                <div className="text-xl font-bold">{formatNumber(advances?.total?.USD || 0)}</div>
+              </div>
+            </div>
+            {advances?.by_employee && (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t('reports.employee', 'Employee')}</TableHead>
+                    <TableHead>{t('reports.currency', 'Currency')}</TableHead>
+                    <TableHead className="text-right">{t('reports.total', 'Total')}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {advances.by_employee.map((item: any, index: number) => (
+                    <TableRow key={index}>
+                      <TableCell>{item.employee__full_name}</TableCell>
+                      <TableCell>{item.currency}</TableCell>
+                      <TableCell className="text-right">{formatNumber(item.total)}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Rental Report
+  const renderRentalReport = () => {
+    if (!report) return null;
+    const { total_monthly_income, active_rentals, by_shop, expiring_within_30_days } = report;
+    
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="p-4 rounded-lg bg-green-50 border border-green-200">
+            <div className="text-sm text-muted-foreground">{t('reports.totalAFN', 'Monthly AFN')}</div>
+            <div className="text-2xl font-bold text-green-700">{formatNumber(total_monthly_income?.AFN || 0)}</div>
+          </div>
+          <div className="p-4 rounded-lg bg-amber-50 border border-amber-200">
+            <div className="text-sm text-muted-foreground">{t('reports.totalUSD', 'Monthly USD')}</div>
+            <div className="text-2xl font-bold text-amber-700">{formatNumber(total_monthly_income?.USD || 0)}</div>
+          </div>
+          <div className="p-4 rounded-lg bg-blue-50 border border-blue-200">
+            <div className="text-sm text-muted-foreground">{t('reports.activeRentals', 'Active Rentals')}</div>
+            <div className="text-2xl font-bold text-blue-700">{active_rentals || 0}</div>
+          </div>
+          <div className="p-4 rounded-lg bg-red-50 border border-red-200">
+            <div className="text-sm text-muted-foreground">{t('reports.expiringSoon', 'Expiring Soon')}</div>
+            <div className="text-2xl font-bold text-red-700">{expiring_within_30_days || 0}</div>
+          </div>
+        </div>
+
+        {by_shop && by_shop.length > 0 && (
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>{t('reports.shopNumber', 'Shop')}</TableHead>
+                  <TableHead>{t('reports.shopName', 'Name')}</TableHead>
+                  <TableHead>{t('reports.currency', 'Currency')}</TableHead>
+                  <TableHead className="text-right">{t('reports.monthlyRent', 'Monthly Rent')}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {by_shop.map((item: any, index: number) => (
+                  <TableRow key={index}>
+                    <TableCell>{item.shop__shop_number}</TableCell>
+                    <TableCell>{item.shop__name}</TableCell>
+                    <TableCell>{item.currency}</TableCell>
+                    <TableCell className="text-right">{formatNumber(item.total)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   // Balance Sheet Report
   const renderBalanceSheet = () => {
     if (!report) return null;
@@ -412,6 +721,14 @@ const ComprehensiveReports = () => {
     switch (activeTab) {
       case 'summary':
         return renderSummaryReport();
+      case 'financial':
+        return renderSummaryReport(); // Same as summary but with more details
+      case 'student_payments':
+        return renderStudentPaymentsReport();
+      case 'payroll':
+        return renderPayrollReport();
+      case 'rental':
+        return renderRentalReport();
       case 'trial_balance':
         return renderTrialBalance();
       case 'income_statement':
@@ -450,8 +767,12 @@ const ComprehensiveReports = () => {
           <div className="flex flex-wrap gap-4 items-center justify-between">
             <div className="flex flex-wrap gap-4 items-center">
               <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as ReportType)}>
-                <TabsList>
+                <TabsList className="flex flex-wrap">
                   <TabsTrigger value="summary">{t('reports.summary')}</TabsTrigger>
+                  <TabsTrigger value="financial">{t('reports.financial', 'Financial')}</TabsTrigger>
+                  <TabsTrigger value="student_payments">{t('reports.studentPayments', 'Students')}</TabsTrigger>
+                  <TabsTrigger value="payroll">{t('reports.payroll', 'Payroll')}</TabsTrigger>
+                  <TabsTrigger value="rental">{t('reports.rental', 'Rental')}</TabsTrigger>
                   <TabsTrigger value="trial_balance">{t('reports.trialBalance')}</TabsTrigger>
                   <TabsTrigger value="income_statement">{t('reports.incomeStatement')}</TabsTrigger>
                   <TabsTrigger value="balance_sheet">{t('reports.balanceSheet')}</TabsTrigger>

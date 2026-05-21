@@ -5,6 +5,15 @@ export const studentPaymentsFa = {
   paymentDetails: "جزئیات پرداخت",
   paymentInformation: "اطلاعات پرداخت",
 
+  // Export
+  exportPayments: "صادرات پرداختهای دانشآموزان",
+  exportDescription: "صادرات پرداختهای دانشآموزان با تفکیک ماهانه به اکسل",
+  exportToExcel: "صادرات به اکسل",
+  startDate: "تاریخ شروع",
+  endDate: "تاریخ پایان",
+  selectClassLevels: "انتخاب سطح کلاس (اختیاری - انتخاب چندگانه برگههای جداگانه ایجاد میکند)",
+  multiTabInfo: "چند کلاس انتخاب شده - هر کلاس برگه مخصوص خود را خواهد داشت",
+
   // Payment Information
   amount: "مبلغ",
   paymentDate: "تاریخ پرداخت",

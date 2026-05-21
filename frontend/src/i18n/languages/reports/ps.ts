@@ -100,6 +100,22 @@ export const reportsPs = {
   // Date
   date: 'نیټه',
   today: 'نن',
+  thisWeek: 'دا اونۍ',
+  thisMonth: 'دا میاشت',
+  thisYear: 'دا کال',
+  customRange: 'دلخواه موده',
+  
+  // Dashboard
+  financialDashboard: 'مالي داشبورډ',
+  comprehensiveFinancialOverview: 'جامع مالي کتنه',
+  byCurrency: 'د اسعار له مخې',
+  financialOverview: 'مالي کتنه',
+  expenseDetails: 'د لګښت جزئیات',
+  incomeBreakdown: 'د عاید وېش',
+  expenseBreakdown: 'د لګښت وېش',
+  expenseByCategory: 'د وېشنې له مخې لګښتونه',
+  advances: 'پیشکي',
+  loadingReport: 'راپور بارول کیږي...',
   
   // Export
   exportReport: 'د راپور خارج کول',

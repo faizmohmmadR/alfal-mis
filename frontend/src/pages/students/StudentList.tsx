@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Edit, Trash2, Eye, User, GraduationCap, DollarSign, Users } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, User, GraduationCap, Printer } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Autocomplete } from '@/components/ui/autocomplete';
@@ -37,6 +37,7 @@ export const StudentList = () => {
   const [paymentCycleFilter, setPaymentCycleFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
+  const [selectedStudentIds, setSelectedStudentIds] = useState<Set<number | string>>(new Set());
 
   const { data: studentsData, isLoading } = useFetchObjects<PaginatedResponse>({
     queryKey: ['students', currentPage.toString(), pageSize.toString(), searchTerm, statusFilter, classLevelFilter, paymentCycleFilter],
@@ -48,7 +49,7 @@ export const StudentList = () => {
       ...(statusFilter && { status: statusFilter }),
       ...(classLevelFilter && { class_level: classLevelFilter }),
       ...(paymentCycleFilter && { payment_cycle: paymentCycleFilter }),
-    }
+    },
   });
 
   const { handleDelete, ConfirmDialog } = useDelete({
@@ -59,6 +60,13 @@ export const StudentList = () => {
   const students = studentsData?.results || [];
   const totalItems = studentsData?.count || 0;
 
+  // Convert Set to array for DataTable
+  const selectedRows = useMemo(() => Array.from(selectedStudentIds), [selectedStudentIds]);
+
+  const handleSelectionChange = (ids: (string | number)[]) => {
+    setSelectedStudentIds(new Set(ids));
+  };
+
   const handleEdit = (student: { id: number | string }) => {
     navigate(`/students/${student.id}/edit`);
   };
@@ -67,13 +75,13 @@ export const StudentList = () => {
     navigate(`/students/${student.id}`);
   };
 
-  const handleBulkChangeClass = (selected: StudentItem[]) => {
-    const ids = selected.map((s) => s.id).join(',');
+  const handleBulkChangeClass = () => {
+    const ids = Array.from(selectedStudentIds).join(',');
     navigate(`/students/bulk-change-class?ids=${ids}`);
   };
 
   const getStatusBadge = (status: string) => {
-    const colors = {
+    const colors: Record<string, string> = {
       active: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
       inactive: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
       graduated: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
@@ -81,7 +89,7 @@ export const StudentList = () => {
       transferred: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
     };
     return (
-      <Badge variant={colors[status as keyof typeof colors] ? 'default' : 'secondary'}>
+      <Badge variant={colors[status] ? 'default' : 'secondary'}>
         {t(`students.statusOptions.${status}`) || status}
       </Badge>
     );
@@ -103,7 +111,7 @@ export const StudentList = () => {
       render: (value) => (
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-           <span className="font-semibold text-xs">{value || t('common.notAvailable')}</span>
+          <span className="font-semibold text-xs">{value || t('common.notAvailable')}</span>
         </div>
       )
     },
@@ -168,15 +176,6 @@ export const StudentList = () => {
       className: 'text-red-600 hover:text-red-700',
       tooltip: t('students.deleteStudent')
     }
-  ];
-
-  const bulkActions: TableAction<StudentItem>[] = [
-    {
-      key: 'bulk-change-class',
-      label: t('students.changeClassLevel', 'Change Class Level'),
-      icon: <GraduationCap className="h-4 w-4" />,
-      onClick: handleBulkChangeClass,
-    },
   ];
 
   const statusOptions = [
@@ -263,6 +262,22 @@ export const StudentList = () => {
 
   return (
     <div className="space-y-6 p-6">
+      {/* Bulk Actions Bar - Shows when students are selected */}
+      {selectedStudentIds.size > 0 && (
+        <div className="flex items-center gap-4 p-3 bg-primary/10 border border-primary/20 rounded-lg">
+          <span className="text-sm font-medium">
+            {selectedStudentIds.size} {t('students.studentsSelected', 'students selected')}
+          </span>
+          <Button size="sm" onClick={handleBulkChangeClass}>
+            <GraduationCap className="mr-2 h-4 w-4" />
+            {t('students.changeClassLevel', 'Change Class Level')}
+          </Button>
+          <Button size="sm" variant="outline" onClick={() => setSelectedStudentIds(new Set())}>
+            {t('common.clearSelection', 'Clear Selection')}
+          </Button>
+        </div>
+      )}
+
       <DataTable
         data={students}
         columns={columns}
@@ -271,13 +286,20 @@ export const StudentList = () => {
         subtitle={t('students.manageStudents')}
         icon={<User className="h-5 w-5" />}
         headerActions={
-          <Button onClick={() => navigate('/students/add')}>
-            <Plus className="mr-2 h-4 w-4" />
-            {t('students.addStudent')}
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => window.print()}>
+              <Printer className="mr-2 h-4 w-4" />
+              {t('common.print', 'Print')}
+            </Button>
+            <Button onClick={() => navigate('/students/add')}>
+              <Plus className="mr-2 h-4 w-4" />
+              {t('students.addStudent')}
+            </Button>
+          </div>
         }
         selectable
-        bulkActions={bulkActions}
+        selectedRows={selectedRows}
+        onSelectionChange={handleSelectionChange}
         searchable
         searchPlaceholder={t('students.searchStudents')}
         searchValue={searchTerm}

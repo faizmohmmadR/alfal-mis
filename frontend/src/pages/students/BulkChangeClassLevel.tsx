@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useQueryClient } from '@tanstack/react-query';
-import { RotateCw, ArrowLeft, GraduationCap, Users, CheckCircle, AlertCircle } from 'lucide-react';
+import { RotateCw, ArrowLeft, GraduationCap, Users, CheckCircle, AlertCircle, Printer } from 'lucide-react';
 import api from '@/lib/axios';
 import { toast } from 'sonner';
 
@@ -22,7 +22,7 @@ interface SelectedStudent {
   id: number;
   registration_number: string;
   full_name: string;
-  class_level?: { name?: string } | null;
+  class_level?: { id?: number; name?: string } | null;
   father_name?: string;
   status: string;
 }
@@ -45,7 +45,7 @@ const BulkChangeClassLevel = () => {
   const [loadingStudents, setLoadingStudents] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
-  // Fetch selected students — query first, fall back to one-by-one
+  // Fetch selected students
   useEffect(() => {
     if (studentIds.length === 0) {
       setLoadingStudents(false);
@@ -54,16 +54,16 @@ const BulkChangeClassLevel = () => {
     setLoadingStudents(true);
     setStudents([]);
 
-    // Try fetching with ids as a list (works if the filter is registered)
-    api.get<SelectedStudent[]>('students/', {
-      params: { id__in: studentIds.join(',') },
+    // Fetch students by IDs
+    api.get<SelectedStudent[] | { results: SelectedStudent[] }>('students/', {
+      params: { id__in: studentIds.join(','), page_size: 1000 },
     })
       .then((res) => {
         const data = Array.isArray(res.data) ? res.data : (res.data.results || []);
         setStudents(data);
       })
       .catch(() => {
-        // Fallback: fetch individually so we never show nothing
+        // Fallback: fetch individually
         Promise.all(
           studentIds.map((id) =>
             api.get<SelectedStudent>(`students/${id}/`)
@@ -77,16 +77,20 @@ const BulkChangeClassLevel = () => {
       .finally(() => setLoadingStudents(false));
   }, [studentIds]);
 
-  // Load all active class levels
+  // Load all class levels
   useEffect(() => {
-    api.get<{ results?: ClassLevel[] }>('class-levels/')
+    api.get<{ results?: ClassLevel[] } | ClassLevel[]>('class-levels/')
       .then((res) => {
         const data: ClassLevel[] = Array.isArray(res.data)
           ? res.data
           : (res.data.results || []);
         setClassLevels(data);
       })
-      .catch(() => {});
+      .catch(() => {
+        toast.error(t('common.error', 'Error'), {
+          description: t('students.failedToLoadClassLevels', 'Failed to load class levels'),
+        });
+      });
   }, []);
 
   const selectedLevel = useMemo(
@@ -130,11 +134,17 @@ const BulkChangeClassLevel = () => {
   return (
     <div className="container mx-auto py-6 space-y-6 max-w-5xl">
       {/* Header */}
-      <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" onClick={() => navigate('/students')} className="rounded-full hover:bg-muted">
-          <ArrowLeft className="h-5 w-5" />
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" onClick={() => navigate('/students')} className="rounded-full hover:bg-muted">
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <h1 className="text-base font-bold">{t('students.bulkChangeClassLevel', 'Bulk Change Class Level')}</h1>
+        </div>
+        <Button variant="outline" onClick={() => window.print()}>
+          <Printer className="mr-2 h-4 w-4" />
+          {t('common.print', 'Print')}
         </Button>
-        <h1 className="text-base font-bold">{t('students.bulkChangeClassLevel', 'Bulk Change Class Level')}</h1>
       </div>
 
       {/* No students selected */}
@@ -167,10 +177,10 @@ const BulkChangeClassLevel = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left — Selector + Submit */}
           <div className="space-y-6">
-            <Card className="border-t-4 border-t-indigo-500">
+            <Card className="border-t-4 border-t-primary">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                  <GraduationCap className="h-4 w-4 text-indigo-600" />
+                  <GraduationCap className="h-4 w-4 text-primary" />
                   {t('students.selectNewClassLevel', 'New Class Level')}
                 </CardTitle>
               </CardHeader>
@@ -198,8 +208,8 @@ const BulkChangeClassLevel = () => {
 
                 {/* Summary box */}
                 {selectedLevel && (
-                  <div className="rounded-lg bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 px-3 py-2.5 space-y-2">
-                    <div className="flex items-center gap-1.5 text-xs font-semibold text-indigo-800 dark:text-indigo-200 uppercase">
+                  <div className="rounded-lg bg-primary/10 border border-primary/20 px-3 py-2.5 space-y-2">
+                    <div className="flex items-center gap-1.5 text-xs font-semibold text-primary uppercase">
                       <CheckCircle className="h-3.5 w-3.5" />
                       {t('students.changeSummary', 'Change Summary')}
                     </div>
@@ -210,7 +220,7 @@ const BulkChangeClassLevel = () => {
                       </div>
                       <div>
                         <div className="text-muted-foreground">{t('students.willChange', 'Will Be Changed')}</div>
-                        <div className="font-bold text-sm text-indigo-700 dark:text-indigo-400 mt-0.5">{changed.length}</div>
+                        <div className="font-bold text-sm text-primary mt-0.5">{changed.length}</div>
                       </div>
                       <div>
                         <div className="text-muted-foreground">{t('students.alreadyInLevel', 'Already in Level')}</div>
@@ -247,7 +257,7 @@ const BulkChangeClassLevel = () => {
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                  <Users className="h-4 w-4 text-indigo-600" />
+                  <Users className="h-4 w-4 text-primary" />
                   {t('students.selectedStudents', 'Selected Students')}
                   <Badge variant="secondary" className="text-[10px] ml-1.5">{students.length}</Badge>
                 </CardTitle>
@@ -257,6 +267,9 @@ const BulkChangeClassLevel = () => {
                   <table className="w-full">
                     <thead className="sticky top-0 bg-muted/80 backdrop-blur z-10">
                       <tr className="border-b">
+                        <th className="text-left py-2 px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                          #
+                        </th>
                         <th className="text-left py-2 px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
                           {t('students.registrationNumber')}
                         </th>
@@ -272,17 +285,20 @@ const BulkChangeClassLevel = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {students.map((s) => {
+                      {students.map((s, idx) => {
                         const affected = selectedLevel && (!s.class_level || s.class_level.name !== selectedLevel.name);
                         return (
                           <tr
                             key={s.id}
                             className={`border-b last:border-0 transition-colors ${
                               affected
-                                ? 'bg-indigo-50/60 dark:bg-indigo-900/15'
+                                ? 'bg-primary/5'
                                 : 'bg-transparent'
                             }`}
                           >
+                            <td className="py-2.5 px-3">
+                              <span className="text-xs text-muted-foreground">{idx + 1}</span>
+                            </td>
                             <td className="py-2.5 px-3">
                               <span className="text-xs font-mono">{s.registration_number || '—'}</span>
                             </td>
@@ -294,7 +310,7 @@ const BulkChangeClassLevel = () => {
                                 <span className="inline-flex items-center gap-1 text-xs">
                                   <span className="text-red-500 line-through">{s.class_level?.name || '—'}</span>
                                   <span className="text-muted-foreground">→</span>
-                                  <span className="font-bold text-indigo-700 dark:text-indigo-400">{selectedLevel?.name}</span>
+                                  <span className="font-bold text-primary">{selectedLevel?.name}</span>
                                 </span>
                               ) : (
                                 <div className="flex items-center gap-1">

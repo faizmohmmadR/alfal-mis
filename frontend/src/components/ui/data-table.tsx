@@ -145,8 +145,17 @@ function DataTable<T extends Record<string, any>>({
     if (typeof rowKey === 'function') {
       return rowKey(record);
     }
-    return record?.[rowKey] || index;
+    const key = record?.[rowKey];
+    if (key !== undefined && key !== null) {
+      return key;
+    }
+    return index;
   }, [rowKey]);
+
+  // Helper to check if a key is selected (handles both string and number comparison)
+  const isRowSelected = useCallback((key: string | number): boolean => {
+    return selectedRows.some(id => String(id) === String(key));
+  }, [selectedRows]);
 
   const getRowClassName = useCallback((record: T, index: number): string => {
     let className = 'transition-colors';
@@ -505,7 +514,12 @@ function DataTable<T extends Record<string, any>>({
                     <TableHead className="w-12 px-4 py-4 font-medium">
                       <input
                         type="checkbox"
-                        checked={Array.isArray(data) && selectedRows.length === data.length && data.length > 0}
+                        checked={
+                          Array.isArray(data) &&
+                          data.length > 0 &&
+                          selectedRows.length === data.length &&
+                          data.every((item, index) => isRowSelected(getRowKey(item, index)))
+                        }
                         onChange={(e) => {
                           if (e.target.checked && Array.isArray(data)) {
                             onSelectionChange?.(data.map((item, index) => getRowKey(item, index)));
@@ -577,13 +591,13 @@ function DataTable<T extends Record<string, any>>({
                         <TableCell>
                           <input
                             type="checkbox"
-                            checked={selectedRows.includes(getRowKey(record, index))}
+                            checked={isRowSelected(getRowKey(record, index))}
                             onChange={(e) => {
                               const key = getRowKey(record, index);
                               if (e.target.checked) {
-                                onSelectionChange?.([...selectedRows, key?.toString?.() || key]);
+                                onSelectionChange?.([...selectedRows, key]);
                               } else {
-                                onSelectionChange?.(selectedRows.filter(id => id !== (key?.toString?.() || key)));
+                                onSelectionChange?.(selectedRows.filter(id => String(id) !== String(key)));
                               }
                             }}
                             onClick={(e) => e.stopPropagation()}

@@ -100,6 +100,22 @@ export const reportsFa = {
   // Date
   date: 'تاریخ',
   today: 'امروز',
+  thisWeek: 'این هفته',
+  thisMonth: 'این ماه',
+  thisYear: 'امسال',
+  customRange: 'بازه سفارشی',
+  
+  // Dashboard
+  financialDashboard: 'داشبورد مالی',
+  comprehensiveFinancialOverview: 'نمای کلی جامع مالی',
+  byCurrency: 'بر اساس ارز',
+  financialOverview: 'نمای کلی مالی',
+  expenseDetails: 'جزئیات هزینهها',
+  incomeBreakdown: 'تفکیک درآمد',
+  expenseBreakdown: 'تفکیک هزینهها',
+  expenseByCategory: 'هزینهها بر اساس دستهبندی',
+  advances: 'پیشپرداختها',
+  loadingReport: 'در حال بارگذاری گزارش...',
   
   // Export
   exportReport: 'خروجی گزارش',

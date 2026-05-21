@@ -153,6 +153,8 @@ export const commonEn = {
   reload: "Reload",
   reset: "Reset",
   clear: "Clear",
+  clearSelection: "Clear Selection",
+  applying: "Applying...",
   apply: "Apply",
   manual: "Manual",
   applyFilters: "Apply Filters",

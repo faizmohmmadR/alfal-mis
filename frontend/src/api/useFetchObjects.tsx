@@ -30,7 +30,7 @@ const useFetchObjects = <T,>({
   const { getUser, logout } = useAuth();
   
   const fetchFunction = async (): Promise<T> => {
-    const response: AxiosResponse<T> = await api.get(`/${endpoint}`, { params });
+    const response: AxiosResponse<T> = await api.get(`${endpoint}`, { params });
     return response.data;
   };
   

@@ -63,7 +63,8 @@ def create_expense_journal(sender, instance, created, **kwargs):
                 date=instance.expense_date,
                 description=instance.description or instance.category.name,
                 expense_category=instance.category.name,
-                reference=f"EXPENSE-{instance.id}"
+                reference=f"EXPENSE-{instance.id}",
+                currency=instance.currency
             )
         except Exception as e:
             import logging
@@ -130,8 +131,9 @@ def create_other_income_journal(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=ShopRentalPayment)
 def create_rental_payment_journal(sender, instance, created, **kwargs):
-    """Create journal entry when rental payment is created"""
-    if created:
+    """Create journal entry when rental payment is created or marked as completed"""
+    # Create journal entry when payment is created and status is completed
+    if created and instance.payment_status == 'completed':
         try:
             AccountingService.record_rental_payment(
                 tenant_name=instance.rental.tenant.full_name,
@@ -140,6 +142,25 @@ def create_rental_payment_journal(sender, instance, created, **kwargs):
                 reference=instance.reference_number,
                 rental_id=instance.rental.id
             )
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Failed to create journal entry for rental payment {instance.id}: {e}")
+    
+    # Create journal entry when payment status changes to completed
+    if not created:
+        try:
+            old_instance = ShopRentalPayment.objects.get(pk=instance.pk)
+            if old_instance.payment_status != 'completed' and instance.payment_status == 'completed':
+                AccountingService.record_rental_payment(
+                    tenant_name=instance.rental.tenant.full_name,
+                    amount=instance.amount,
+                    date=instance.payment_date,
+                    reference=instance.reference_number,
+                    rental_id=instance.rental.id
+                )
+        except ShopRentalPayment.DoesNotExist:
+            pass
         except Exception as e:
             import logging
             logger = logging.getLogger(__name__)

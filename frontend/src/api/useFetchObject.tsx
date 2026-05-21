@@ -28,7 +28,7 @@ const useFetchObject = <T,>({
   const { logout } = useAuth();
   
   const fetchFunction = async (): Promise<T> => {
-    const response: AxiosResponse<T> = await api.get(`/${endpoint}`);
+    const response: AxiosResponse<T> = await api.get(`${endpoint}`);
     return response.data;
   };
   
