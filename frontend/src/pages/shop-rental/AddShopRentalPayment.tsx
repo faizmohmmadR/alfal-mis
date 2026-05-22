@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Autocomplete } from '@/components/ui/autocomplete';
 import { useLanguage } from '@/contexts/LanguageContext';
 import useAdd from '@/api/useAdd';
@@ -137,17 +137,25 @@ const AddShopRentalPayment = () => {
 
   return (
     <div className="container mx-auto py-6 max-w-4xl">
-      <Button variant="ghost" onClick={() => navigate('/shop-rental-payments')} className="mb-4">
-        <ArrowLeft className="mr-2 h-4 w-4" />
-        {t('common.back')}
-      </Button>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" onClick={() => navigate('/shop-rental-payments')} className="h-10 w-10">
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">{t('shop-rental.addPayment')}</h1>
+            <p className="text-sm text-muted-foreground">{t('shop-rental.managePayments', 'Manage Rental Payments')}</p>
+          </div>
+        </div>
+      </div>
 
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <CreditCard className="h-5 w-5" />
-            {t('shop-rental.addPayment')}
+            <CreditCard className="h-5 w-5 text-primary" />
+            {t('shop-rental.paymentDetails', 'Payment Details')}
           </CardTitle>
+          <CardDescription>{t('shop-rental.paymentDetailsDesc', 'Record a new rental payment')}</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -156,7 +164,7 @@ const AddShopRentalPayment = () => {
               <div>
                 <Label htmlFor="rental">{t('shop-rental.rental')} *</Label>
                 <Autocomplete
-                  endpoint="shop-rentals"
+                  endpoint="shop-rentals/"
                   value={formData.rental}
                   onChange={(value) => {
                     setFormData(prev => ({ ...prev, rental: value }));

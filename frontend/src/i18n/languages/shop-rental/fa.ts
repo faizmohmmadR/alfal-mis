@@ -1,5 +1,6 @@
 export const shopRentalFa = {
   shopRental: "اجاره فروشگاه",
+  shopRentals: "اجارههای فروشگاه",
   status: "وضعیت",
   allStatuses: "همه وضعیتها",
   usd: "USD - دلار آمریکا",

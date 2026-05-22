@@ -226,6 +226,7 @@ export const accountingFa = {
   advance: "پیشپرداخت حقوق",
   rentalIncome: "درآمد اجاره",
   otherIncome: "درآمد دیگر",
+  other_income: "درآمد دیگر",
   journal: "سند دفترروزنامه دستی",
   opening: "موجودی اول دوره",
   

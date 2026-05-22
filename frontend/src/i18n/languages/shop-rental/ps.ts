@@ -1,5 +1,6 @@
 export const shopRentalPs = {
   shopRental: "د فروشگاه اجاره",
+  shopRentals: "د فروشگاهونو اجارې",
   status: "حالت",
   allStatuses: "ټول حالتونه",
   usd: "USD - US ډالر",

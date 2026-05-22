@@ -4,10 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Autocomplete } from '@/components/ui/autocomplete';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { RotateCw, ArrowLeft } from 'lucide-react';
+import { RotateCw, ArrowLeft, DollarSign, Tag, Calendar, FileText, Building2 } from 'lucide-react';
 import useAdd from '@/api/useAdd';
 
 interface OtherIncomeFormData {
@@ -19,19 +19,17 @@ interface OtherIncomeFormData {
   description?: string;
 }
 
-const defaultForm: OtherIncomeFormData = {
-  income_category: '',
-  amount: '',
-  currency: 'AFN',
-  income_date: new Date().toISOString().split('T')[0],
-  source: '',
-  description: '',
-};
-
 const AddOtherIncome = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState<OtherIncomeFormData>(defaultForm);
+  const [formData, setFormData] = useState<OtherIncomeFormData>({
+    income_category: '',
+    amount: '',
+    currency: 'AFN',
+    income_date: new Date().toISOString().split('T')[0],
+    source: '',
+    description: '',
+  });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const { handleAdd, loading, isSuccess } = useAdd<OtherIncomeFormData>({
@@ -39,11 +37,8 @@ const AddOtherIncome = () => {
     endpoint: 'other-incomes/',
   });
 
-  // Navigate on success
   useEffect(() => {
-    if (isSuccess) {
-      navigate('/other-incomes');
-    }
+    if (isSuccess) navigate('/other-incomes');
   }, [isSuccess, navigate]);
 
   const validateForm = (): boolean => {
@@ -63,120 +58,73 @@ const AddOtherIncome = () => {
 
   return (
     <div className="container mx-auto py-6 space-y-6 max-w-4xl">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => navigate('/other-incomes')}>
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <div className="flex items-center gap-2">
-          <h1 className="text-base font-bold">{t('other-income.addIncome')}</h1>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" onClick={() => navigate('/other-incomes')} className="h-10 w-10">
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">{t('other-income.addIncome')}</h1>
+            <p className="text-sm text-muted-foreground">{t('other-income.manageIncomes', 'Manage Other Incomes')}</p>
+          </div>
         </div>
       </div>
 
       <Card>
-        <CardContent className="pt-6 space-y-6">
-          <div className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="income_category">{t("other-income.category")} *</Label>
-                <Autocomplete
-                  endpoint="income-categories"
-                  value={formData.income_category}
-                  onChange={(value) => {
-                    setFormData((prev) => ({ ...prev, income_category: value }));
-                    if (errors.income_category) setErrors((prev) => ({ ...prev, income_category: "" }));
-                  }}
-                  placeholder={t("other-income.selectCategory")}
-                  getOptionLabel={(c) => c.name}
-                  getOptionValue={(c) => c.id.toString()}
-                />
-                {errors.income_category && <p className="text-base text-destructive text-xs">{errors.income_category}</p>}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="amount">{t("other-income.amount")} *</Label>
-                <Input
-                  id="amount"
-                  type="number"
-                  step="0.01"
-                  value={formData.amount}
-                  onChange={(e) => {
-                    setFormData((prev) => ({ ...prev, amount: e.target.value }));
-                    if (errors.amount) setErrors((prev) => ({ ...prev, amount: "" }));
-                  }}
-                  placeholder={t("other-income.enterAmount")}
-                />
-                {errors.amount && <p className="text-base text-destructive text-xs">{errors.amount}</p>}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="currency">{t("other-income.currency")} *</Label>
-                <Select
-                  value={formData.currency}
-                  onValueChange={(value) => setFormData((prev) => ({ ...prev, currency: value }))}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="AFN">{t("other-income.afn")}</SelectItem>
-                    <SelectItem value="USD">{t("other-income.usd")}</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="income_date">{t("other-income.incomeDate")} *</Label>
-                <Input
-                  id="income_date"
-                  type="date"
-                  value={formData.income_date}
-                  onChange={(e) => {
-                    setFormData((prev) => ({ ...prev, income_date: e.target.value }));
-                    if (errors.income_date) setErrors((prev) => ({ ...prev, income_date: "" }));
-                  }}
-                />
-                {errors.income_date && <p className="text-base text-destructive text-xs">{errors.income_date}</p>}
-              </div>
-            </div>
-
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <DollarSign className="h-5 w-5 text-primary" />
+            {t('other-income.incomeDetails', 'Income Details')}
+          </CardTitle>
+          <CardDescription>{t('other-income.incomeDetailsDesc', 'Record a new income entry')}</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="source">{t("other-income.source")} *</Label>
-              <Input
-                id="source"
-                value={formData.source}
-                onChange={(e) => {
-                  setFormData((prev) => ({ ...prev, source: e.target.value }));
-                  if (errors.source) setErrors((prev) => ({ ...prev, source: "" }));
-                }}
-                placeholder={t("other-income.enterSource")}
-              />
-              {errors.source && <p className="text-base text-destructive text-xs">{errors.source}</p>}
+              <Label htmlFor="income_category" className="font-semibold flex items-center gap-2"><Tag className="h-4 w-4" />{t("other-income.category")} <span className="text-destructive">*</span></Label>
+              <Autocomplete endpoint="income-categories/" value={formData.income_category} onChange={(value) => { setFormData((prev) => ({ ...prev, income_category: value })); if (errors.income_category) setErrors((prev) => ({ ...prev, income_category: "" })); }} placeholder={t("other-income.selectCategory")} getOptionLabel={(c) => c.name} getOptionValue={(c) => c.id.toString()} />
+              {errors.income_category && <p className="text-xs text-destructive">{errors.income_category}</p>}
             </div>
-
             <div className="space-y-2">
-              <Label htmlFor="description">{t("other-income.description")}</Label>
-              <Input
-                id="description"
-                value={formData.description}
-                onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
-                placeholder={t("other-income.enterDescription")}
-              />
+              <Label htmlFor="amount" className="font-semibold flex items-center gap-2"><DollarSign className="h-4 w-4" />{t("other-income.amount")} <span className="text-destructive">*</span></Label>
+              <Input id="amount" type="number" step="0.01" value={formData.amount} onChange={(e) => { setFormData((prev) => ({ ...prev, amount: e.target.value })); if (errors.amount) setErrors((prev) => ({ ...prev, amount: "" })); }} placeholder={t("other-income.enterAmount")} className="h-10" />
+              {errors.amount && <p className="text-xs text-destructive">{errors.amount}</p>}
             </div>
           </div>
 
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => navigate('/other-incomes')} disabled={loading}>
-              {t('common.cancel')}
-            </Button>
-            <Button onClick={handleSubmit} disabled={loading}>
-              {loading ? (
-                <>
-                  <RotateCw className="animate-spin mr-2" />
-                  {t('common.adding')}
-                </>
-              ) : (
-                t('common.add')
-              )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label htmlFor="currency" className="font-semibold">{t("other-income.currency")} <span className="text-destructive">*</span></Label>
+              <Select value={formData.currency} onValueChange={(value) => setFormData((prev) => ({ ...prev, currency: value }))}>
+                <SelectTrigger className="h-10"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="AFN">{t("other-income.afn")}</SelectItem>
+                  <SelectItem value="USD">{t("other-income.usd")}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="income_date" className="font-semibold flex items-center gap-2"><Calendar className="h-4 w-4" />{t("other-income.incomeDate")} <span className="text-destructive">*</span></Label>
+              <Input id="income_date" type="date" value={formData.income_date} onChange={(e) => { setFormData((prev) => ({ ...prev, income_date: e.target.value })); if (errors.income_date) setErrors((prev) => ({ ...prev, income_date: "" })); }} className="h-10" />
+              {errors.income_date && <p className="text-xs text-destructive">{errors.income_date}</p>}
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="source" className="font-semibold flex items-center gap-2"><Building2 className="h-4 w-4" />{t("other-income.source")} <span className="text-destructive">*</span></Label>
+            <Input id="source" value={formData.source} onChange={(e) => { setFormData((prev) => ({ ...prev, source: e.target.value })); if (errors.source) setErrors((prev) => ({ ...prev, source: "" })); }} placeholder={t("other-income.enterSource")} className="h-10" />
+            {errors.source && <p className="text-xs text-destructive">{errors.source}</p>}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="description" className="font-semibold flex items-center gap-2"><FileText className="h-4 w-4" />{t("other-income.description")}</Label>
+            <Input id="description" value={formData.description} onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))} placeholder={t("other-income.enterDescription")} className="h-10" />
+          </div>
+
+          <div className="flex justify-end gap-3 pt-4 border-t">
+            <Button variant="outline" onClick={() => navigate('/other-incomes')} disabled={loading} className="h-10 px-6">{t('common.cancel')}</Button>
+            <Button onClick={handleSubmit} disabled={loading} className="h-10 px-6">
+              {loading ? <><RotateCw className="animate-spin mr-2" />{t('common.adding')}</> : t('common.add')}
             </Button>
           </div>
         </CardContent>

@@ -103,7 +103,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
 
   const { data: initialValueData, isError: initialValueError } = useFetchObjects<Option>({
     queryKey: ['autocomplete-initial', endpoint || '', value?.toString() || ''],
-    endpoint: `${endpoint}/${value}`,
+    endpoint: endpoint && endpoint.endsWith('/') ? `${endpoint}${value}` : endpoint ? `${endpoint}/${value}` : '',
     enabled: !!value && !!endpoint && !selectedOption && !staticOptions,
   });
 

@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Autocomplete } from '@/components/ui/autocomplete';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { RotateCw, ArrowLeft } from 'lucide-react';
+import { RotateCw, ArrowLeft, Calendar, FileText, Hash, Plus, X } from 'lucide-react';
 import useAdd from '@/api/useAdd';
 import { formatNumber } from '@/lib/formatNumber';
 
@@ -25,21 +26,19 @@ interface TransactionFormData {
   entries: JournalEntryFormData[];
 }
 
-const defaultForm: TransactionFormData = {
-  date: new Date().toISOString().split('T')[0],
-  description: '',
-  transaction_type: 'journal',
-  reference: '',
-  entries: [
-    { account: '', debit: 0, credit: 0, description: '' },
-    { account: '', debit: 0, credit: 0, description: '' },
-  ],
-};
-
 const AddTransaction = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState<TransactionFormData>(defaultForm);
+  const [formData, setFormData] = useState<TransactionFormData>({
+    date: new Date().toISOString().split('T')[0],
+    description: '',
+    transaction_type: 'journal',
+    reference: '',
+    entries: [
+      { account: '', debit: 0, credit: 0, description: '' },
+      { account: '', debit: 0, credit: 0, description: '' },
+    ],
+  });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const { handleAdd, loading, isSuccess } = useAdd<TransactionFormData>({
@@ -47,20 +46,12 @@ const AddTransaction = () => {
     endpoint: 'transactions/',
   });
 
-  const handleSuccess = () => {
-    if (isSuccess) {
-      navigate('/transactions');
-    }
-  };
+  useEffect(() => {
+    if (isSuccess) navigate('/transactions');
+  }, [isSuccess, navigate]);
 
-  const calculateTotalDebit = () => {
-    return formData.entries.reduce((sum, entry) => sum + (entry.debit || 0), 0);
-  };
-
-  const calculateTotalCredit = () => {
-    return formData.entries.reduce((sum, entry) => sum + (entry.credit || 0), 0);
-  };
-
+  const calculateTotalDebit = () => formData.entries.reduce((sum, entry) => sum + (entry.debit || 0), 0);
+  const calculateTotalCredit = () => formData.entries.reduce((sum, entry) => sum + (entry.credit || 0), 0);
   const isBalanced = calculateTotalDebit() === calculateTotalCredit();
 
   const validateForm = (): boolean => {
@@ -75,7 +66,6 @@ const AddTransaction = () => {
   const handleSubmit = async () => {
     if (!validateForm()) return;
     handleAdd(formData);
-    handleSuccess();
   };
 
   const handleEntryChange = (index: number, field: keyof JournalEntryFormData, value: any) => {
@@ -85,181 +75,137 @@ const AddTransaction = () => {
   };
 
   const addEntry = () => {
-    setFormData({
-      ...formData,
-      entries: [...formData.entries, { account: '', debit: 0, credit: 0, description: '' }],
-    });
+    setFormData({ ...formData, entries: [...formData.entries, { account: '', debit: 0, credit: 0, description: '' }] });
   };
 
   const removeEntry = (index: number) => {
     if (formData.entries.length > 2) {
-      const newEntries = formData.entries.filter((_, i) => i !== index);
-      setFormData({ ...formData, entries: newEntries });
+      setFormData({ ...formData, entries: formData.entries.filter((_, i) => i !== index) });
     }
   };
 
   return (
     <div className="container mx-auto py-6 space-y-6 max-w-6xl">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => navigate('/transactions')}>
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <div className="flex items-center gap-2">
-          <h1 className="text-base font-boldtext-sm">{t('accounting.addTransaction')}</h1>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" onClick={() => navigate('/transactions')} className="h-10 w-10">
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">{t('accounting.addTransaction')}</h1>
+            <p className="text-sm text-muted-foreground">{t('accounting.manageTransactions', 'Manage Transactions')}</p>
+          </div>
         </div>
       </div>
 
       <Card>
-        <CardContent className="pt-6 space-y-6">
-          <div className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="date">{t("accounting.transactionDate")} *</Label>
-                <Input
-                  id="date"
-                  type="date"
-                  value={formData.date}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, date: e.target.value }))}
-                />
-                {errors.date && <p className="text-base text-destructive text-xs">{errors.date}</p>}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="transaction_type">{t("accounting.transactionType")} *</Label>
-                <Select
-                  value={formData.transaction_type}
-                  onValueChange={(value) => setFormData((prev) => ({ ...prev, transaction_type: value }))}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder={t("accounting.transactionTypePlaceholder")} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="journal">{t("accounting.journal")}</SelectItem>
-                    <SelectItem value="student_payment">{t("accounting.studentPayment")}</SelectItem>
-                    <SelectItem value="expense">{t("accounting.expense")}</SelectItem>
-                    <SelectItem value="payroll">{t("accounting.payroll")}</SelectItem>
-                    <SelectItem value="advance">{t("accounting.advance")}</SelectItem>
-                    <SelectItem value="rental_income">{t("accounting.rentalIncome")}</SelectItem>
-                    <SelectItem value="other_income">{t("accounting.otherIncome")}</SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.transaction_type && <p className="text-base text-destructive text-xs">{errors.transaction_type}</p>}
-              </div>
-            </div>
-
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileText className="h-5 w-5 text-primary" />
+            {t('accounting.transactionDetails', 'Transaction Details')}
+          </CardTitle>
+          <CardDescription>{t('accounting.transactionDetailsDesc', 'Create a new journal entry')}</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="description">{t("accounting.description")}</Label>
-              <Input
-                id="description"
-                value={formData.description}
-                onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
-                placeholder={t("accounting.descriptionPlaceholder")}
-              />
+              <Label htmlFor="date" className="font-semibold flex items-center gap-2"><Calendar className="h-4 w-4" />{t("accounting.transactionDate")} <span className="text-destructive">*</span></Label>
+              <Input id="date" type="date" value={formData.date} onChange={(e) => setFormData((prev) => ({ ...prev, date: e.target.value }))} className="h-10" />
+              {errors.date && <p className="text-xs text-destructive">{errors.date}</p>}
             </div>
-
             <div className="space-y-2">
-              <Label htmlFor="reference">{t("accounting.transactionReference")}</Label>
-              <Input
-                id="reference"
-                value={formData.reference}
-                onChange={(e) => setFormData((prev) => ({ ...prev, reference: e.target.value }))}
-                placeholder={t("accounting.transactionReferencePlaceholder")}
-              />
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <Label className="text-lg">{t("accounting.entries")}</Label>
-                <Button variant="outline" size="sm" onClick={addEntry}>
-                  + {t("accounting.addEntry")}
-                </Button>
-              </div>
-
-              <div className="space-y-2">
-                {formData.entries.map((entry, index) => (
-                  <div key={index} className="grid grid-cols-12 gap-2 p-4 border rounded-md">
-                    <div className="col-span-3 space-y-2">
-                      <Label htmlFor={`entry-account-${index}`}>{t("accounting.account")}</Label>
-                      <Input
-                        id={`entry-account-${index}`}
-                        value={entry.account}
-                        onChange={(e) => handleEntryChange(index, 'account', e.target.value)}
-                        placeholder={t("accounting.accountPlaceholder")}
-                      />
-                    </div>
-                    <div className="col-span-2 space-y-2">
-                      <Label htmlFor={`entry-debit-${index}`}>{t("accounting.debit")}</Label>
-                      <Input
-                        id={`entry-debit-${index}`}
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        value={entry.debit}
-                        onChange={(e) => handleEntryChange(index, 'debit', parseFloat(e.target.value) || 0)}
-                      />
-                    </div>
-                    <div className="col-span-2 space-y-2">
-                      <Label htmlFor={`entry-credit-${index}`}>{t("accounting.credit")}</Label>
-                      <Input
-                        id={`entry-credit-${index}`}
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        value={entry.credit}
-                        onChange={(e) => handleEntryChange(index, 'credit', parseFloat(e.target.value) || 0)}
-                      />
-                    </div>
-                    <div className="col-span-4 space-y-2">
-                      <Label htmlFor={`entry-description-${index}`}>{t("accounting.description")}</Label>
-                      <Input
-                        id={`entry-description-${index}`}
-                        value={entry.description}
-                        onChange={(e) => handleEntryChange(index, 'description', e.target.value)}
-                        placeholder={t("accounting.descriptionPlaceholder")}
-                      />
-                    </div>
-                    {formData.entries.length > 2 && (
-                      <div className="col-span-1 flex items-end">
-                        <Button variant="ghost" size="sm" onClick={() => removeEntry(index)}>
-                          ×
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex justify-end gap-4 p-4 bg-muted rounded-md">
-                <div className="text-right">
-                  <p className="text-sm opacity-75">{t("accounting.totalDebit")}</p>
-                  <p className="text-xl font-bold">{formatNumber(calculateTotalDebit())}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm opacity-75">{t("accounting.totalCredit")}</p>
-                  <p className="text-xl font-bold">{formatNumber(calculateTotalCredit())}</p>
-                </div>
-              </div>
-
-              {errors.balance && (
-                <div className="p-4 bg-red-100 text-red-800 rounded-md">
-                  {errors.balance}
-                </div>
-              )}
+              <Label htmlFor="transaction_type" className="font-semibold">{t("accounting.transactionType")} <span className="text-destructive">*</span></Label>
+              <Select value={formData.transaction_type} onValueChange={(value) => setFormData((prev) => ({ ...prev, transaction_type: value }))}>
+                <SelectTrigger className="h-10"><SelectValue placeholder={t("accounting.transactionTypePlaceholder")} /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="journal">{t("accounting.journal")}</SelectItem>
+                  <SelectItem value="student_payment">{t("accounting.studentPayment")}</SelectItem>
+                  <SelectItem value="expense">{t("accounting.expense")}</SelectItem>
+                  <SelectItem value="payroll">{t("accounting.payroll")}</SelectItem>
+                  <SelectItem value="advance">{t("accounting.advance")}</SelectItem>
+                  <SelectItem value="rental_income">{t("accounting.rentalIncome")}</SelectItem>
+                  <SelectItem value="other_income">{t("accounting.other_income")}</SelectItem>
+                </SelectContent>
+              </Select>
+              {errors.transaction_type && <p className="text-xs text-destructive">{errors.transaction_type}</p>}
             </div>
           </div>
 
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => navigate('/transactions')} disabled={loading}>
-              {t('common.cancel')}
-            </Button>
-            <Button onClick={handleSubmit} disabled={loading}>
-              {loading ? (
-                <>
-                  <RotateCw className="animate-spin mr-2" />
-                  {t('common.adding')}
-                </>
-              ) : (
-                t('common.add')
-              )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label htmlFor="description" className="font-semibold flex items-center gap-2"><FileText className="h-4 w-4" />{t("accounting.description")}</Label>
+              <Input id="description" value={formData.description} onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))} placeholder={t("accounting.descriptionPlaceholder")} className="h-10" />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="reference" className="font-semibold flex items-center gap-2"><Hash className="h-4 w-4" />{t("accounting.transactionReference")}</Label>
+              <Input id="reference" value={formData.reference} onChange={(e) => setFormData((prev) => ({ ...prev, reference: e.target.value }))} placeholder={t("accounting.transactionReferencePlaceholder")} className="h-10" />
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <Label className="text-lg font-semibold">{t("accounting.entries")}</Label>
+              <Button variant="outline" size="sm" onClick={addEntry} className="gap-1">
+                <Plus className="h-4 w-4" /> {t("accounting.addEntry")}
+              </Button>
+            </div>
+
+            <div className="space-y-2">
+              {formData.entries.map((entry, index) => (
+                <div key={index} className="grid grid-cols-12 gap-2 p-4 border rounded-md items-end">
+                  <div className="col-span-3 space-y-2">
+                    <Label htmlFor={`entry-account-${index}`} className="text-xs">{t("accounting.account")}</Label>
+                    <Autocomplete
+                      value={entry.account}
+                      onChange={(value) => handleEntryChange(index, 'account', value || '')}
+                      endpoint="accounts/"
+                      labelKey="name"
+                      valueKey="id"
+                      placeholder={t("accounting.accountPlaceholder")}
+                      searchPlaceholder={t("accounting.searchAccounts")}
+                    />
+                  </div>
+                  <div className="col-span-2 space-y-2">
+                    <Label htmlFor={`entry-debit-${index}`} className="text-xs">{t("accounting.debit")}</Label>
+                    <Input id={`entry-debit-${index}`} type="number" min="0" step="0.01" value={entry.debit} onChange={(e) => handleEntryChange(index, 'debit', parseFloat(e.target.value) || 0)} className="h-10" />
+                  </div>
+                  <div className="col-span-2 space-y-2">
+                    <Label htmlFor={`entry-credit-${index}`} className="text-xs">{t("accounting.credit")}</Label>
+                    <Input id={`entry-credit-${index}`} type="number" min="0" step="0.01" value={entry.credit} onChange={(e) => handleEntryChange(index, 'credit', parseFloat(e.target.value) || 0)} className="h-10" />
+                  </div>
+                  <div className="col-span-4 space-y-2">
+                    <Label htmlFor={`entry-description-${index}`} className="text-xs">{t("accounting.description")}</Label>
+                    <Input id={`entry-description-${index}`} value={entry.description} onChange={(e) => handleEntryChange(index, 'description', e.target.value)} placeholder={t("accounting.descriptionPlaceholder")} className="h-10" />
+                  </div>
+                  {formData.entries.length > 2 && (
+                    <div className="col-span-1">
+                      <Button variant="ghost" size="sm" onClick={() => removeEntry(index)} className="text-red-600 h-10">
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="flex justify-end gap-4 p-4 bg-muted rounded-md">
+              <div className="text-right">
+                <p className="text-sm opacity-75">{t("accounting.totalDebit")}</p>
+                <p className="text-xl font-bold">{formatNumber(calculateTotalDebit())}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-sm opacity-75">{t("accounting.totalCredit")}</p>
+                <p className="text-xl font-bold">{formatNumber(calculateTotalCredit())}</p>
+              </div>
+            </div>
+
+            {errors.balance && <div className="p-4 bg-red-100 text-red-800 rounded-md text-sm">{errors.balance}</div>}
+          </div>
+
+          <div className="flex justify-end gap-3 pt-4 border-t">
+            <Button variant="outline" onClick={() => navigate('/transactions')} disabled={loading} className="h-10 px-6">{t('common.cancel')}</Button>
+            <Button onClick={handleSubmit} disabled={loading} className="h-10 px-6">
+              {loading ? <><RotateCw className="animate-spin mr-2" />{t('common.adding')}</> : t('common.add')}
             </Button>
           </div>
         </CardContent>

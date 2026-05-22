@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { RotateCw, ArrowLeft } from 'lucide-react';
+import { RotateCw, ArrowLeft, Tag, FileText } from 'lucide-react';
 import useUpdate from '@/api/useUpdate';
 import useFetchObject from '@/api/useFetchObject';
 
@@ -20,6 +20,7 @@ interface CategoryFormData {
 const EditIncomeCategory = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const { id } = useParams();
   const [formData, setFormData] = useState<CategoryFormData>({
     name: '',
     category_type: 'other',
@@ -28,13 +29,12 @@ const EditIncomeCategory = () => {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const categoryId = window.location.pathname.split('/').pop();
-  const { data, loading: fetching } = useFetchObject({
-    queryKey: ['income-category', categoryId],
-    endpoint: `income-categories/${categoryId}/`,
+  const { data, isLoading: fetching } = useFetchObject({
+    queryKey: ['income-category', id],
+    endpoint: `income-categories/${id}/`,
   });
 
-  const { handleUpdate, loading } = useUpdate({ queryKey: ['income-categories'] });
+  const { handleUpdate, loading, isSuccess } = useUpdate({ queryKey: ['income-categories'] });
 
   useEffect(() => {
     if (data) {
@@ -47,6 +47,10 @@ const EditIncomeCategory = () => {
     }
   }, [data]);
 
+  useEffect(() => {
+    if (isSuccess) navigate('/income-categories');
+  }, [isSuccess, navigate]);
+
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
     if (!formData.name.trim()) newErrors.name = t('other-income.validation.name');
@@ -56,40 +60,44 @@ const EditIncomeCategory = () => {
 
   const handleSubmit = async () => {
     if (!validateForm()) return;
-    handleUpdate(categoryId, formData);
-    navigate('/income-categories');
+    handleUpdate(id, formData);
   };
 
   if (fetching) return <div className="container mx-auto py-6 text-center">{t('common.loading')}</div>;
 
   return (
     <div className="container mx-auto py-6 space-y-6 max-w-4xl">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => navigate('/income-categories')}>
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <h1 className="text-base font-bold">{t('other-income.editCategory')}</h1>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" onClick={() => navigate('/income-categories')} className="h-10 w-10">
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">{t('other-income.editCategory')}</h1>
+            <p className="text-sm text-muted-foreground">{t('other-income.manageCategories', 'Manage Income Categories')}</p>
+          </div>
+        </div>
       </div>
 
       <Card>
-        <CardContent className="pt-6 space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Tag className="h-5 w-5 text-primary" />
+            {t('other-income.categoryDetails', 'Category Details')}
+          </CardTitle>
+          <CardDescription>{t('other-income.categoryDetailsDescEdit', 'Update income category information')}</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="name">{t("other-income.categoryName")} *</Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => {
-                  setFormData((prev) => ({ ...prev, name: e.target.value }));
-                  if (errors.name) setErrors((prev) => ({ ...prev, name: "" }));
-                }}
-              />
+              <Label htmlFor="name" className="font-semibold">{t("other-income.categoryName")} <span className="text-destructive">*</span></Label>
+              <Input id="name" value={formData.name} onChange={(e) => { setFormData((prev) => ({ ...prev, name: e.target.value })); if (errors.name) setErrors((prev) => ({ ...prev, name: "" })); }} placeholder={t("other-income.categoryName")} className="h-10" />
               {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="category_type">{t("other-income.categoryType")}</Label>
+              <Label htmlFor="category_type" className="font-semibold">{t("other-income.categoryType")}</Label>
               <Select value={formData.category_type} onValueChange={(value) => setFormData((prev) => ({ ...prev, category_type: value }))}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger className="h-10"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="service">{t("other-income.categoryTypes.service")}</SelectItem>
                   <SelectItem value="miscellaneous">{t("other-income.categoryTypes.miscellaneous")}</SelectItem>
@@ -102,13 +110,13 @@ const EditIncomeCategory = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">{t("other-income.description")}</Label>
-            <Input id="description" value={formData.description} onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))} />
+            <Label htmlFor="description" className="font-semibold flex items-center gap-2"><FileText className="h-4 w-4" />{t("other-income.description")}</Label>
+            <Input id="description" value={formData.description} onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))} placeholder={t("other-income.description")} className="h-10" />
           </div>
 
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => navigate('/income-categories')} disabled={loading}>{t('common.cancel')}</Button>
-            <Button onClick={handleSubmit} disabled={loading}>
+          <div className="flex justify-end gap-3 pt-4 border-t">
+            <Button variant="outline" onClick={() => navigate('/income-categories')} disabled={loading} className="h-10 px-6">{t('common.cancel')}</Button>
+            <Button onClick={handleSubmit} disabled={loading} className="h-10 px-6">
               {loading ? <><RotateCw className="animate-spin mr-2" />{t('common.updating')}</> : t('common.update')}
             </Button>
           </div>

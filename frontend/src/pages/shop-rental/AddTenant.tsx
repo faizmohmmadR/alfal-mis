@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { RotateCw, ArrowLeft } from 'lucide-react';
+import { RotateCw, ArrowLeft, User, Phone, Mail, MapPin, FileText, CreditCard } from 'lucide-react';
 import useAdd from '@/api/useAdd';
 
 interface TenantFormData {
@@ -59,92 +59,66 @@ const AddTenant = () => {
 
   return (
     <div className="container mx-auto py-6 space-y-6 max-w-4xl">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => navigate('/tenants')}>
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <h1 className="text-base font-bold">{t('shop-rental.addTenant')}</h1>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" onClick={() => navigate('/tenants')} className="h-10 w-10">
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">{t('shop-rental.addTenant')}</h1>
+            <p className="text-sm text-muted-foreground">{t('shop-rental.manageTenants', 'Manage Tenants')}</p>
+          </div>
+        </div>
       </div>
 
       <Card>
-        <CardContent className="pt-6 space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <User className="h-5 w-5 text-primary" />
+            {t('shop-rental.tenantDetails', 'Tenant Details')}
+          </CardTitle>
+          <CardDescription>{t('shop-rental.tenantDetailsDesc', 'Enter tenant information')}</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="full_name">{t("shop-rental.fullName")} *</Label>
-              <Input
-                id="full_name"
-                value={formData.full_name}
-                onChange={(e) => {
-                  setFormData((prev) => ({ ...prev, full_name: e.target.value }));
-                  if (errors.full_name) setErrors((prev) => ({ ...prev, full_name: "" }));
-                }}
-              />
+              <Label htmlFor="full_name" className="font-semibold flex items-center gap-2"><User className="h-4 w-4" />{t("shop-rental.fullName")} <span className="text-destructive">*</span></Label>
+              <Input id="full_name" value={formData.full_name} onChange={(e) => { setFormData((prev) => ({ ...prev, full_name: e.target.value })); if (errors.full_name) setErrors((prev) => ({ ...prev, full_name: "" })); }} placeholder={t("shop-rental.fullName")} className="h-10" />
               {errors.full_name && <p className="text-xs text-destructive">{errors.full_name}</p>}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="phone">{t("shop-rental.phone")} *</Label>
-              <Input
-                id="phone"
-                value={formData.phone}
-                onChange={(e) => {
-                  setFormData((prev) => ({ ...prev, phone: e.target.value }));
-                  if (errors.phone) setErrors((prev) => ({ ...prev, phone: "" }));
-                }}
-              />
+              <Label htmlFor="phone" className="font-semibold flex items-center gap-2"><Phone className="h-4 w-4" />{t("shop-rental.phone")} <span className="text-destructive">*</span></Label>
+              <Input id="phone" value={formData.phone} onChange={(e) => { setFormData((prev) => ({ ...prev, phone: e.target.value })); if (errors.phone) setErrors((prev) => ({ ...prev, phone: "" })); }} placeholder={t("shop-rental.phone")} className="h-10" />
               {errors.phone && <p className="text-xs text-destructive">{errors.phone}</p>}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="email">{t("shop-rental.email")}</Label>
-              <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
-              />
+              <Label htmlFor="email" className="font-semibold flex items-center gap-2"><Mail className="h-4 w-4" />{t("shop-rental.email")}</Label>
+              <Input id="email" type="email" value={formData.email} onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))} placeholder={t("shop-rental.email")} className="h-10" />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="tazkira_number">{t("shop-rental.tazkiraNumber")} *</Label>
-              <Input
-                id="tazkira_number"
-                value={formData.tazkira_number}
-                onChange={(e) => {
-                  setFormData((prev) => ({ ...prev, tazkira_number: e.target.value }));
-                  if (errors.tazkira_number) setErrors((prev) => ({ ...prev, tazkira_number: "" }));
-                }}
-              />
+              <Label htmlFor="tazkira_number" className="font-semibold flex items-center gap-2"><CreditCard className="h-4 w-4" />{t("shop-rental.tazkiraNumber")} <span className="text-destructive">*</span></Label>
+              <Input id="tazkira_number" value={formData.tazkira_number} onChange={(e) => { setFormData((prev) => ({ ...prev, tazkira_number: e.target.value })); if (errors.tazkira_number) setErrors((prev) => ({ ...prev, tazkira_number: "" })); }} placeholder={t("shop-rental.tazkiraNumber")} className="h-10" />
               {errors.tazkira_number && <p className="text-xs text-destructive">{errors.tazkira_number}</p>}
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="address">{t("shop-rental.address")}</Label>
-            <Input
-              id="address"
-              value={formData.address}
-              onChange={(e) => setFormData((prev) => ({ ...prev, address: e.target.value }))}
-            />
+            <Label htmlFor="address" className="font-semibold flex items-center gap-2"><MapPin className="h-4 w-4" />{t("shop-rental.address")}</Label>
+            <Input id="address" value={formData.address} onChange={(e) => setFormData((prev) => ({ ...prev, address: e.target.value }))} placeholder={t("shop-rental.address")} className="h-10" />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">{t("shop-rental.description")}</Label>
-            <Input
-              id="description"
-              value={formData.description}
-              onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
-            />
+            <Label htmlFor="description" className="font-semibold flex items-center gap-2"><FileText className="h-4 w-4" />{t("shop-rental.description")}</Label>
+            <Input id="description" value={formData.description} onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))} placeholder={t("shop-rental.description")} className="h-10" />
           </div>
 
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => navigate('/tenants')} disabled={loading}>
-              {t('common.cancel')}
-            </Button>
-            <Button onClick={handleSubmit} disabled={loading}>
-              {loading ? (
-                <><RotateCw className="animate-spin mr-2" />{t('common.adding')}</>
-              ) : t('common.add')}
+          <div className="flex justify-end gap-3 pt-4 border-t">
+            <Button variant="outline" onClick={() => navigate('/tenants')} disabled={loading} className="h-10 px-6">{t('common.cancel')}</Button>
+            <Button onClick={handleSubmit} disabled={loading} className="h-10 px-6">
+              {loading ? (<><RotateCw className="animate-spin mr-2" />{t('common.adding')}</>) : (t('common.add'))}
             </Button>
           </div>
         </CardContent>

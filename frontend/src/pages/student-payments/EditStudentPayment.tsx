@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -57,10 +57,10 @@ const EditStudentPayment = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [selectedStudent, setSelectedStudent] = useState<StudentInfo | null>(null);
 
-  const paymentId = window.location.pathname.split('/').pop();
+  const { id } = useParams();
   const { data, loading: fetching } = useFetchObject({
-    queryKey: ['student-payment', paymentId],
-    endpoint: `student-payments/${paymentId}/`,
+    queryKey: ['student-payment', id],
+    endpoint: `student-payments/${id}/`,
   });
 
   const { handleUpdate, loading, isSuccess } = useUpdate({
@@ -137,7 +137,7 @@ const EditStudentPayment = () => {
 
   const handleSubmit = async () => {
     if (!validateForm()) return;
-    handleUpdate(paymentId, formData);
+    handleUpdate(id, formData);
   };
 
   const cycleIsYearly = formData.payment_cycle === 'yearly';

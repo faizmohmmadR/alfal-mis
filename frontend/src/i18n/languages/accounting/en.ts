@@ -213,6 +213,7 @@ export const accountingEn = {
   advance: "Advance Salary",
   rentalIncome: "Rental Income",
   otherIncome: "Other Income",
+  other_income: "Other Income",
   journal: "Manual Journal Entry",
   opening: "Opening Balance",
   

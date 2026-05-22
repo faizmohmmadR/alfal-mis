@@ -226,6 +226,7 @@ export const accountingPs = {
   advance: "د پیش پیسې",
   rentalIncome: "د اجارې درېدنه",
   otherIncome: "نوره درېدنه",
+  other_income: "نوره درېدنه",
   journal: "د دفتر روزنامه دستي سند",
   opening: "د دورې پیل مانده",
   

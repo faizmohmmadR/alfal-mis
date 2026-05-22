@@ -4,54 +4,42 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { ReloadIcon } from '@radix-ui/react-icons';
-import { ArrowLeft, Tag } from 'lucide-react';
+import { RotateCw, ArrowLeft, Tag } from 'lucide-react';
 import useUpdate from '@/api/useUpdate';
-import useFetchObjects from '@/api/useFetchObjects';
-import { ExpenseCategory } from '@/types/expense';
+import useFetchObject from '@/api/useFetchObject';
 
 interface CategoryFormData {
   name: string;
   description?: string;
 }
 
-const defaultForm: CategoryFormData = {
-  name: '',
-  description: '',
-};
-
 const EditExpenseCategory = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
-  const [formData, setFormData] = useState<CategoryFormData>(defaultForm);
+  const { id } = useParams();
+  const [formData, setFormData] = useState<CategoryFormData>({ name: '', description: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const { data: category, isLoading: loadingCategory } = useFetchObjects<ExpenseCategory>({
-    queryKey: ['expense-category', id || ''],
+  const { data, isLoading: fetching } = useFetchObject({
+    queryKey: ['expense-category', id],
     endpoint: `expense-categories/${id}/`,
-    enabled: !!id,
   });
 
-  const { handleUpdate, loading, isSuccess } = useUpdate<ExpenseCategory>({
-    queryKey: ['expense-categories'],
-  });
+  const { handleUpdate, loading, isSuccess } = useUpdate({ queryKey: ['expense-categories'] });
 
   useEffect(() => {
-    if (category) {
+    if (data) {
       setFormData({
-        name: category.name || '',
-        description: category.description || '',
+        name: data.name || '',
+        description: data.description || '',
       });
     }
-  }, [category]);
+  }, [data]);
 
   useEffect(() => {
-    if (isSuccess) {
-      navigate('/expense-categories');
-    }
+    if (isSuccess) navigate('/expense-categories');
   }, [isSuccess, navigate]);
 
   const validateForm = (): boolean => {
@@ -63,37 +51,36 @@ const EditExpenseCategory = () => {
 
   const handleSubmit = () => {
     if (!validateForm() || !id) return;
-
-    handleUpdate(id, {
-      ...formData,
-      name: formData.name.trim(),
-    });
+    handleUpdate(id, { ...formData, name: formData.name.trim() });
   };
 
-  if (loadingCategory) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <ReloadIcon className="animate-spin h-8 w-8" />
-      </div>
-    );
-  }
+  if (fetching) return <div className="container mx-auto py-6 text-center">{t('common.loading')}</div>;
 
   return (
     <div className="container mx-auto py-6 max-w-2xl">
-      <div className="flex items-center gap-4 mb-6">
-        <Button variant="outline" size="icon" onClick={() => navigate('/expense-categories')} className="bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700">
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <div className="flex items-center gap-2">
-          <Tag className="h-6 w-6" />
-          <h1 className="text-base md:text-base font-boldtext-sm">{t('expenses.categories.editCategory')}</h1>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" onClick={() => navigate('/expense-categories')} className="h-10 w-10">
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">{t('expenses.categories.editCategory')}</h1>
+            <p className="text-sm text-muted-foreground">{t('expenses.categories.manageCategories', 'Manage expense categories')}</p>
+          </div>
         </div>
       </div>
-      
+
       <Card>
-        <CardContent className="pt-6 space-y-4">
-          <div className="grid gap-2">
-            <Label htmlFor="name">{t('expenses.categories.name')} *</Label>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Tag className="h-5 w-5 text-primary" />
+            {t('expenses.categories.categoryDetails', 'Category Details')}
+          </CardTitle>
+          <CardDescription>{t('expenses.categories.editCategoryDesc', 'Update expense category information')}</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="name" className="font-semibold">{t('expenses.categories.name')} <span className="text-destructive">*</span></Label>
             <Input
               id="name"
               value={formData.name}
@@ -102,12 +89,13 @@ const EditExpenseCategory = () => {
                 if (errors.name) setErrors((prev) => ({ ...prev, name: '' }));
               }}
               placeholder={t('expenses.categories.enterName')}
+              className="h-10"
             />
-            {errors.name && <p className="text-base text-destructivetext-xs">{errors.name}</p>}
+            {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
           </div>
 
-          <div className="grid gap-2">
-            <Label htmlFor="description">{t('expenses.description')}</Label>
+          <div className="space-y-2">
+            <Label htmlFor="description" className="font-semibold">{t('expenses.description')}</Label>
             <Textarea
               id="description"
               value={formData.description || ''}
@@ -117,19 +105,10 @@ const EditExpenseCategory = () => {
             />
           </div>
 
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => navigate('/expense-categories')} disabled={loading}>
-              {t('common.cancel')}
-            </Button>
-            <Button onClick={handleSubmit} disabled={loading}>
-              {loading ? (
-                <>
-                  <ReloadIcon className="animate-spin mr-2" />
-                  {t('common.updating')}
-                </>
-              ) : (
-                t('common.update')
-              )}
+          <div className="flex justify-end gap-3 pt-4 border-t">
+            <Button variant="outline" onClick={() => navigate('/expense-categories')} disabled={loading} className="h-10 px-6">{t('common.cancel')}</Button>
+            <Button onClick={handleSubmit} disabled={loading} className="h-10 px-6">
+              {loading ? <><RotateCw className="animate-spin mr-2" />{t('common.updating')}</> : t('common.update')}
             </Button>
           </div>
         </CardContent>

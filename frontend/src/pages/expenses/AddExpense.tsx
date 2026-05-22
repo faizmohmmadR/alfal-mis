@@ -1,16 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Receipt } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Autocomplete } from '@/components/ui/autocomplete';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { RotateCw, ArrowLeft, Receipt, DollarSign, Calendar, Tag, User, FileText } from 'lucide-react';
 import useAdd from '@/api/useAdd';
-import useFetchObjects from '@/api/useFetchObjects';
 
 const AddExpense = () => {
   const { t } = useLanguage();
@@ -32,18 +31,12 @@ const AddExpense = () => {
     endpoint: 'expenses/',
   });
 
-
-
   useEffect(() => {
-    if (user && !user.is_staff) {
-      setFormData(prev => ({ ...prev, user: user.id.toString() }));
-    }
+    if (user && !user.is_staff) setFormData(prev => ({ ...prev, user: user.id.toString() }));
   }, [user]);
 
   useEffect(() => {
-    if (isSuccess) {
-      navigate('/expenses');
-    }
+    if (isSuccess) navigate('/expenses');
   }, [isSuccess, navigate]);
 
   const validateForm = (): boolean => {
@@ -65,54 +58,56 @@ const AddExpense = () => {
     submitData.append('amount', formData.amount);
     submitData.append('expense_date', formData.expense_date);
     submitData.append('currency', formData.currency);
-    if (formData.description?.trim()) {
-      submitData.append('description', formData.description.trim());
-    }
-    if (formData.user) {
-      submitData.append('user', formData.user);
-    }
-    if (formData.receipt) {
-      submitData.append('receipt', formData.receipt);
-    }
+    if (formData.description?.trim()) submitData.append('description', formData.description.trim());
+    if (formData.user) submitData.append('user', formData.user);
+    if (formData.receipt) submitData.append('receipt', formData.receipt);
 
     handleAdd(submitData);
   };
 
   return (
     <div className="container mx-auto py-6 max-w-4xl">
-      <Button variant="ghost" onClick={() => navigate('/expenses')} className="mb-4">
-        <ArrowLeft className="mr-2 h-4 w-4" />
-        {t('common.back')}
-      </Button>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" onClick={() => navigate('/expenses')} className="h-10 w-10">
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">{t('expenses.addExpense')}</h1>
+            <p className="text-sm text-muted-foreground">{t('expenses.manageExpenses', 'Manage expenses')}</p>
+          </div>
+        </div>
+      </div>
 
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Receipt className="h-5 w-5" />
-            {t('expenses.addExpense')}
+            <Receipt className="h-5 w-5 text-primary" />
+            {t('expenses.expenseDetails', 'Expense Details')}
           </CardTitle>
+          <CardDescription>{t('expenses.addExpenseDesc', 'Record a new expense')}</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="category">{t('expenses.category')} *</Label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="category" className="font-semibold flex items-center gap-2"><Tag className="h-4 w-4" />{t('expenses.category')} <span className="text-destructive">*</span></Label>
                 <Autocomplete
-                  endpoint="expense-categories"
+                  endpoint="expense-categories/"
                   value={formData.category}
                   onChange={(value) => {
                     setFormData(prev => ({ ...prev, category: value }));
                     if (errors.category) setErrors(prev => ({ ...prev, category: '' }));
                   }}
                   placeholder={t('expenses.selectCategory')}
-                  getOptionLabel={(c) => c.name}
-                  getOptionValue={(c) => c.id.toString()}
+                  labelKey="name"
+                  valueKey="id"
                 />
-                {errors.category && <p className="text-base text-destructive mt-1text-xs">{errors.category}</p>}
+                {errors.category && <p className="text-xs text-destructive">{errors.category}</p>}
               </div>
 
-              <div>
-                <Label htmlFor="amount">{t('expenses.amount')} *</Label>
+              <div className="space-y-2">
+                <Label htmlFor="amount" className="font-semibold flex items-center gap-2"><DollarSign className="h-4 w-4" />{t('expenses.amount')} <span className="text-destructive">*</span></Label>
                 <Input
                   id="amount"
                   type="number"
@@ -123,28 +118,29 @@ const AddExpense = () => {
                     if (errors.amount) setErrors(prev => ({ ...prev, amount: '' }));
                   }}
                   placeholder={t('expenses.enterAmount')}
+                  className="h-10"
                 />
-                {errors.amount && <p className="text-base text-destructive mt-1text-xs">{errors.amount}</p>}
+                {errors.amount && <p className="text-xs text-destructive">{errors.amount}</p>}
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="currency">{t('expenses.currency')} *</Label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="currency" className="font-semibold">{t('expenses.currency')} <span className="text-destructive">*</span></Label>
                 <select
                   id="currency"
                   value={formData.currency}
                   onChange={(e) => setFormData(prev => ({ ...prev, currency: e.target.value }))}
-                  className="w-full p-2 border rounded-md"
+                  className="w-full h-10 px-3 border rounded-md bg-background"
                 >
                   <option value="AFN">AFN - Afghan Afghani</option>
                   <option value="USD">USD - US Dollar</option>
                 </select>
-                {errors.currency && <p className="text-base text-destructive mt-1text-xs">{errors.currency}</p>}
+                {errors.currency && <p className="text-xs text-destructive">{errors.currency}</p>}
               </div>
 
-              <div>
-                <Label htmlFor="expense_date">{t('expenses.expenseDate')} *</Label>
+              <div className="space-y-2">
+                <Label htmlFor="expense_date" className="font-semibold flex items-center gap-2"><Calendar className="h-4 w-4" />{t('expenses.expenseDate')} <span className="text-destructive">*</span></Label>
                 <Input
                   id="expense_date"
                   type="date"
@@ -153,38 +149,40 @@ const AddExpense = () => {
                     setFormData(prev => ({ ...prev, expense_date: e.target.value }));
                     if (errors.expense_date) setErrors(prev => ({ ...prev, expense_date: '' }));
                   }}
+                  className="h-10"
                 />
-                {errors.expense_date && <p className="text-base text-destructive mt-1text-xs">{errors.expense_date}</p>}
+                {errors.expense_date && <p className="text-xs text-destructive">{errors.expense_date}</p>}
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="user">{t('expenses.user')}</Label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="user" className="font-semibold flex items-center gap-2"><User className="h-4 w-4" />{t('expenses.user')}</Label>
                 <Autocomplete
-                  endpoint="users"
+                  endpoint="users/"
                   value={formData.user}
                   onChange={(value) => setFormData(prev => ({ ...prev, user: value }))}
                   placeholder={t('expenses.selectUser')}
-                  getOptionLabel={(u) => `${u.first_name || ''} ${u.last_name || ''}`.trim() || u.username}
-                  getOptionValue={(u) => u.id.toString()}
+                  labelKey="username"
+                  valueKey="id"
                   disabled={!user?.is_staff}
                 />
               </div>
 
-              <div>
-                <Label htmlFor="receipt">{t('expenses.receipt')}</Label>
+              <div className="space-y-2">
+                <Label htmlFor="receipt" className="font-semibold flex items-center gap-2"><FileText className="h-4 w-4" />{t('expenses.receipt')}</Label>
                 <Input
                   id="receipt"
                   type="file"
                   accept="image/*,.pdf"
                   onChange={(e) => setFormData(prev => ({ ...prev, receipt: e.target.files?.[0] || null }))}
+                  className="h-10"
                 />
               </div>
             </div>
 
-            <div>
-              <Label htmlFor="description">{t('expenses.description')}</Label>
+            <div className="space-y-2">
+              <Label htmlFor="description" className="font-semibold">{t('expenses.description')}</Label>
               <Textarea
                 id="description"
                 value={formData.description}
@@ -194,12 +192,10 @@ const AddExpense = () => {
               />
             </div>
 
-            <div className="flex justify-end gap-2">
-              <Button type="button" variant="outline" onClick={() => navigate('/expenses')} disabled={loading}>
-                {t('common.cancel')}
-              </Button>
-              <Button type="submit" disabled={loading}>
-                {loading ? t('common.adding') : t('common.add')}
+            <div className="flex justify-end gap-3 pt-4 border-t">
+              <Button type="button" variant="outline" onClick={() => navigate('/expenses')} disabled={loading} className="h-10 px-6">{t('common.cancel')}</Button>
+              <Button type="submit" disabled={loading} className="h-10 px-6">
+                {loading ? <><RotateCw className="animate-spin mr-2" />{t('common.adding')}</> : t('common.add')}
               </Button>
             </div>
           </form>

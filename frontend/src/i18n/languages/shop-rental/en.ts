@@ -1,5 +1,6 @@
 export const shopRentalEn = {
   shopRental: "Shop Rental",
+  shopRentals: "Shop Rentals",
   status: "Status",
   allStatuses: "All Statuses",
   usd: "USD - US Dollar",
